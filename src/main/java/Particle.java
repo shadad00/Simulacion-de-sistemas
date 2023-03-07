@@ -27,6 +27,10 @@ public class Particle {
         return y;
     }
 
+    public double getRadius() {
+        return radius;
+    }
+
     public Particle(int cellId, double cutOffRadius){
         this(cellId,0,10,0,cutOffRadius);
     }
@@ -35,6 +39,10 @@ public class Particle {
         return Math.sqrt(
                 (Math.pow(this.x - other.x,2) + Math.pow(this.y - other.y, 2))
         );
+    }
+
+    public double getCutOffRadius() {
+        return cutOffRadius;
     }
 
     @Override
@@ -48,5 +56,14 @@ public class Particle {
         if (o == null || getClass() != o.getClass()) return false;
         Particle other = (Particle) o;
         return other.getCellId() == this.cellId; //todo: if same position ???
+    }
+
+    @Override
+    public String toString() {
+        return "Particle{" +
+                "cellId=" + cellId +
+                ", x=" + x +
+                ", y=" + y +
+                '}';
     }
 }
