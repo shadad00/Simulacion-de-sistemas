@@ -1,16 +1,21 @@
-import java.util.Random;
-
 public class Particle {
 
     private static int particleId = 0;
-    private int cellId;
+    private final int cellId;
     private double x;
     private double y;
-    private double radius;
-    private double cutOffRadius;
+    private final double radius;
+    private final double cutOffRadius;
 
 
-    public Particle(int cellId, double x, double y, double radius, double cutOffRadius) {
+    public Particle( double x, double y, double radius, double cutOffRadius) {
+        this.cellId = particleId++;
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.cutOffRadius = cutOffRadius;
+    }
+    private Particle( int cellId, double x, double y, double radius, double cutOffRadius) {
         this.cellId = cellId;
         this.x = x;
         this.y = y;
@@ -18,21 +23,7 @@ public class Particle {
         this.cutOffRadius = cutOffRadius;
     }
 
-    public Particle(double x, double y, double radius, double cutOffRadius) {
-        this.cellId = particleId++;
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.cutOffRadius = cutOffRadius;
-    }
 
-    public Particle(double radius, double cutOffRadius) {
-        this.cellId = particleId++;
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.cutOffRadius = cutOffRadius;
-    }
 
     public Particle getVirtualParticle(){
         return new Particle(this.getCellId(),this.getX(), this.getY(),this.getRadius(),this.getCutOffRadius());
@@ -56,9 +47,6 @@ public class Particle {
         return radius;
     }
 
-    public Particle(int cellId, double cutOffRadius){
-        this(cellId,0,10,0,cutOffRadius);
-    }
 
     public double distanceTo(Particle other) {
         return Math.sqrt(

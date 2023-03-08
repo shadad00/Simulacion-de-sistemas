@@ -34,7 +34,7 @@ public  class NoPeriodicGrid {
     
     
     public void setParticles(List<Particle> particleList){
-        particleList.forEach(particle -> saveParticle(particle));
+        particleList.forEach(this::saveParticle);
     }
 
     protected void saveParticle(Particle particle){
