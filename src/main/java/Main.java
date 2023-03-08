@@ -10,9 +10,9 @@ public class Main {
         particleList.add(new Particle(10,0,0,0,2));
         particleList.add(new Particle(11,0,19.0,0,2));
         particleList.add(new Particle(12,17.0,17.0,0,2));
-        NoPeriodicGrid grid = new NoPeriodicGrid(length,cellQuantity,cutOffRadius);
+        PeriodicGrid grid = new PeriodicGrid(length,cellQuantity,cutOffRadius);
         grid.setParticles(particleList);
-        grid.getAdjacentCellsParticlesWithoutPeriodicity();
+        grid.computeDistanceBetweenParticles();
         grid.getDistances().forEach(distancePair -> System.out.println(distancePair));
 
 

@@ -1,47 +1,58 @@
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class PeriodicGrid extends NoPeriodicGrid{
     public PeriodicGrid(double length, int cellQuantity, double cutoffRadius) {
-        //two extra
-        super(length, cellQuantity + 2 , cutoffRadius);
+        super(length, cellQuantity, cutoffRadius);
     }
 
     @Override
-    public void setParticles(List<Particle> particleList) {
-        for (Particle particle : particleList) {
-            int particleX = (int) Math.floor(particle.getX() / this.cellLength);
-            int particleY = (int) Math.floor(particle.getY() / this.cellLength);
-            cells[particleX + 1][particleY + 1].addParticle(particle);
-        }
-        //fill zero row
-        for (int i = 0; i < this.cellQuantity; i++) {
-//            cells[0][i] = cells[this.cellQuantity-2][i].getParticles().stream().map((Function<Particle, Particle>) particle -> new Particle(particle.getCellId(),particle.getX(), particle.getY()-length,particle.getRadius(),particle.getCutOffRadius())).collect(Collectors.t());
-        }
-
+    protected void initializeCell(int dim){
+        dim = dim + 2 ;
+        super.initializeCell(dim);
     }
 
-    public void getAdjacentCellsParticlesWithPeriodicity(){
-        generalAdjacentCellsParticles((integer, integer2) -> checkAdjacentWithPeriodicity(integer,integer2));
+    @Override
+    protected void saveParticle(Particle particle){
+        int particleCol = getColFromParticle(particle) + 1;
+        int particleRow = getRowFromParticle(particle) + 1 ;
+        createVirtualParticle(particleRow,particleCol,particle);
+        cells[particleCol][particleRow].addParticle(particle);
     }
 
-    private Set<Particle> checkAdjacentWithPeriodicity(int i , int j){
-        Set<Particle> adjacentParticles = new HashSet<>();
-        adjacentParticles.addAll(this.cells[i][j].getParticles());
-        adjacentParticles.addAll(this.cells[(i+1)%this.cellQuantity][(j+1)%this.cellQuantity].getParticles());
-        adjacentParticles.addAll(this.cells[(i)%this.cellQuantity][(j+1)%this.cellQuantity].getParticles());
-        if((i-1)>=0){
-            adjacentParticles.addAll(this.cells[(i-1)%this.cellQuantity][(j)%this.cellQuantity].getParticles());
-            adjacentParticles.addAll(this.cells[(i-1)%this.cellQuantity][(j+1)%this.cellQuantity].getParticles());
-        }else {
-            adjacentParticles.addAll(this.cells[this.cellQuantity-1][(j)%this.cellQuantity].getParticles());
-            adjacentParticles.addAll(this.cells[this.cellQuantity-1][(j+1)%this.cellQuantity].getParticles());
+
+    private void createVirtualParticle(int row , int col, Particle particle){
+        Particle diagonalVirtualParticle = particle.getVirtualParticle();
+        Particle columnVirtualParticle = particle.getVirtualParticle();
+        Particle rowVirtualParticle = particle.getVirtualParticle();
+        int newRow = row;
+        int newCol = col;
+
+        if(row == 1){ //from first to last row
+            rowVirtualParticle.setY(rowVirtualParticle.getY() - this.length);
+            newRow = this.cellQuantity + 1 ;
+            cells[newRow][col].addParticle(rowVirtualParticle);
+            diagonalVirtualParticle.setY(rowVirtualParticle.getY());
         }
-        return adjacentParticles;
+        else if(row == this.cellQuantity) {//from last to first row
+            rowVirtualParticle.setY(rowVirtualParticle.getY() + this.length);
+            newRow = 0 ;
+            cells[newRow][col].addParticle(rowVirtualParticle);
+            diagonalVirtualParticle.setY(rowVirtualParticle.getY());
+        }
+        if( col == 1 ){
+            columnVirtualParticle.setX(columnVirtualParticle.getX() + this.length);
+            newCol = this.cellQuantity + 1 ;
+            cells[row][newCol].addParticle(columnVirtualParticle);
+            diagonalVirtualParticle.setX(columnVirtualParticle.getX());
+        }
+        else if (col == this.cellQuantity ){
+            columnVirtualParticle.setX(columnVirtualParticle.getX() - this.length);
+            newCol = 0;
+            cells[row][newCol].addParticle(columnVirtualParticle);
+            diagonalVirtualParticle.setX(columnVirtualParticle.getX());
+        }
+        if (!(particle.getX() == diagonalVirtualParticle.getX() && particle.getY() == diagonalVirtualParticle.getY()))
+            cells[newRow][newCol].addParticle(diagonalVirtualParticle);
     }
-
 
 }

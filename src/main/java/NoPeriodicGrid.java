@@ -1,15 +1,15 @@
 import java.security.InvalidParameterException;
-import java.util.*;
-import java.util.function.BiFunction;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public  class NoPeriodicGrid {
     protected final double length;
     protected final int cellQuantity;
-
     protected final double cellLength;
     protected final double cutoffRadius;
-    protected final Cell[][] cells;
-
+    protected Cell[][] cells;
     protected final Set<DistancePair> distances ;
 
     public NoPeriodicGrid(double length, int cellQuantity, double cutoffRadius) {
@@ -19,23 +19,27 @@ public  class NoPeriodicGrid {
         this.cellQuantity = cellQuantity;
         this.cellLength = (length / cellQuantity);
         this.cutoffRadius = cutoffRadius;
-        this.cells = new Cell[this.cellQuantity][this.cellQuantity];
         this.distances = new HashSet<>();
-        for (int i = 0; i <this.cellQuantity; i++) {
-            for (int j = 0; j < this.cellQuantity; j++) {
+        initializeCell(this.cellQuantity);
+    }
+
+    protected void initializeCell(int dim){
+        this.cells = new Cell[dim][dim];
+        for (int i = 0; i < dim; i++) {
+            for (int j = 0; j < dim; j++) {
                 this.cells[i][j]= new Cell(i,j);
             }
         }
-
     }
     
     
     public void setParticles(List<Particle> particleList){
-        for (Particle particle : particleList) {
-            int particleX = (int) Math.floor(particle.getX() / this.cellLength);
-            int particleY = (int) Math.floor(particle.getY() / this.cellLength);
-            cells[particleX][particleY].addParticle(particle);
-        }
+        particleList.forEach(particle -> saveParticle(particle));
+    }
+
+    protected void saveParticle(Particle particle){
+        cells[getRowFromParticle(particle)][getColFromParticle(particle)]
+                .addParticle(particle);
     }
 
     public void clearGrid(){
@@ -47,51 +51,50 @@ public  class NoPeriodicGrid {
     }
 
 
-
-    public void getAdjacentCellsParticlesWithoutPeriodicity(){
-        generalAdjacentCellsParticles((integer, integer2) -> checkAdjacentWithoutPeriodicity(integer,integer2));
-    }
-
-    protected void generalAdjacentCellsParticles(BiFunction<Integer, Integer,Set<Particle>> particleGenerator){
+    protected void computeDistanceBetweenParticles(){
         for (int x = this.cellQuantity - 1; x >=0 ; x--)
             for (int y = 0; y < this.cellQuantity ; y++)
                 if(this.cells[x][y].getParticles().size() > 0)
-                    computeDistancesToAdjacentParticles(particleGenerator.apply(x,y));
+                    computeDistancesToAdjacentParticles(checkAdjacent(x,y));
     }
 
 
 
     protected void computeDistancesToAdjacentParticles(Set<Particle> adjacentParticlesSet){
         List<Particle> adjacentParticles = new ArrayList<>(adjacentParticlesSet);
-        for (int i = 0; i < adjacentParticles.size(); i++) {
+        for (int i = 0; i < adjacentParticles.size(); i++)
             for (int j = i+1; j <adjacentParticles.size() ; j++) {
-                if(adjacentParticles.get(i).distanceTo(adjacentParticles.get(j)) <=
-                    adjacentParticles.get(i).getCutOffRadius()
-                ){
+                double distance = adjacentParticles.get(i).distanceTo(adjacentParticles.get(j));
+                if(  distance <= adjacentParticles.get(i).getCutOffRadius() )
                     this.distances.add(
                             new DistancePair(adjacentParticles.get(i),adjacentParticles.get(j),
-                                    adjacentParticles.get(i).distanceTo(adjacentParticles.get(j))));
-                }
+                                    distance)
+                    );
             }
-        }
     }
 
 
-
-    protected Set<Particle> checkAdjacentWithoutPeriodicity(int i , int j){
-        Set<Particle> adjacentParticles = new HashSet<>();
-        adjacentParticles.addAll(this.cells[i][j].getParticles());
+    protected Set<Particle> checkAdjacent(int i , int j){
+        Set<Particle> adjacentParticles = new HashSet<>(this.cells[i][j].getParticles());
         if((i+1) < this.cellQuantity && (j+1) < this.cellQuantity)
             adjacentParticles.addAll(this.cells[(i+1)][(j+1)].getParticles());
         if((j+1) < this.cellQuantity)
             adjacentParticles.addAll(this.cells[(i)][(j+1)].getParticles());
-        if((i-1) >=0)
+        if((i-1) >= 0)
             adjacentParticles.addAll(this.cells[(i-1)][(j)].getParticles());
         if((j+1) < this.cellQuantity && (i-1) >=0 )
             adjacentParticles.addAll(this.cells[(i-1)][(j+1)].getParticles());
         return adjacentParticles;
     }
 
+    protected int getColFromParticle(Particle particle){
+        return (int) Math.floor(particle.getX() / this.cellLength);
+    }
+
+    protected int getRowFromParticle(Particle particle){
+        int particleRow = (int) Math.floor(particle.getY() / this.cellLength);
+        return (this.cellQuantity-1) - particleRow;
+    }
 
 
     public Set<DistancePair> getDistances() {
