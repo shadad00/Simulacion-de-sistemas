@@ -7,6 +7,11 @@ public class Particle {
     private final double radius;
     private final double cutOffRadius;
 
+    public Particle(double radius, double cutOffRadius){
+        this.cellId = particleId++;
+        this.radius = radius ;
+        this.cutOffRadius = cutOffRadius;
+    }
 
     public Particle( double x, double y, double radius, double cutOffRadius) {
         this.cellId = particleId++;
@@ -49,9 +54,9 @@ public class Particle {
 
 
     public double distanceTo(Particle other) {
-        return Math.sqrt(
-                (Math.pow(this.x - other.x,2) + Math.pow(this.y - other.y, 2))
-        );
+        double distance = Math.sqrt(
+                (Math.pow(this.x - other.x,2) + Math.pow(this.y - other.y, 2))) - radius - other.radius;
+        return distance >= 0 ? distance : 0 ;
     }
 
     public double getCutOffRadius() {

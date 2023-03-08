@@ -1,2 +1,4 @@
 .idea
 *.class
+*.txt
+src/main/resources/application.properties

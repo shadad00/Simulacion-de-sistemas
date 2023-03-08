@@ -1,8 +1,5 @@
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public  class NoPeriodicGrid {
     protected final double length;
@@ -10,7 +7,7 @@ public  class NoPeriodicGrid {
     protected final double cellLength;
     protected final double cutoffRadius;
     protected Cell[][] cells;
-    protected final Set<DistancePair> distances ;
+    protected final Map<Particle,Set<ParticleAndDistance>> distances ;
 
     public NoPeriodicGrid(double length, int cellQuantity, double cutoffRadius) {
         if((length / cellQuantity) <= cutoffRadius)
@@ -19,7 +16,7 @@ public  class NoPeriodicGrid {
         this.cellQuantity = cellQuantity;
         this.cellLength = (length / cellQuantity);
         this.cutoffRadius = cutoffRadius;
-        this.distances = new HashSet<>();
+        this.distances = new HashMap<>();
         initializeCell(this.cellQuantity);
     }
 
@@ -65,11 +62,16 @@ public  class NoPeriodicGrid {
         for (int i = 0; i < adjacentParticles.size(); i++)
             for (int j = i+1; j <adjacentParticles.size() ; j++) {
                 double distance = adjacentParticles.get(i).distanceTo(adjacentParticles.get(j));
-                if(  distance <= adjacentParticles.get(i).getCutOffRadius() )
-                    this.distances.add(
-                            new DistancePair(adjacentParticles.get(i),adjacentParticles.get(j),
-                                    distance)
+                if(  distance <= adjacentParticles.get(i).getCutOffRadius() ){
+                    this.distances.putIfAbsent( adjacentParticles.get(i), new HashSet<>());
+                    this.distances.get(adjacentParticles.get(i)).add(
+                            new ParticleAndDistance(adjacentParticles.get(j),distance)
                     );
+                    this.distances.putIfAbsent( adjacentParticles.get(j) , new HashSet<>());
+                    this.distances.get(adjacentParticles.get(j)).add(
+                            new ParticleAndDistance(adjacentParticles.get(i),distance)
+                    );
+                }
             }
     }
 
@@ -96,8 +98,8 @@ public  class NoPeriodicGrid {
         return (this.cellQuantity-1) - particleRow;
     }
 
-
-    public Set<DistancePair> getDistances() {
-        return distances;
+    public Set<ParticleAndDistance> getDistance(Particle particle){
+        return this.distances.getOrDefault(particle, new HashSet<>());
     }
+
 }
