@@ -13,20 +13,22 @@ public class Main {
         Parser parseData = new Parser(props.getProperty("static.input.path"),props.getProperty("dynamic.input.path"));
 
         double length= parseData.getSpaceLong();
-        int cellQuantity = 5;
+        int cellQuantity = 1;
         double cutOffRadius = 1.5;
-        PeriodicGrid grid = new PeriodicGrid(length,cellQuantity,cutOffRadius);
+        NoPeriodicGrid grid = new NoPeriodicGrid(length,cellQuantity,cutOffRadius);
         grid.setParticles(parseData.getParticleList());
+        long startTime = System.currentTimeMillis();
         grid.computeDistanceBetweenParticles();
-        writeAnswer(props.getProperty("output.path"), parseData.getParticleList(),grid);
+        long endTime = System.currentTimeMillis();
+        writeAnswer(props.getProperty("output.path"), parseData.getParticleList(),grid,endTime - startTime);
     }
 
 
-    public static void writeAnswer(String outputPath, List<Particle> particleList, PeriodicGrid grid){
+    public static void writeAnswer(String outputPath, List<Particle> particleList, NoPeriodicGrid grid, long timeElapsed){
         try {
             FileWriter writer = new FileWriter(outputPath);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
-
+            bufferedWriter.write("Execution time(ms) : "+ timeElapsed +" \n" );
             for (Particle particle : particleList) {
                 bufferedWriter.write("[ "+ particle.getCellId()+" ");
                 for (ParticleAndDistance particleAndDistance : grid.getDistance(particle)) {
@@ -35,8 +37,6 @@ public class Main {
                 }
                 bufferedWriter.write("] \n");
             }
-
-
             // Close the writer and buffered writer
             bufferedWriter.close();
             writer.close();

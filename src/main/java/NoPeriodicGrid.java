@@ -49,8 +49,8 @@ public  class NoPeriodicGrid {
 
 
     protected void computeDistanceBetweenParticles(){
-        for (int x = this.cellQuantity - 1; x >=0 ; x--)
-            for (int y = 0; y < this.cellQuantity ; y++)
+        for (int x = cells.length - 1; x >=0 ; x--)
+            for (int y = 0; y < cells.length ; y++)
                 if(this.cells[x][y].getParticles().size() > 0)
                     computeDistancesToAdjacentParticles(checkAdjacent(x,y));
     }
