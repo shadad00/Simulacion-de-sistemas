@@ -1,6 +1,6 @@
 import java.util.List;
 
-public class PeriodicGrid extends NoPeriodicGrid{
+public class PeriodicGrid extends NoPeriodicGrid implements Grid{
     public PeriodicGrid(double length, int cellQuantity, double cutoffRadius) {
         super(length, cellQuantity, cutoffRadius);
     }

@@ -1,7 +1,7 @@
 import java.security.InvalidParameterException;
 import java.util.*;
 
-public  class NoPeriodicGrid {
+public  class NoPeriodicGrid implements Grid{
     protected final double length;
     protected final int cellQuantity;
     protected final double cellLength;
@@ -39,7 +39,7 @@ public  class NoPeriodicGrid {
                 .addParticle(particle);
     }
 
-    public void clearGrid(){
+    public void clearParticles(){
         for (int i = 0; i <this.cellQuantity; i++) {
             for (int j = 0; j < this.cellQuantity; j++) {
                 this.cells[i][j]= new Cell(i,j);
@@ -48,7 +48,7 @@ public  class NoPeriodicGrid {
     }
 
 
-    protected void computeDistanceBetweenParticles(){
+    public void computeDistanceBetweenParticles(){
         for (int x = cells.length - 1; x >=0 ; x--)
             for (int y = 0; y < cells.length ; y++)
                 if(this.cells[x][y].getParticles().size() > 0)
@@ -98,7 +98,7 @@ public  class NoPeriodicGrid {
         return (this.cellQuantity-1) - particleRow;
     }
 
-    public Set<ParticleAndDistance> getDistance(Particle particle){
+    public Set<ParticleAndDistance> getDistanceSet(Particle particle){
         return this.distances.getOrDefault(particle, new HashSet<>());
     }
 

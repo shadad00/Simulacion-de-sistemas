@@ -15,7 +15,7 @@ public class Main {
         double length= parseData.getSpaceLong();
         int cellQuantity = 1;
         double cutOffRadius = 1.5;
-        NoPeriodicGrid grid = new NoPeriodicGrid(length,cellQuantity,cutOffRadius);
+        Grid grid = new NoPeriodicGrid(length,cellQuantity,cutOffRadius);
         grid.setParticles(parseData.getParticleList());
         long startTime = System.currentTimeMillis();
         grid.computeDistanceBetweenParticles();
@@ -24,14 +24,14 @@ public class Main {
     }
 
 
-    public static void writeAnswer(String outputPath, List<Particle> particleList, NoPeriodicGrid grid, long timeElapsed){
+    public static void writeAnswer(String outputPath, List<Particle> particleList, Grid grid, long timeElapsed){
         try {
             FileWriter writer = new FileWriter(outputPath);
             BufferedWriter bufferedWriter = new BufferedWriter(writer);
             bufferedWriter.write("Execution time(ms) : "+ timeElapsed +" \n" );
             for (Particle particle : particleList) {
                 bufferedWriter.write("[ "+ particle.getCellId()+" ");
-                for (ParticleAndDistance particleAndDistance : grid.getDistance(particle)) {
+                for (ParticleAndDistance particleAndDistance : grid.getDistanceSet(particle)) {
                     // Write a string to the file
                     bufferedWriter.write(particleAndDistance.toString() + " ");
                 }
