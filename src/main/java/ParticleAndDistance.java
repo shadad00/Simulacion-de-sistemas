@@ -34,7 +34,7 @@ public class ParticleAndDistance {
     @Override
     public String toString() {
         return "{" +
-                 otherParticle.getCellId() +
+                 otherParticle.getParticleId() +
                 ", " + distance +
                 '}';
     }

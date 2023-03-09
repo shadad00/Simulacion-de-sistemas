@@ -4,15 +4,15 @@ public class Cell {
 
     private int row ;
     private int col;
-    private List<Particle> particles ;
+    private Set<Particle> particles ;
 
-    public Cell(int row, int col) {
+    public Cell(final int row, final int col) {
         this.row = row;
         this.col = col;
-        this.particles = new ArrayList<>();
+        this.particles = new HashSet<>();
     }
 
-    public void addParticle(Particle particle){
+    public void addParticle(final Particle particle){
         this.particles.add(particle);
     }
 
@@ -20,7 +20,7 @@ public class Cell {
         return particles.isEmpty();
     }
 
-    public List<Particle> getParticles() {
+    public Set<Particle> getParticles() {
         return particles;
     }
 
