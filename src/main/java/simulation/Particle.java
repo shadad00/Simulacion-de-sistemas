@@ -1,3 +1,5 @@
+package simulation;
+
 import java.awt.*;
 
 public class Particle {
@@ -51,14 +53,6 @@ public class Particle {
         return color;
     }
 
-    public double distanceTo(final Particle other) {
-        final double distX = this.x - other.x;
-        final double distY = this.y - other.y;
-        final double distance = Math.sqrt((Math.pow(distX, 2) + Math.pow(distY, 2))) - radius - other.radius;
-
-        return distance >= 0 ? distance : 0;
-    }
-
     public double getCutOffRadius() {
         return cutOffRadius;
     }
@@ -78,7 +72,7 @@ public class Particle {
 
     @Override
     public String toString() {
-        return "Particle{" +
+        return "simulation.Particle{" +
                 "  id=" + particleId +
                 ", x=" + x +
                 ", y=" + y +

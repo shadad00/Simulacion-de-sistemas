@@ -1,3 +1,7 @@
+package animation;
+
+import simulation.Particle;
+
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;

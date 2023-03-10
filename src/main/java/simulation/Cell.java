@@ -1,3 +1,5 @@
+package simulation;
+
 import java.util.*;
 
 public class Cell {
@@ -24,5 +26,12 @@ public class Cell {
         return particles;
     }
 
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
 
 }

@@ -1,3 +1,7 @@
+package utils;
+
+import simulation.Particle;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -21,7 +25,7 @@ public class Parser {
             this.particleList = new ArrayList<>(this.particleNumber);
             for (int i = 0; i < this.particleNumber; i++) {
                 String[] line = br.readLine().trim().split(" ");
-                Particle newParticle = new Particle(Double.parseDouble(line[0]),10);
+                Particle newParticle = new Particle(Double.parseDouble(line[0]),Double.parseDouble(line[1]));
                 particleList.add(i,newParticle);
             }
         } catch (IOException e) {
@@ -34,7 +38,7 @@ public class Parser {
             for (int i = 0; i < this.particleNumber; i++) {
                 String[] line = br.readLine().trim().split(" ");
                 this.particleList.get(i).setX(Double.parseDouble(line[0]));
-                this.particleList.get(i).setY(Double.parseDouble(line[3]));
+                this.particleList.get(i).setY(Double.parseDouble(line[1]));
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
