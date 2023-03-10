@@ -1,12 +1,16 @@
 package simulation;
 
-import java.security.InvalidParameterException;
 import java.util.*;
 
 public class NoPeriodicGrid extends Grid {
 
     public NoPeriodicGrid(double length, int cellQuantity, double cutoffRadius) {
         super(length, cellQuantity, cutoffRadius);
+    }
+
+    @Override
+    public boolean isPeriodic() {
+        return false;
     }
 
     @Override

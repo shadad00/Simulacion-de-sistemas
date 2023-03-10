@@ -47,6 +47,7 @@ public class Main {
         }
 
         Frame.write(parseData.getParticleList(), "frame.xyz", 1);
+
     }
 
     public static void writeAnswer(String outputPath, List<Particle> particleList, Grid grid, long timeElapsed){

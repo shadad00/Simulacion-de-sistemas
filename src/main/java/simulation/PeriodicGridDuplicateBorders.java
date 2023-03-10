@@ -14,6 +14,11 @@ public class PeriodicGridDuplicateBorders extends Grid {
     }
 
     @Override
+    public boolean isPeriodic() {
+        return true;
+    }
+
+    @Override
     protected void initializeCells(final int dim) {
         super.initializeCells(cellQuantity + 2);
     }

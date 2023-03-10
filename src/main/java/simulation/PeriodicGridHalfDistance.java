@@ -14,6 +14,11 @@ public class PeriodicGridHalfDistance extends Grid {
     }
 
     @Override
+    public boolean isPeriodic() {
+        return true;
+    }
+
+    @Override
     protected void placeParticle(final Particle particle) {
         final Cell cell = this.getParticleCell(particle);
         cell.addParticle(particle);
