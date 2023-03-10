@@ -26,41 +26,53 @@ public class PeriodicGridDuplicateBorders extends Grid {
     @Override
     protected Cell getParticleCell(final Particle particle) {
         final int particleColumn = (int) Math.floor(particle.getX() / this.cellLength);
-        final int particleRow = (int) Math.floor(particle.getY() / this.cellLength);
+//        Asi esta en el resto de las grillas
+//        final int particleRow = (int) Math.floor(particle.getY() / this.cellLength);
+
+        int particleRow = (int) Math.floor(particle.getY() / this.cellLength);
+        particleRow = (this.cellQuantity-1) - particleRow;
+        //          x = 0 ; x = 1 ; x = 2
+        // y = 0;  |      |       |  x   |
+        // y = 1;  |      |       |      |
+        // y = 2;  |  0   |       |      |
+
+        Set<Particle> adjacent;
+        adjacent.add(virtualParticle);
+        adjacent.add(realParticle);
 
         return cells[particleRow + 1][particleColumn + 1];
     }
 
     @Override
     protected void placeParticle(final Particle particle) {
-        final Cell cell = getParticleCell(particle);
-        cell.addParticle(particle);
+        int particleCol = getParticleCell(particle).getCol() + 1;
+        int particleRow = getParticleCell(particle).getRow() + 1 ;
 
-        placeVirtualParticles(cell.getRow(), cell.getCol(), particle);
+        if(this.cellQuantity > 1)
+            placeVirtualParticle(particleRow,particleCol,particle);
+
+        cells[particleRow][particleCol].addParticle(particle);
     }
 
-    private void placeVirtualParticles(int row , int col, Particle particle) {
+    private void placeVirtualParticle(int row , int col, Particle particle) {
         int newRow=-1, newCol=-1;
         Particle diagonalVirtualParticle = particle.getVirtualParticle();
 
-        // Este cellQuantity tiene valor sin aplicar +2 de tener bordes duplicados
-        if (row == 1 || row == this.cellQuantity) {
+        if(row == 1 || row == this.cellQuantity){
             Particle rowVirtualParticle = particle.getVirtualParticle();
-            if (row == 1) {
-                rowVirtualParticle.setY(rowVirtualParticle.getY() + this.length);
-                newRow = this.cellQuantity + 1 ;
-            } else {
+            if(row == 1){
                 rowVirtualParticle.setY(rowVirtualParticle.getY() - this.length);
+                newRow = this.cellQuantity + 1 ;
+            }else{
+                rowVirtualParticle.setY(rowVirtualParticle.getY() + this.length);
                 newRow = 0 ;
             }
             cells[newRow][col].addParticle(rowVirtualParticle);
             diagonalVirtualParticle.setY(rowVirtualParticle.getY());
         }
-
-        if (col == 1 || col == this.cellQuantity) {
+        if(col == 1 || col == this.cellQuantity){
             Particle columnVirtualParticle = particle.getVirtualParticle();
-
-            if (col == 1){
+            if( col == 1 ){
                 columnVirtualParticle.setX(columnVirtualParticle.getX() + this.length);
                 newCol = this.cellQuantity + 1 ;
             }
@@ -68,7 +80,6 @@ public class PeriodicGridDuplicateBorders extends Grid {
                 columnVirtualParticle.setX(columnVirtualParticle.getX() - this.length);
                 newCol = 0;
             }
-
             cells[row][newCol].addParticle(columnVirtualParticle);
             diagonalVirtualParticle.setX(columnVirtualParticle.getX());
         }

@@ -1,6 +1,7 @@
 package simulation;
 
 import java.awt.*;
+import java.util.Objects;
 
 public class Particle {
 
@@ -58,16 +59,17 @@ public class Particle {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Particle other = (Particle) o;
         return other.getParticleId() == this.particleId;
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+//        return Objects.hash(particleId);
     }
 
     @Override
