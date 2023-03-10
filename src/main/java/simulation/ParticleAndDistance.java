@@ -1,3 +1,5 @@
+package simulation;
+
 import java.util.Objects;
 
 public class ParticleAndDistance {
@@ -36,7 +38,7 @@ public class ParticleAndDistance {
     @Override
     public String toString() {
         return "{" +
-                 otherParticle.getCellId() +
+                 otherParticle.getParticleId() +
                 ", " + distance +
                 '}';
     }
