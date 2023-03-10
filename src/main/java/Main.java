@@ -25,13 +25,15 @@ public class Main {
         double length= parseData.getSpaceLong();
         int cellQuantity = 3;
         double cutOffRadius = 5;
-        Grid grid = new NoPeriodicGrid(length, cellQuantity, cutOffRadius);
+        Grid grid = new PeriodicGridDuplicateBorders(length, cellQuantity, cutOffRadius);
         grid.placeParticles(parseData.getParticleList());
         long startTime = System.currentTimeMillis();
         grid.computeDistanceBetweenParticles();
         long endTime = System.currentTimeMillis();
 
         System.out.println(endTime - startTime);
+
+        writeAnswer(outPath, parseData.getParticleList(), grid,endTime - startTime);
 
         // Dibujando el resultado para que ovito lo pueda mostrar con colores
         final Map<Integer, Particle> particlesMap = parseData.getParticleList().stream().collect(
@@ -45,5 +47,26 @@ public class Main {
         }
 
         Frame.write(parseData.getParticleList(), "frame.xyz", 1);
+    }
+
+    public static void writeAnswer(String outputPath, List<Particle> particleList, Grid grid, long timeElapsed){
+        try {
+            FileWriter writer = new FileWriter(outputPath);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+            bufferedWriter.write("Execution time(ms) : "+ timeElapsed +" \n" );
+            for (Particle particle : particleList) {
+                bufferedWriter.write("[ "+ particle.getParticleId() +" ");
+                for (ParticleAndDistance particleAndDistance : grid.getNeighbors(particle)) {
+                    // Write a string to the file
+                    bufferedWriter.write(particleAndDistance.toString() + " ");
+                }
+                bufferedWriter.write("] \n");
+            }
+            // Close the writer and buffered writer
+            bufferedWriter.close();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

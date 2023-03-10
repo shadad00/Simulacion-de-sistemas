@@ -38,6 +38,7 @@ public abstract class Grid {
         for (int y = 0; y < cells.length; y++)
             for (int x = 0; x < cells.length; x++) {
                 final Cell currentCell = this.cells[y][x];
+                System.out.println(this.cells[0]);
 
                 if (!currentCell.isEmpty()) {
                     final Set<Particle> particlesInNeighborCells = getCandidateParticles(x, y);
