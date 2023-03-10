@@ -40,8 +40,8 @@ public  class NoPeriodicGrid implements Grid{
     }
 
     public void clearParticles(){
-        for (int i = 0; i <this.cellQuantity; i++) {
-            for (int j = 0; j < this.cellQuantity; j++) {
+        for (int i = 0; i <cells.length; i++) {
+            for (int j = 0; j < cells.length; j++) {
                 this.cells[i][j]= new Cell(i,j);
             }
         }
@@ -67,6 +67,7 @@ public  class NoPeriodicGrid implements Grid{
                     this.distances.get(adjacentParticles.get(i)).add(
                             new ParticleAndDistance(adjacentParticles.get(j),distance)
                     );
+
                     this.distances.putIfAbsent( adjacentParticles.get(j) , new HashSet<>());
                     this.distances.get(adjacentParticles.get(j)).add(
                             new ParticleAndDistance(adjacentParticles.get(i),distance)
@@ -78,14 +79,18 @@ public  class NoPeriodicGrid implements Grid{
 
     protected Set<Particle> checkAdjacent(int i , int j){
         Set<Particle> adjacentParticles = new HashSet<>(this.cells[i][j].getParticles());
-        if((i+1) < this.cellQuantity && (j+1) < this.cellQuantity)
+        if((i+1) < cells.length && (j+1) < cells.length){
             adjacentParticles.addAll(this.cells[(i+1)][(j+1)].getParticles());
-        if((j+1) < this.cellQuantity)
+        }
+        if((j+1) < cells.length){
             adjacentParticles.addAll(this.cells[(i)][(j+1)].getParticles());
-        if((i-1) >= 0)
+        }
+        if((i-1) >= 0){
             adjacentParticles.addAll(this.cells[(i-1)][(j)].getParticles());
-        if((j+1) < this.cellQuantity && (i-1) >=0 )
+        }
+        if((j+1) < cells.length && (i-1) >=0 ){
             adjacentParticles.addAll(this.cells[(i-1)][(j+1)].getParticles());
+        }
         return adjacentParticles;
     }
 

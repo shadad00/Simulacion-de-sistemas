@@ -14,8 +14,9 @@ public class PeriodicGrid extends NoPeriodicGrid implements Grid{
     protected void saveParticle(Particle particle){
         int particleCol = getColFromParticle(particle) + 1;
         int particleRow = getRowFromParticle(particle) + 1 ;
-        createVirtualParticle(particleRow,particleCol,particle);
-        cells[particleCol][particleRow].addParticle(particle);
+        if(this.cellQuantity > 1)
+            createVirtualParticle(particleRow,particleCol,particle);
+        cells[particleRow][particleCol].addParticle(particle);
     }
 
 

@@ -19,12 +19,14 @@ public class ParticleAndDistance {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ParticleAndDistance that = (ParticleAndDistance) o;
-        return Double.compare(that.distance, distance) == 0 && Objects.equals(otherParticle, that.otherParticle);
+        if( !this.otherParticle.equals(that.otherParticle))
+            return true;
+        return  Double.compare(that.distance, distance) <= 0  ;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(otherParticle, distance);
+        return Objects.hash(this.otherParticle);
     }
 
     public double getDistance() {

@@ -1,3 +1,5 @@
+import java.util.Objects;
+
 public class Particle {
 
     private static int particleId = 0;
@@ -64,16 +66,16 @@ public class Particle {
     }
 
     @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Particle other = (Particle) o;
-        return other.getCellId() == this.cellId; //todo: if same position ???
+        Particle particle = (Particle) o;
+        return cellId == particle.cellId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cellId);
     }
 
     @Override
