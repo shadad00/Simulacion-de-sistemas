@@ -3,3 +3,4 @@
 *.txt
 src/main/resources/application.properties
 *.csv
+/target
