@@ -92,4 +92,8 @@ public class Particle {
     public void setColor(final int r, final int g, final int b) {
         this.color = new Color(r, g, b);
     }
+
+    public static void resetParticlesCreatedCounter() {
+        particlesCreated = 0;
+    }
 }

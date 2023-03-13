@@ -6,26 +6,21 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class BenchmarkGenerator {
     private final int numberOfIterations;
-    private List<BenchmarkInfo> benchmarkInfoList;
+    private final List<BenchmarkInfo> benchmarkInfoList = new ArrayList<>();
 
     public void run(double gridSide, int cellQuantity, int particleQuantity, double particleRadius, double cutoffRadius) {
-        List<BenchmarkInfo> benchmarkInfoList = new ArrayList<>();
 
-        Grid duplicateBorderGrid = new PeriodicGridDuplicateBorders(gridSide, cellQuantity, cutoffRadius);
         Grid noPeriodicGrid = new NoPeriodicGrid(gridSide, cellQuantity, cutoffRadius);
         Grid halfDistanceGrid = new PeriodicGridHalfDistance(gridSide, cellQuantity, cutoffRadius);
         List<Grid> gridList = new ArrayList<>();
-        gridList.add(duplicateBorderGrid);
+
         gridList.add(noPeriodicGrid);
         gridList.add(halfDistanceGrid);
-
 
         for (int i = 0; i < numberOfIterations; i++) {
             Set<Particle> particleSet = particleGenerator(particleQuantity, gridSide, particleRadius, cutoffRadius);
@@ -46,17 +41,13 @@ public class BenchmarkGenerator {
                         particleRadius,
                         cutoffRadius);
 
-                benchmarkInfoList.add(benchmarkInfo);
+                this.benchmarkInfoList.add(benchmarkInfo);
             });
 
         }
-        this.benchmarkInfoList = benchmarkInfoList;
     }
 
-    public static void writeCSV(File file) throws IOException {
-        if (benchmarkInfoList == null) {
-            return;
-        }
+    public void writeCSV(File file) throws IOException {
         final BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
 
         String line = String.format("%s,%s,%s,%s,%s,%s,%s\n", "grid method", "eval time (ns)", "grid side", "cell quantity", "particle quantity", "particle radius", "cutoff radius");
@@ -79,7 +70,6 @@ public class BenchmarkGenerator {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
         String filename = "./results"+dateFormat.format(currentDate)+".csv";
         File file = new File(filename);
-        file.delete();
         double gridSide = 20.0;
         int particleQ = 1000;
         double particleRadius = 1;
@@ -99,7 +89,7 @@ public class BenchmarkGenerator {
         }
     }
 
-    public class BenchmarkInfo {
+    public static class BenchmarkInfo {
         private final String gridMethod;
         private final double evaluationTime;
         private final double gridSide;

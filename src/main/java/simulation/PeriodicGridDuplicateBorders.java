@@ -36,9 +36,9 @@ public class PeriodicGridDuplicateBorders extends Grid {
         // y = 1;  |      |       |      |
         // y = 2;  |  0   |       |      |
 
-        Set<Particle> adjacent;
-        adjacent.add(virtualParticle);
-        adjacent.add(realParticle);
+//        Set<Particle> adjacent;
+//        adjacent.add(virtualParticle);
+//        adjacent.add(realParticle);
 
         return cells[particleRow + 1][particleColumn + 1];
     }
