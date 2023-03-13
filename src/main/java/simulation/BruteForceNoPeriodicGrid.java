@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Set;
 
 public class BruteForceNoPeriodicGrid extends Grid{
-    public BruteForceNoPeriodicGrid(double length, double cutoffRadius) {
-        super(length, 1, cutoffRadius);
+    public BruteForceNoPeriodicGrid(double length) {
+        super(length, 1);
     }
 
     @Override
@@ -45,8 +45,8 @@ public class BruteForceNoPeriodicGrid extends Grid{
         BenchmarkGenerator bg = new BenchmarkGenerator(1);
         Set<Particle> particles = bg.particleGenerator(particleQuantity, gridSide, radius, cutoff);
 
-        BruteForcePeriodicGrid bf = new BruteForcePeriodicGrid(gridSide, cutoff);
-        PeriodicGridHalfDistance grid = new PeriodicGridHalfDistance(gridSide, cellQuantity, cutoff);
+        BruteForcePeriodicGrid bf = new BruteForcePeriodicGrid(gridSide);
+        PeriodicGridHalfDistance grid = new PeriodicGridHalfDistance(gridSide, cellQuantity);
 
         grid.placeParticles(particles);
         grid.computeDistanceBetweenParticles();

@@ -15,25 +15,29 @@ public class Main {
 //        Properties props = new Properties();
 //        InputStream input = Main.class.getClassLoader().getResourceAsStream("application.properties");
 //        props.load(input);
-        final String staticInputPath = "static_control_20_1_5.xyz";
-        final String dynamicInputPath = "dynamic_control_20_1_5.xyz";
+        final String staticInputPath = "res/grids/static_control_20_1.00_2.00.xyz";
+        final String dynamicInputPath = "res/grids/dynamic_control_20_1.00_2.00.xyz";
         final String outPath = "src/main/java/distance.txt";
 
 //        utils.Parser parseData = new utils.Parser(props.getProperty("static.input.path"),props.getProperty("dynamic.input.path"));
 
-        final int[] particleIds = {0, 16, 180, 330, 359};
+        final int[] particleIds = {0, 16, 180, 237, 330, 359};
+//        final int[] particleIds = {180};
         for (int id : particleIds) {
             Parser parseData = new Parser(staticInputPath, dynamicInputPath);
             double length= parseData.getSpaceLong();
-            int cellQuantity = 3;
-            double cutOffRadius = 5;
-            Grid grid = new NoPeriodicGrid(length, cellQuantity, cutOffRadius);
+            int cellQuantity = 7;
+            final double maxParticleRadius = parseData.getParticleList()
+                    .stream()
+                    .map(p -> p.getRadius())
+                    .max(Double::compareTo)
+                    .get();
+
+            Grid grid = new PeriodicGridHalfDistance(length, cellQuantity);
             grid.placeParticles(parseData.getParticleList());
             long startTime = System.currentTimeMillis();
             grid.computeDistanceBetweenParticles();
             long endTime = System.currentTimeMillis();
-
-            System.out.println(endTime - startTime);
 
             writeAnswer(outPath, parseData.getParticleList(), grid,endTime - startTime);
 

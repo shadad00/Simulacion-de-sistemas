@@ -4,8 +4,8 @@ import java.util.*;
 
 public class NoPeriodicGrid extends Grid {
 
-    public NoPeriodicGrid(double length, int cellQuantity, double cutoffRadius) {
-        super(length, cellQuantity, cutoffRadius);
+    public NoPeriodicGrid(double length, int cellQuantity) {
+        super(length, cellQuantity);
     }
 
     @Override
@@ -16,6 +16,7 @@ public class NoPeriodicGrid extends Grid {
     @Override
     protected void placeParticle(Particle particle) {
         final Cell cell = getParticleCell(particle);
+
         cell.addParticle(particle);
     }
 
