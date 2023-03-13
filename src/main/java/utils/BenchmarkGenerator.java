@@ -17,14 +17,12 @@ public class BenchmarkGenerator {
     public void run(double gridSide, int cellQuantity, int particleQuantity, double particleRadius, double cutoffRadius) {
         List<BenchmarkInfo> benchmarkInfoList = new ArrayList<>();
 
-        Grid duplicateBorderGrid = new PeriodicGridDuplicateBorders(gridSide, cellQuantity, cutoffRadius);
         Grid noPeriodicGrid = new NoPeriodicGrid(gridSide, cellQuantity, cutoffRadius);
         Grid halfDistanceGrid = new PeriodicGridHalfDistance(gridSide, cellQuantity, cutoffRadius);
         List<Grid> gridList = new ArrayList<>();
-        gridList.add(duplicateBorderGrid);
+
         gridList.add(noPeriodicGrid);
         gridList.add(halfDistanceGrid);
-
 
         for (int i = 0; i < numberOfIterations; i++) {
             Set<Particle> particleSet = particleGenerator(particleQuantity, gridSide, particleRadius, cutoffRadius);
@@ -79,7 +77,7 @@ public class BenchmarkGenerator {
     }
 
     public static void main(String[] args) {
-        BenchmarkGenerator bg = new BenchmarkGenerator(10);
+        BenchmarkGenerator bg = new BenchmarkGenerator(100);
         bg.run(20, 4, 1000, 0.25, 1);
         try {
             bg.writeCSV("./pruebacsv.csv");

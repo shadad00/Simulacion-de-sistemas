@@ -20,34 +20,37 @@ public class Main {
         final String outPath = "src/main/java/distance.txt";
 
 //        utils.Parser parseData = new utils.Parser(props.getProperty("static.input.path"),props.getProperty("dynamic.input.path"));
-        Parser parseData = new Parser(staticInputPath, dynamicInputPath);
 
-        double length= parseData.getSpaceLong();
-        int cellQuantity = 3;
-        double cutOffRadius = 5;
-        Grid grid = new PeriodicGridDuplicateBorders(length, cellQuantity, cutOffRadius);
-        grid.placeParticles(parseData.getParticleList());
-        long startTime = System.currentTimeMillis();
-        grid.computeDistanceBetweenParticles();
-        long endTime = System.currentTimeMillis();
+        final int[] particleIds = {0, 16, 180, 330, 359};
+        for (int id : particleIds) {
+            Parser parseData = new Parser(staticInputPath, dynamicInputPath);
+            double length= parseData.getSpaceLong();
+            int cellQuantity = 3;
+            double cutOffRadius = 5;
+            Grid grid = new NoPeriodicGrid(length, cellQuantity, cutOffRadius);
+            grid.placeParticles(parseData.getParticleList());
+            long startTime = System.currentTimeMillis();
+            grid.computeDistanceBetweenParticles();
+            long endTime = System.currentTimeMillis();
 
-        System.out.println(endTime - startTime);
+            System.out.println(endTime - startTime);
 
-        writeAnswer(outPath, parseData.getParticleList(), grid,endTime - startTime);
+            writeAnswer(outPath, parseData.getParticleList(), grid,endTime - startTime);
 
-        // Dibujando el resultado para que ovito lo pueda mostrar con colores
-        final Map<Integer, Particle> particlesMap = parseData.getParticleList().stream().collect(
-                Collectors.toMap(Particle::getParticleId, x -> x));
-        final Particle selectedParticle = particlesMap.get(1);
-        selectedParticle.setColor(255, 255, 0);
-        final Set<ParticleAndDistance> neighbors = grid.getNeighbors(selectedParticle);
-        for (final ParticleAndDistance particleAndDistance : neighbors) {
-            final Particle otherParticle = particleAndDistance.getOtherParticle();
-            particlesMap.get(otherParticle.getParticleId()).setColor(0, 255, 0);
+            final Map<Integer, Particle> particlesMap = parseData.getParticleList().stream().collect(
+                    Collectors.toMap(Particle::getParticleId, x -> x));
+            final Particle selectedParticle = particlesMap.get(id);
+            selectedParticle.setColor(255, 255, 0);
+            final Set<ParticleAndDistance> neighbors = grid.getNeighbors(selectedParticle);
+            for (final ParticleAndDistance particleAndDistance : neighbors) {
+                final Particle otherParticle = particleAndDistance.getOtherParticle();
+                particlesMap.get(otherParticle.getParticleId()).setColor(0, 255, 0);
+            }
+
+            Frame.write(parseData.getParticleList(), String.format("frame_%s.xyz", id), 1);
+
+            Particle.resetParticlesCreatedCounter();
         }
-
-        Frame.write(parseData.getParticleList(), "frame.xyz", 1);
-
     }
 
     public static void writeAnswer(String outputPath, List<Particle> particleList, Grid grid, long timeElapsed){
