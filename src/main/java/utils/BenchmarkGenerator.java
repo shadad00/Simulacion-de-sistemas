@@ -2,7 +2,6 @@ package utils;
 
 import simulation.*;
 
-import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 public class BenchmarkGenerator {
-    private int numberOfIterations;
+    private final int numberOfIterations;
     private List<BenchmarkInfo> benchmarkInfoList;
 
     public void run(double gridSide, int cellQuantity, int particleQuantity, double particleRadius, double cutoffRadius) {
@@ -25,10 +24,6 @@ public class BenchmarkGenerator {
         gridList.add(duplicateBorderGrid);
         gridList.add(noPeriodicGrid);
         gridList.add(halfDistanceGrid);
-
-        Grid testNoPeriodicGrid = new NoPeriodicGrid(gridSide, 1, cutoffRadius);
-        Grid testHalfDistanceGrid = new PeriodicGridHalfDistance(gridSide, 1, cutoffRadius);
-        Grid testDuplicateBordersGrid = new PeriodicGridDuplicateBorders(gridSide, 1, cutoffRadius);
 
 
         for (int i = 0; i < numberOfIterations; i++) {
@@ -64,12 +59,19 @@ public class BenchmarkGenerator {
 
         final BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
 
+        writeHeaders(writer);
+
         for (BenchmarkInfo bi : benchmarkInfoList) {
-            final String line = String.format("%s,%s,%s,%s,%s,%s,%s\n", bi.gridMethod, bi.evaluationTime, bi.gridSide, bi.cellQuantity, bi.particleQuantity, bi.particleRadius, bi.cutoffRadius);
+            final String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", bi.gridMethod, bi.evaluationTime, bi.gridSide, bi.cellQuantity, bi.particleQuantity, bi.particleRadius, bi.cutoffRadius, numberOfIterations);
             writer.write(line);
         }
 
         writer.close();
+    }
+
+    private void writeHeaders(BufferedWriter bf) throws IOException {
+        final String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", "grid method", "eval time (ms)", "grid side", "cell quantity", "particle quantity", "particle radius", "cutoff radius", "iterations");
+        bf.write(line);
     }
 
     public BenchmarkGenerator(int numberOfIterations) {
@@ -87,13 +89,13 @@ public class BenchmarkGenerator {
     }
 
     public class BenchmarkInfo {
-        private String gridMethod;
-        private double evaluationTime;
-        private double gridSide;
-        private int cellQuantity;
-        private int particleQuantity;
-        private double particleRadius;
-        private double cutoffRadius;
+        private final String gridMethod;
+        private final double evaluationTime;
+        private final double gridSide;
+        private final int cellQuantity;
+        private final int particleQuantity;
+        private final double particleRadius;
+        private final double cutoffRadius;
 
         public BenchmarkInfo(String gridMethod, double evaluationTime, double gridSide, int cellQuantity, int particleQuantity, double particleRadius, double cutoffRadius) {
             this.gridMethod = gridMethod;
