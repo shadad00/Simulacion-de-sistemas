@@ -3,6 +3,7 @@ package utils;
 import simulation.*;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,9 +34,9 @@ public class BenchmarkGenerator {
                 g.clearParticles();
                 g.placeParticles(particleSet);
 
-                long startTime = System.currentTimeMillis();
+                long startTime = System.nanoTime();
                 g.computeDistanceBetweenParticles();
-                long endTime = System.currentTimeMillis();
+                long endTime = System.nanoTime();
 
                 BenchmarkInfo benchmarkInfo = new BenchmarkInfo(g.getClass().getSimpleName(),
                         endTime - startTime,
@@ -52,26 +53,20 @@ public class BenchmarkGenerator {
         this.benchmarkInfoList = benchmarkInfoList;
     }
 
-    public void writeCSV(String filename) throws IOException {
+    public static void writeCSV(File file) throws IOException {
         if (benchmarkInfoList == null) {
             return;
         }
+        final BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
 
-        final BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
-
-        writeHeaders(writer);
-
+        String line = String.format("%s,%s,%s,%s,%s,%s,%s\n", "grid method", "eval time (ns)", "grid side", "cell quantity", "particle quantity", "particle radius", "cutoff radius");
+        writer.write(line);
         for (BenchmarkInfo bi : benchmarkInfoList) {
-            final String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", bi.gridMethod, bi.evaluationTime, bi.gridSide, bi.cellQuantity, bi.particleQuantity, bi.particleRadius, bi.cutoffRadius, numberOfIterations);
+            line = String.format("%s,%s,%s,%s,%s,%s,%s\n", bi.gridMethod, bi.evaluationTime, bi.gridSide, bi.cellQuantity, bi.particleQuantity, bi.particleRadius, bi.cutoffRadius);
             writer.write(line);
         }
 
         writer.close();
-    }
-
-    private void writeHeaders(BufferedWriter bf) throws IOException {
-        final String line = String.format("%s,%s,%s,%s,%s,%s,%s,%s\n", "grid method", "eval time (ms)", "grid side", "cell quantity", "particle quantity", "particle radius", "cutoff radius", "iterations");
-        bf.write(line);
     }
 
     public BenchmarkGenerator(int numberOfIterations) {
@@ -80,9 +75,25 @@ public class BenchmarkGenerator {
 
     public static void main(String[] args) {
         BenchmarkGenerator bg = new BenchmarkGenerator(10);
-        bg.run(20, 4, 1000, 0.25, 1);
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd:HH:mm");
+        String filename = "./results"+dateFormat.format(currentDate)+".csv";
+        File file = new File(filename);
+        file.delete();
+        double gridSide = 20.0;
+        int particleQ = 1000;
+        double particleRadius = 1;
+        double cutoffRadius = 1;
+
         try {
-            bg.writeCSV("./pruebacsv.csv");
+            if (!file.exists() && !file.createNewFile()) {
+                throw new RuntimeException("Unable to create csv file.");
+            }
+            for (int m = 1; (gridSide / m) > particleRadius ; m++)
+                bg.run(gridSide, m, particleQ, particleRadius, cutoffRadius);
+
+            bg.writeCSV(file);
+
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
