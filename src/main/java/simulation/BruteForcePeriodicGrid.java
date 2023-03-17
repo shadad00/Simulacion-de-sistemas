@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class BruteForcePeriodicGrid extends Grid{
-    public BruteForcePeriodicGrid(double length, double cutoffRadius) {
-        super(length, 1, cutoffRadius);
+    public BruteForcePeriodicGrid(double length) {
+        super(length, 1);
     }
 
     @Override

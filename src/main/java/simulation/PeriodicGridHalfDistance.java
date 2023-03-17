@@ -7,8 +7,8 @@ public class PeriodicGridHalfDistance extends Grid {
 
     private double halfLength;
 
-    public PeriodicGridHalfDistance(final double length, final int cellQuantity, final double cutoffRadius) {
-        super(length, cellQuantity, cutoffRadius);
+    public PeriodicGridHalfDistance(final double length, final int cellQuantity) {
+        super(length, cellQuantity);
 
         this.halfLength = length / 2;
     }
@@ -27,6 +27,11 @@ public class PeriodicGridHalfDistance extends Grid {
     @Override
     protected double distanceBetweenParticles(final Particle p1, final Particle p2) {
         final double totalRadius = p1.getRadius() + p2.getRadius();
+
+        if (p1.getParticleId() == 359 && p2.getParticleId() == 17) {
+            System.out.println(p1);
+            System.out.println(p2);
+        }
 
         double xDiff = Math.abs(p1.getX() - p2.getX());
         if (xDiff > halfLength)
