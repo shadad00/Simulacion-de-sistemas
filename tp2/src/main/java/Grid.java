@@ -37,6 +37,10 @@ public class Grid {
         return propagate();
     }
 
+    public Cell[][] getCells() {
+        return cells;
+    }
+
     public Grid propagate(){
         Cell[][] newCell = new Cell[cells.length][cells.length];
         for (int i = 0; i < dim; i++)
@@ -63,6 +67,22 @@ public class Grid {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells.length; j++) {
                     cells[i][j] = cells[i][j].collide();
+            }
+        }
+    }
+
+    private static final double HEXAGONAL_GRID_VERTICAL_SPACING = Math.sqrt(3) / 2;
+
+    public void hexagonalIteration(HexagonalConsumer consumer) {
+        for (int row = 0; row < cells.length; row++) {
+            for (int col = 0; col < cells.length; col++) {
+
+                final Cell cell = cells[row][col];
+                final boolean isEvenRow = (row % 2 == 0);
+                final double xCell = col + (isEvenRow ? 0 : 0.5);
+                final double yCell = row * HEXAGONAL_GRID_VERTICAL_SPACING;
+
+                consumer.forEachCell(cell, xCell, yCell);
             }
         }
     }
