@@ -8,6 +8,11 @@ public class SolidCell extends Cell {
     }
 
     @Override
+    public boolean isSolid() {
+        return true;
+    }
+
+    @Override
     public Cell collide() {
         return new SolidCell(rotateParticles(3));
     }

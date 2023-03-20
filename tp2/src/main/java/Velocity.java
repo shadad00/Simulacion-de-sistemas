@@ -3,12 +3,12 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public enum Velocity {
-    UP_RIGHT(1/2,1/2),
+    UP_RIGHT(1.0/2,1.0/2),
     RIGHT (1,0),
-    DOWN_RIGHT(1/2,-1/2),
-    DOWN_LEFT(-1/2,-1/2),
+    DOWN_RIGHT(1.0/2,-1.0/2),
+    DOWN_LEFT(-1.0/2,-1.0/2),
     LEFT (-1,0),
-    UP_LEFT(-1/2,1/2);
+    UP_LEFT(-1.0/2,1.0/2);
 
     private double xComponent;
     private double yComponent;

@@ -17,8 +17,13 @@ public class CommonCell extends Cell{
     }
 
     @Override
+    public boolean isSolid() {
+        return false;
+    }
+
+    @Override
     public Cell collide() {
-        List<Velocity> velocityList = this.particleSet.stream().map(particle -> particle.getVelocity()).collect(Collectors.toList());
+        List<Velocity> velocityList = this.particleSet.stream().map(Particle::getVelocity).collect(Collectors.toList());
         double xMomentum = Velocity.xMomentum(velocityList);
         double yMomentum = Velocity.yMomentum(velocityList);
         int size = this.particleSet.size();
