@@ -5,7 +5,7 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException{
-        Main.run(10000,1000);
+        Main.run(50000,1000);
     }
 
     public static void run(int maxIter, int nParticles) throws IOException {

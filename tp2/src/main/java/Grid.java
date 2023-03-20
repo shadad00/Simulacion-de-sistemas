@@ -24,8 +24,8 @@ public class Grid {
         for (int i = 0; i < particleQuantity; i++) {
             int row, col;
             do {
-                row = rng.nextInt(dim);
-                col = rng.nextInt(((dim/2)-1));
+                row = rng.nextInt(dim-1) + 1 ;
+                col = rng.nextInt((((dim-1)/2)-1)) + 1 ;
             } while (!cells[row][col].isEmpty());
             this.cells[row][col].addParticle(new Particle(getRandomVelocity()));
 
@@ -77,14 +77,19 @@ public class Grid {
 
     private int getColFromVelocity(int row, int col, Velocity velocity){
         boolean par = row % 2 == 0;
-        if(velocity.equals(Velocity.RIGHT) )
+        if( velocity.equals(Velocity.RIGHT) ||
+                (!par && velocity.equals(Velocity.DOWN_RIGHT)) ||
+                (!par && (velocity.equals(Velocity.UP_RIGHT))))
             return col + 1;
-        else if(velocity.equals(Velocity.LEFT) || (par && velocity.equals(Velocity.DOWN_LEFT)))
+        else if(velocity.equals(Velocity.LEFT) ||
+                (par && velocity.equals(Velocity.DOWN_LEFT)) ||
+                (par && velocity.equals(Velocity.UP_LEFT)))
             return col - 1;
-        else if( (par && velocity.equals(Velocity.UP_RIGHT)) || (!par && velocity.equals(Velocity.DOWN_LEFT)) || (par && velocity.equals(Velocity.DOWN_RIGHT) || (!par && velocity.equals(Velocity.UP_LEFT))))
+        else if( (par && velocity.equals(Velocity.UP_RIGHT)) ||
+                (!par && velocity.equals(Velocity.DOWN_LEFT)) ||
+                (par && velocity.equals(Velocity.DOWN_RIGHT) ||
+                        (!par && velocity.equals(Velocity.UP_LEFT))))
             return col ;
-        else if((par && velocity.equals(Velocity.UP_LEFT)) || (!par && velocity.equals(Velocity.DOWN_RIGHT)) || (!par && (velocity.equals(Velocity.UP_RIGHT))))
-            return col + 1;
         throw new RuntimeException("Invalid combination");
     }
 

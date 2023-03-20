@@ -22,7 +22,7 @@ public class CommonCell extends Cell{
         double xMomentum = Velocity.xMomentum(velocityList);
         double yMomentum = Velocity.yMomentum(velocityList);
         int size = this.particleSet.size();
-        if(xMomentum + yMomentum != 0 || size == 6)
+        if(xMomentum != 0 &&  yMomentum != 0 || size == 6)
             return new CommonCell(this.particleSet);
         int random = size == 3 ? 0 : this.random;
         return new CommonCell(rotateParticles(1 + random));
