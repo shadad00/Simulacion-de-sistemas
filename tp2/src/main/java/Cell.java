@@ -24,6 +24,12 @@ public abstract class Cell {
 
     public abstract Cell collide();
 
+    public int particleQuantity(){return this.particleSet.size();}
+
+    public boolean isEmpty() {
+        return particleSet.isEmpty();
+    }
+
     protected Set<Particle> rotateParticles(int step){
       return this.particleSet.stream().
               map(particle -> new Particle(particle.getVelocity().rotateClockwise(step)))

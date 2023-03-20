@@ -7,6 +7,10 @@ public class SolidCell extends Cell {
         super(particles);
     }
 
+    public SolidCell(){
+        this(new HashSet<>());
+    }
+
     @Override
     public Cell collide() {
         return new SolidCell(rotateParticles(3));
