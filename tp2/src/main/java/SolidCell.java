@@ -7,6 +7,10 @@ public class SolidCell extends Cell {
         super(particles);
     }
 
+    public SolidCell(){
+        this(new HashSet<>());
+    }
+
     @Override
     public boolean isSolid() {
         return true;

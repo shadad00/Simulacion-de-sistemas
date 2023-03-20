@@ -17,7 +17,7 @@ public class Frame {
             final Collection<Particle> particles = cell.getParticles();
             final double xTotalVelocity = Velocity.xMomentum(particles.stream().map(Particle::getVelocity).collect(Collectors.toList()));
             final double yTotalVelocity = Velocity.yMomentum(particles.stream().map(Particle::getVelocity).collect(Collectors.toList()));
-            
+
             double rCell, gCell, bCell, alpha;
 
             if (cell.isSolid()) {

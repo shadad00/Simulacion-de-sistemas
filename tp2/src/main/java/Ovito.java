@@ -30,7 +30,7 @@ public class Ovito {
             cells[yCell][xCell].addParticle(new Particle(velocity));
         }
 
-        Grid grid = new Grid(cells);
+        Grid grid = new Grid(cells, 20, 20);
         for (int i = 0; i < MAX_FRAMES; i++) {
             Frame.writeHexagonalCellVelocities(grid, i, "res/test_velocities_");
 //            grid = grid.getNextGrid();

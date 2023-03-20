@@ -30,7 +30,7 @@ public class CommonCell extends Cell{
         if(xMomentum + yMomentum != 0 || size == 6)
             return new CommonCell(this.particleSet);
         int random = size == 3 ? 0 : this.random;
-        return new CommonCell(rotateParticles(random));
+        return new CommonCell(rotateParticles(1 + random));
     }
 
 }
