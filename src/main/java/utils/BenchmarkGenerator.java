@@ -15,8 +15,8 @@ public class BenchmarkGenerator {
 
     public void run(double gridSide, int cellQuantity, int particleQuantity, double particleRadius, double cutoffRadius) {
 
-        Grid noPeriodicGrid = new NoPeriodicGrid(gridSide, cellQuantity, cutoffRadius);
-        Grid halfDistanceGrid = new PeriodicGridHalfDistance(gridSide, cellQuantity, cutoffRadius);
+        Grid noPeriodicGrid = new NoPeriodicGrid(gridSide, cellQuantity);
+        Grid halfDistanceGrid = new PeriodicGridHalfDistance(gridSide, cellQuantity);
         List<Grid> gridList = new ArrayList<>();
 
         gridList.add(noPeriodicGrid);

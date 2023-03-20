@@ -25,7 +25,10 @@ public class Parser {
             this.particleList = new ArrayList<>(this.particleNumber);
             for (int i = 0; i < this.particleNumber; i++) {
                 String[] line = br.readLine().trim().split(" ");
-                Particle newParticle = new Particle(Double.parseDouble(line[0]),Double.parseDouble(line[1]));
+                final double particleRadius = Double.parseDouble(line[0]);
+                final double particleCutoffRadius = Double.parseDouble(line[1]);
+                Particle newParticle = new Particle(particleRadius, particleCutoffRadius);
+
                 particleList.add(i,newParticle);
             }
         } catch (IOException e) {

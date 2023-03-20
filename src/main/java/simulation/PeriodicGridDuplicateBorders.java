@@ -7,8 +7,8 @@ public class PeriodicGridDuplicateBorders extends Grid {
 
     private int extendedCellQuantity;
 
-    public PeriodicGridDuplicateBorders(double length, int cellQuantity, double cutoffRadius) {
-        super(length, cellQuantity, cutoffRadius);
+    public PeriodicGridDuplicateBorders(double length, int cellQuantity) {
+        super(length, cellQuantity);
 
         this.extendedCellQuantity = cellQuantity + 2;
     }

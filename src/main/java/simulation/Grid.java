@@ -12,16 +12,11 @@ public abstract class Grid {
     protected double length;
     protected int cellQuantity;
     protected double cellLength;
-    protected double cutoffRadius;
     protected Map<Particle, Set<ParticleAndDistance>> distances;
 
-    public Grid(final double length, final int cellQuantity, final double cutoffRadius) {
-        if (length / cellQuantity <= cutoffRadius)
-            throw new InvalidParameterException("Invalid parameters provided");
-
+    public Grid(final double length, final int cellQuantity) {
         this.length = length;
         this.cellQuantity = cellQuantity;
-        this.cutoffRadius = cutoffRadius;
         this.cellLength = length / cellQuantity;
         this.distances = new HashMap<>();
 
@@ -31,7 +26,18 @@ public abstract class Grid {
     public abstract boolean isPeriodic();
 
     public void placeParticles(final Collection<Particle> particles) {
+        validateCutoffRadius(particles);
+
         particles.forEach(this::placeParticle);
+    }
+
+    private void validateCutoffRadius(final Collection<Particle> particles) {
+        final double maxRadius = particles.stream().mapToDouble(Particle::getRadius).max().getAsDouble();
+        final double maxCutoffRadius = particles.stream().mapToDouble(Particle::getCutOffRadius).max().getAsDouble();
+
+        // L / M > max_radio_p + max_radio_p + max_radio_alcance
+        if (length / cellQuantity <= maxRadius * 2 + maxCutoffRadius)
+            throw new InvalidParameterException("L/M should be greater than maxRadius * 2 + maxCutoffRadius");
     }
 
     protected abstract void placeParticle(final Particle particle);
@@ -64,8 +70,9 @@ public abstract class Grid {
                     continue;
 
                 final double distance = distanceBetweenParticles(currentCellParticle, candidate);
+                final double cutoffRadius = Math.max(currentCellParticle.getCutOffRadius(), candidate.getCutOffRadius());
 
-                if (distance <= currentCellParticle.getCutOffRadius()) {
+                if (distance <= cutoffRadius) {
                     distances.putIfAbsent(currentCellParticle, new HashSet<>());
                     distances.get(currentCellParticle).add(new ParticleAndDistance(candidate, distance));
 
