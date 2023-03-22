@@ -71,7 +71,7 @@ public class Grid {
         }
     }
 
-    private static final double HEXAGONAL_GRID_VERTICAL_SPACING = Math.sqrt(3) / 2;
+    public static final double HEXAGONAL_GRID_VERTICAL_SPACING = Math.sqrt(3) / 2;
 
     public void hexagonalIteration(HexagonalConsumer consumer) {
         for (int row = 0; row < cells.length; row++) {
