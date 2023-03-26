@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CommonCell extends Cell{
-    private int random;
+    private final int random;
 
     public CommonCell() {
         super();
@@ -27,10 +27,12 @@ public class CommonCell extends Cell{
         double xMomentum = Velocity.xMomentum(velocityList);
         double yMomentum = Velocity.yMomentum(velocityList);
         int size = this.particleSet.size();
-        if(xMomentum != 0 &&  yMomentum != 0 || size == 6)
+        if((xMomentum != 0 || yMomentum != 0) || size == 6 || size == 0) {
             return new CommonCell(this.particleSet);
-        int random = size == 3 ? 0 : this.random;
-        return new CommonCell(rotateParticles(1 + random));
+        } else {
+            int random = size == 3 ? 0 : this.random;
+            return new CommonCell(rotateParticles(1 + random));
+        }
     }
 
 }

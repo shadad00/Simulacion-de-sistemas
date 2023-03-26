@@ -1,6 +1,5 @@
 import java.security.InvalidParameterException;
 import java.util.List;
-import java.util.function.Consumer;
 
 public enum Velocity {
     UP_RIGHT(1/2.0,1/2.0),
@@ -10,16 +9,9 @@ public enum Velocity {
     LEFT (-1,0),
     UP_LEFT(-1/2.0,1/2.0);
 
-    private double xComponent;
-    private double yComponent;
+    private final double xComponent;
+    private final double yComponent;
 
-    public double getxComponent() {
-        return xComponent;
-    }
-
-    public double getyComponent() {
-        return yComponent;
-    }
 
     Velocity(double xComponent, double yComponent) {
         this.xComponent = xComponent;
@@ -27,16 +19,12 @@ public enum Velocity {
     }
 
     public Velocity rotateClockwise(int steps) {
-        if(steps <= 0 || (steps != 1 && steps != 2 && steps != 3))
+        if( (steps != 1 && steps != 2 && steps != 3) )
             throw new InvalidParameterException("Invalid step provided");
         int valuesLength = Velocity.values().length;
         int currentIndex = this.ordinal();
         int newIndex = (currentIndex + steps) % valuesLength;
         return Velocity.values()[newIndex];
-    }
-
-    public Velocity getOppositeVelocity(){
-        return rotateClockwise(3);
     }
 
 
@@ -56,4 +44,8 @@ public enum Velocity {
         return suma;
     }
 
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }

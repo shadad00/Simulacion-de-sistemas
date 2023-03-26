@@ -1,41 +1,50 @@
-import java.util.HashSet;
 import java.util.Random;
 
 public class Grid {
     private final Cell[][] cells;
     private final static int dim = 200;
-    private int cellGap;
-
-    private int leftParticles = 0;
+    private final int cellGap;
+    private final double epsilonEq;
     private final int totalParticles;
 
-    public Grid(Cell[][] cells, int totalParticles, int cellGap){
+
+
+    public Grid(Cell[][] cells, int totalParticles, int cellGap, double epsilonEq){
         this.cells = cells;
         this.totalParticles = totalParticles;
         this.cellGap = cellGap;
+        this.epsilonEq = epsilonEq;
     }
 
-    public Grid(int particleQuantity, int cellGap) {
+    public Grid(int particleQuantity, int cellGap,double epsilonEq) {
         this.cells = new Cell[dim][dim];
         this.cellGap = cellGap;
+        this.epsilonEq = epsilonEq;
         initializeCell();
         this.totalParticles = particleQuantity;
         Random rng = new Random();
+
+
         for (int i = 0; i < particleQuantity; i++) {
             int row, col;
             do {
-                row = rng.nextInt(dim-1) + 1 ;
-                col = rng.nextInt((((dim-1)/2)-1)) + 1 ;
-            } while (!cells[row][col].isEmpty());
+                row = rng.nextInt(dim-2) + 1;
+                col = rng.nextInt((dim/2) - 2) + 1;
+            } while (!cells[row][col].isEmpty() && !cells[row][col].isSolid());
             this.cells[row][col].addParticle(new Particle(getRandomVelocity()));
-
         }
+    }
+
+    public boolean isEquilibrated() {
+        final double eq = getLeftParticles() / (double) totalParticles;
+        return (eq > (0.5 - epsilonEq) && eq < (0.5 + epsilonEq));
     }
 
     public Grid getNextGrid(){
         collide();
         return propagate();
     }
+
 
     public Cell[][] getCells() {
         return cells;
@@ -49,23 +58,21 @@ public class Grid {
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells.length; j++) {
                 for (Particle particle : cells[i][j].particleSet) {
-                    int newRow = getRowFromVelocity(i,j,particle.getVelocity());
+                    int newRow = getRowFromVelocity(i,particle.getVelocity());
                     int newCol = getColFromVelocity(i,j,particle.getVelocity());
-                    if( (0 <= newCol && newCol< cells.length)
-                            && (0 <= newRow && newRow< cells.length) ){
+                    if( (0 <= newCol && newCol < cells.length) && (0 <= newRow && newRow < cells.length) )
                         newCell[newRow][newCol].addParticle(particle);
-                        if(newCol < dim / 2)
-                            this.leftParticles++;
-                    }
+
                 }
             }
         }
-        return new Grid(newCell, totalParticles, cellGap);
+        return new Grid(newCell, totalParticles, cellGap,epsilonEq);
     }
 
     public void collide(){
         for (int i = 0; i < cells.length; i++) {
             for (int j = 0; j < cells.length; j++) {
+                if(!cells[i][j].isEmpty())
                     cells[i][j] = cells[i][j].collide();
             }
         }
@@ -87,7 +94,7 @@ public class Grid {
         }
     }
 
-    private int getRowFromVelocity(int row, int col, Velocity velocity){
+    private int getRowFromVelocity(int row, Velocity velocity){
             if(velocity.equals(Velocity.RIGHT) || velocity.equals(Velocity.LEFT))
                 return row;
             else if(velocity.equals(Velocity.DOWN_LEFT) || velocity.equals(Velocity.DOWN_RIGHT))
@@ -97,19 +104,31 @@ public class Grid {
 
     private int getColFromVelocity(int row, int col, Velocity velocity){
         boolean par = row % 2 == 0;
-        if( velocity.equals(Velocity.RIGHT) ||
-                (!par && velocity.equals(Velocity.DOWN_RIGHT)) ||
-                (!par && (velocity.equals(Velocity.UP_RIGHT))))
-            return col + 1;
-        else if(velocity.equals(Velocity.LEFT) ||
-                (par && velocity.equals(Velocity.DOWN_LEFT)) ||
-                (par && velocity.equals(Velocity.UP_LEFT)))
-            return col - 1;
-        else if( (par && velocity.equals(Velocity.UP_RIGHT)) ||
-                (!par && velocity.equals(Velocity.DOWN_LEFT)) ||
-                (par && velocity.equals(Velocity.DOWN_RIGHT) ||
-                        (!par && velocity.equals(Velocity.UP_LEFT))))
-            return col ;
+        if (par) {
+            switch (velocity) {
+                case UP_RIGHT:
+                case DOWN_RIGHT:
+                    return col;
+                case UP_LEFT:
+                case DOWN_LEFT:
+                case LEFT:
+                    return col - 1;
+                case RIGHT:
+                    return col + 1;
+            }
+        } else {
+            switch (velocity) {
+                case UP_RIGHT:
+                case DOWN_RIGHT:
+                case RIGHT:
+                    return col + 1;
+                case UP_LEFT:
+                case DOWN_LEFT:
+                    return col;
+                case LEFT:
+                    return col - 1;
+            }
+        }
         throw new RuntimeException("Invalid combination");
     }
 
@@ -121,23 +140,17 @@ public class Grid {
 
     public int getLeftParticles() {
         int left = 0;
-        for (int i = 0; i < this.cells.length; i++) {
-            for (int j = 0; j < this.cells.length; j++) {
-                if(j < dim / 2)
-                    left += this.cells[i][j].particleQuantity();
+        for (Cell[] cell : cells) {
+            for (int j = 0; j < (dim / 2); j++) {
+                left += cell[j].particleQuantity();
             }
-
         }
         return left;
-//        return this.leftParticles;
-    }
-
-    public int getRightParticles(){
-        return totalParticles - getLeftParticles();
     }
 
 
-    private Cell getCell(int row ,int col ){
+
+    private Cell getCell(int row, int col ){
         int limit = (this.cells.length - cellGap) / 2;
         if(( row == 0 || col == 0 || row == dim - 1 || col == dim-1))
             return new SolidCell();

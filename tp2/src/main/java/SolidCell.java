@@ -18,7 +18,7 @@ public class SolidCell extends Cell {
 
     @Override
     public Cell collide() {
-        return new SolidCell(rotateParticles(3));
+         return new SolidCell(rotateParticles(3));
     }
 
 }

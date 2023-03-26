@@ -8,7 +8,7 @@ public class Ovito {
     private static final int LOG_FRAME_INTERVAL = 5;
 
     public static void main(String[] args) throws IOException {
-        Grid grid = new Grid(2000, 20);
+        Grid grid = new Grid(2000, 20, 0.05);
 
         for (int i = 0; i < MAX_FRAMES; i++) {
             if (i % LOG_FRAME_INTERVAL == 0) {

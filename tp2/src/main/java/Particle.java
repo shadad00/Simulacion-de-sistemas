@@ -3,15 +3,11 @@ import java.util.Objects;
 public class Particle {
     private static int id = 0;
     private final int particleId;
-    private Velocity velocity;
+    private final Velocity velocity;
 
     public Particle(Velocity velocity) {
         this.velocity = velocity;
         this.particleId = id++;
-    }
-
-    public int getParticleId() {
-        return this.particleId;
     }
 
     public Velocity getVelocity() {

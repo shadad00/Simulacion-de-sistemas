@@ -1,5 +1,4 @@
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,9 +17,6 @@ public abstract class Cell {
         this.particleSet.add(particle);
     }
 
-    public void removeParticle(Particle particle){
-        this.particleSet.remove(particle);
-    }
 
     public Set<Particle> getParticles() {
         return particleSet;
@@ -37,7 +33,7 @@ public abstract class Cell {
     public int particleQuantity(){return this.particleSet.size();}
 
     protected Set<Particle> rotateParticles(int step){
-      return this.particleSet.stream().
+        return this.particleSet.stream().
               map(particle -> new Particle(particle.getVelocity().rotateClockwise(step)))
               .collect(Collectors.toSet()) ;
     }
