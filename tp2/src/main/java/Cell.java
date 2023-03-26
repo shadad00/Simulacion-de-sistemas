@@ -22,7 +22,19 @@ public abstract class Cell {
         this.particleSet.remove(particle);
     }
 
+    public Set<Particle> getParticles() {
+        return particleSet;
+    }
+
+    public abstract boolean isSolid();
+
+    public boolean isEmpty() {
+        return particleSet.isEmpty();
+    }
+
     public abstract Cell collide();
+
+    public int particleQuantity(){return this.particleSet.size();}
 
     protected Set<Particle> rotateParticles(int step){
       return this.particleSet.stream().
