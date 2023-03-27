@@ -1,13 +1,23 @@
+import java.util.List;
 import java.util.Random;
 
 public class Grid {
     private final Cell[][] cells;
     private final static int dim = 200;
-    private final int cellGap;
-    private final double epsilonEq;
-    private final int totalParticles;
+    private int cellGap = 50;
+    private double epsilonEq = 0.05;
+    private int totalParticles;
 
 
+    public Grid(List<Parser.ParsedLine> parsedLineList, int cellGap, int totalParticles){
+        this.cells = new Cell[dim][dim];
+        initializeCell();
+        this.totalParticles = totalParticles ;
+        this.cellGap = cellGap;
+        for (Parser.ParsedLine pl : parsedLineList) {
+            this.cells[pl.getRow()][pl.getCol()].addAllParticles(pl.getParticleSet());
+        }
+    }
 
     public Grid(Cell[][] cells, int totalParticles, int cellGap, double epsilonEq){
         this.cells = cells;

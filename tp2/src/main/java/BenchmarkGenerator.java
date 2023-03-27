@@ -9,9 +9,9 @@ public class BenchmarkGenerator {
 
     private final static int[] particlesArray = {2000,3000,5000};
     private final static int[] gapSizes = {50};
-    private final static int N_ITERATIONS = 10;
-    private final static double EPSILON = 0.04;
-    private final static int MAX_ITER = 10000;
+    private final static int N_ITERATIONS = 3;
+    private final static double EPSILON = 0.05;
+    private final static int MAX_ITER = 3000;
 
     public static void main(String[] args) throws IOException{
         for(int gapSize : BenchmarkGenerator.gapSizes) {
@@ -33,7 +33,8 @@ public class BenchmarkGenerator {
         final String FORMAT = "%s,%s,%s,%s\n";
         bf.write(header);
         Cell[][] cells;
-        for (int i = 0; i < MAX_ITER && !currentGrid.isEquilibrated() ; i++) {
+        System.out.println(fileName);
+        for (int i = 0; i < MAX_ITER; i++) {
             cells = currentGrid.getCells();
             for (int j = 0; j < cells.length; j++) {
                 for (int k = 0; k < cells.length; k++) {
@@ -55,6 +56,9 @@ public class BenchmarkGenerator {
                         bf.write(String.format(FORMAT, i, j, k, result));
                     }
                 }
+            }
+            if (i % 100 == 0) {
+                System.out.println("left particles: " + currentGrid.getLeftParticles());
             }
             currentGrid = currentGrid.getNextGrid();
         }

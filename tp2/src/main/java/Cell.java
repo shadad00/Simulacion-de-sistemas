@@ -1,3 +1,4 @@
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,4 +39,7 @@ public abstract class Cell {
               .collect(Collectors.toSet()) ;
     }
 
+    public void addAllParticles(Collection<Particle> particles) {
+        this.particleSet.addAll(particles);
+    }
 }
