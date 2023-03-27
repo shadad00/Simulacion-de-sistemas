@@ -3,12 +3,12 @@ import java.util.HashSet;
 
 public class Ovito {
 
-    public static final int MAX_FRAMES = 500;
+    public static final int MAX_FRAMES = 1500;
     private static final int RENDER_FRAME_INTERVAL = 1;
     private static final int LOG_FRAME_INTERVAL = 5;
 
     public static void main(String[] args) throws IOException {
-        Grid grid = new Grid(2000, 20, 0.05);
+        Grid grid = new Grid(2000, 50, 0.01);
 
         for (int i = 0; i < MAX_FRAMES; i++) {
             if (i % LOG_FRAME_INTERVAL == 0) {
@@ -17,7 +17,7 @@ public class Ovito {
 
             if (i % RENDER_FRAME_INTERVAL == 0) {
                 // TODO: hay que crear el parent folder
-                Frame.writeHexagonalCellVelocities(grid, i, "res/results/basic_test/hex");
+                Frame.writeDensityAreas(grid, i, "res/results/basic_test/density");
             }
 
             grid = grid.getNextGrid();

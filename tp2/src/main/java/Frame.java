@@ -19,7 +19,7 @@ public class Frame {
         grid.hexagonalIteration((cell, xCell, yCell) -> {
             final Collection<Particle> particles = cell.getParticles();
             final double xTotalVelocity = Velocity.xMomentum(particles.stream().map(Particle::getVelocity).collect(Collectors.toList()));
-            final double yTotalVelocity = Velocity.yMomentum(particles.stream().map(Particle::getVelocity).collect(Collectors.toList()));
+            final double yTotalVelocity = -Velocity.yMomentum(particles.stream().map(Particle::getVelocity).collect(Collectors.toList()));
 
             double rCell, gCell, bCell, alpha;
 
@@ -58,7 +58,7 @@ public class Frame {
     }
 
     public static void writeDensityAreas(final Grid grid, final int frame, final String path) throws IOException {
-        final DensityArea[][] areaGrid = cellsToDensityArea(grid, 30);
+        final DensityArea[][] areaGrid = cellsToDensityArea(grid, 60);
         final int areaGridSize = areaGrid.length;
         final Cell[][] cells = grid.getCells();
 
@@ -75,18 +75,19 @@ public class Frame {
             for (int j = 0; j < areaGridSize; j++) {
                 final DensityArea area = areaGrid[i][j];
                 final double xTotalVelocity = area.xMomentum();
-                final double yTotalVelocity = area.yMomentum();
+                final double yTotalVelocity = -area.yMomentum();
+                final double vectorLength = Math.sqrt(Math.pow(xTotalVelocity, 2) + Math.pow(yTotalVelocity, 2));
 
                 final String line = String.format(
                         "%s %s %s %s %s %s %s %s\n",
                         j,
                         i,
-                        xTotalVelocity,
-                        yTotalVelocity,
+                        xTotalVelocity / vectorLength,
+                        yTotalVelocity / vectorLength,
                         255,
                         0,
                         0,
-                        1 - Math.min(area.size() / 5.0, 1)
+                        1 - Math.min(area.size() / 3.0, 1)
                 );
 
                 try {
