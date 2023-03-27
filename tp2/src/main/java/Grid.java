@@ -19,6 +19,10 @@ public class Grid {
         }
     }
 
+    public int getTotalParticles() {
+        return totalParticles;
+    }
+
     public Grid(Cell[][] cells, int totalParticles, int cellGap, double epsilonEq){
         this.cells = cells;
         this.totalParticles = totalParticles;

@@ -24,6 +24,9 @@ public class Parser implements Iterable<Grid> {
         return new Grid(parsedLineList, cellGap, totalParticles);
     }
 
+    public int getCurrentIteration(){
+        return currentIteration;
+    }
 
 
     public Parser(final String filename) {
