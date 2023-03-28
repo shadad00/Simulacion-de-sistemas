@@ -12,11 +12,11 @@ public class leftRightAggregator {
 
 
     public static void main(String[] args) {
-        String directory = "/Users/benjamacbook/OneDrive/ITBA/2023_1C/ss/Simulacion-de-sistemas/tp2/out";
+        String directory = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp2/out";
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(directory))) {
             for (Path file : stream) {
                 if(!file.toString().contains("aggregate") && Files.isRegularFile(file)) {
-                   System.out.println(file.toString());
+                   System.out.println(file);
                     run(file.toString());
                 }
             }
@@ -27,7 +27,7 @@ public class leftRightAggregator {
 
     public static void run(String mainCSV) {
         String leftRightCSV = mainCSV.split("\\.")[0] + "_aggregate.csv";
-        final String HEADER = "iteration,left_particle,right_particle";
+        final String HEADER = "iteration,left_particle,right_particle,solid_collision,particle_collision";
         try {
             Parser parser = new Parser(mainCSV);
             File file = new File(leftRightCSV);
@@ -39,7 +39,9 @@ public class leftRightAggregator {
             for (Grid grid : parser) {
                 int left = grid.getLeftParticles();
                 int right = grid.getTotalParticles() - left;
-                bw.write(String.format("%s,%d,%d\n", parser.getCurrentIteration(), left, right));
+                int solidCollision = grid.getSolidCellCollisionNumber();
+                int particleCollision = grid.getParticleCollisionNumber();
+                bw.write(String.format("%s,%d,%d,%d,%d\n", parser.getCurrentIteration(), left, right,solidCollision,particleCollision));
             }
             bw.close();
         }catch (IOException e) {

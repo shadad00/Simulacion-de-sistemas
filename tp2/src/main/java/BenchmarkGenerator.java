@@ -9,9 +9,11 @@ public class BenchmarkGenerator {
 
     private final static int[] particlesArray = {2000,3000,5000};
     private final static int[] gapSizes = {50};
-    private final static int N_ITERATIONS = 3;
+    private final static int N_ITERATIONS = 20;
     private final static double EPSILON = 0.05;
     private final static int MAX_ITER = 3000;
+
+    private final static boolean REGENERATE_GRID = false;
 
     public static void main(String[] args) throws IOException{
         for(int gapSize : BenchmarkGenerator.gapSizes) {
@@ -19,8 +21,8 @@ public class BenchmarkGenerator {
         }
     }
 
-    public static void run(String fileName, int cellGap, int nParticles) throws IOException {
-        Grid currentGrid = new Grid(nParticles, cellGap,EPSILON);
+    public static void run(String fileName, Grid firstGrid) throws IOException {
+        Grid currentGrid = firstGrid;
 
         File csv = new File(fileName);
         if (!csv.exists() && !csv.createNewFile()) {
@@ -68,9 +70,13 @@ public class BenchmarkGenerator {
 
     public static void runAll(final int gap, final int iterations) throws IOException {
         for (int particlesQuantity : particlesArray) {
+            Grid firstGrid = new Grid(particlesQuantity, gap,EPSILON);
             for (int i = 0; i < iterations; i++) {
                 String filename = String.format("%s_d%d_n%d_i%d.csv", "tp2/out/output", gap, particlesQuantity, i);
-                run(filename,gap,particlesQuantity);
+                if(REGENERATE_GRID){
+                    firstGrid= new Grid(particlesQuantity,gap,EPSILON);
+                }
+                run(filename,firstGrid);
             }
         }
     }

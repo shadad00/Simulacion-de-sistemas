@@ -6,7 +6,7 @@ public class Grid {
     private final static int dim = 200;
     private int cellGap = 50;
     private double epsilonEq = 0.05;
-    private int totalParticles;
+    private final int totalParticles;
 
 
     public Grid(List<Parser.ParsedLine> parsedLineList, int cellGap, int totalParticles){
@@ -180,5 +180,26 @@ public class Grid {
                 this.cells[i][j] = getCell(i,j);
     }
 
+    public int getParticleCollisionNumber(){
+        int collisionNumber = 0;
+        for (Cell[] cellRow : this.cells) {
+            for (Cell cell : cellRow) {
+                if (!cell.isSolid() && cell.particleSet.size() > 1)
+                    collisionNumber ++ ;
+            }
+        }
+        return collisionNumber;
+    }
+
+    public int getSolidCellCollisionNumber(){
+        int collisionNumber = 0;
+        for (Cell[] cellRow : this.cells) {
+            for (Cell cell : cellRow) {
+                if (cell.isSolid() && cell.particleSet.size() > 0)
+                    collisionNumber ++ ;
+            }
+        }
+        return collisionNumber;
+    }
 
 }

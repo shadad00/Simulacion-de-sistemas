@@ -31,8 +31,8 @@ public class Parser implements Iterable<Grid> {
 
     public Parser(final String filename) {
         String[] fileData = filename.split("_");
-        this.cellGap = Integer.parseInt(fileData[2].substring(1));
-        this.totalParticles = Integer.parseInt(fileData[3].substring(1));
+        this.cellGap = Integer.parseInt(fileData[1].substring(1));
+        this.totalParticles = Integer.parseInt(fileData[2].substring(1));
         try {
             FileReader fileReader = new FileReader(filename);
             this.csvReader = new CSVReader(fileReader);
