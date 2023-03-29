@@ -8,7 +8,7 @@ particle_number = 5000
 
 if __name__ == '__main__':
     current_index = 0
-    equilibrium_point = [1037, 448, 623, 565, 826, 772, 992, 1253]
+    # equilibrium_point = [1037, 448, 623, 565, 826, 772, 992, 1253]
     path = r'/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp2/out'
     for gap in [25, 50, 75, 100, 125, 150, 175, 200]:
         regex = 'outputSecondLap_d' + str(gap) + '_n5000_i*_aggregate.csv'
@@ -38,7 +38,7 @@ if __name__ == '__main__':
         plt.xticks(np.arange(0, 3000, 300))
         plt.ylabel('Proporción de partículas')
         plt.fill_between([i for i in range(3000)], lower, upper, color='green', alpha=0.2)
-        plt.axvline(x=equilibrium_point[current_index], linestyle='dashed', label='Iteración de equilibrio')
+        # plt.axvline(x=equilibrium_point[current_index], linestyle='dashed', label='Iteración de equilibrio')
         plt.legend()
         plt.savefig("./plots/TimeRatioD_"+str(gap) + '.png')
         plt.clf()
