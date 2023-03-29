@@ -17,7 +17,7 @@ public class Ovito {
 
             if (i % RENDER_FRAME_INTERVAL == 0) {
                 // TODO: hay que crear el parent folder
-                Frame.writeDensityAreas(grid, i, "res/results/basic_test/density");
+                Frame.writeHexagonalCellVelocities(grid, i, "res/results/basic_test/hex_5_collision");
             }
 
             grid = grid.getNextGrid();

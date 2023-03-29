@@ -11,10 +11,10 @@ public class Frame {
 
     public static void writeHexagonalCellVelocities(final Grid grid, final int frame, final String path) throws IOException {
         final Cell[][] cells = grid.getCells();
-        final BufferedWriter writer = new BufferedWriter(new FileWriter(String.format("%s%s.xyz", path, frame), true));
+        final BufferedWriter writer = new BufferedWriter(new FileWriter(String.format("%s.xyz", path), true));
 
         writer.write(String.format("%s\n", cells.length * cells[0].length));
-        writer.newLine();
+        writer.write(String.format("#%s\n", frame));
 
         grid.hexagonalIteration((cell, xCell, yCell) -> {
             final Collection<Particle> particles = cell.getParticles();
