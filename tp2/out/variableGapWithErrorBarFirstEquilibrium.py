@@ -13,7 +13,7 @@ gap_equilibrium_map = {}
 if __name__ == '__main__':
     path = r'/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp2/out'
     for gap in [25, 50, 75, 100, 125, 150, 175, 200]:
-        regex = 'outputSecondLap_d' + str(gap) + '_n5000_i*_aggregate.csv'
+        regex = 'secondItemVaryingGap_d' + str(gap) + '_n5000_i*_aggregate.csv'
         files = Path(path).glob(regex)
         gap_equilibrium_map[gap] = []
         for f in files:
@@ -32,6 +32,6 @@ if __name__ == '__main__':
     plt.errorbar(gaps, [v[0] for v in equilibrium_index], yerr=[[v[1] for v in equilibrium_index]], fmt='o', capsize=5)
     plt.xlabel('Tamaño del tabique (Cantidad de celdas)')
     plt.ylabel('Numero de iteraciones hasta equilibrio')
-    plt.savefig("GapVsTimeWithErrorBarFirstEquilibrium.PNG")
+    plt.savefig("./plots/GapVsTimeWithErrorBarFirstEquilibrium.PNG")
 
 

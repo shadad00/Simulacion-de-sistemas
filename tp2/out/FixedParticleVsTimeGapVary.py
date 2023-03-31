@@ -10,7 +10,7 @@ if __name__ == '__main__':
     current_index = 0
     path = r'/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp2/out'
     for gap in [25, 50, 75, 100, 125, 150, 175, 200]:
-        regex = 'outputSecondLap_d' + str(gap) + '_n5000_i0_aggregate.csv'
+        regex = 'secondItemVaryingGap_d' + str(gap) + '_n5000_i0_aggregate.csv'
         files = Path(path).glob(regex)
 
         upper = []

@@ -15,7 +15,7 @@ public class leftRightAggregator {
         String directory = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp2/out";
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(directory))) {
             for (Path file : stream) {
-                if(!file.toString().contains("aggregate") && Files.isRegularFile(file)) {
+                if(file.toString().contains("secondItemVaryingN") && !file.toString().contains("aggregate") && Files.isRegularFile(file)) {
                    System.out.println(file);
                     run(file.toString());
                 }

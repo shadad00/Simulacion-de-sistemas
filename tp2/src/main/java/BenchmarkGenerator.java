@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 public class BenchmarkGenerator {
 
-    private final static int[] particlesArray = {2000,3000,5000};
+    private final static int[] particlesArray = {2000,3000,4000,5000,6000,7000,8000,9000};
     private final static int[] gapSizes = {50};
-    private final static int N_ITERATIONS = 20;
+    private final static int N_ITERATIONS = 10;
     private final static double EPSILON = 0.05;
     private final static int MAX_ITER = 3000;
 
@@ -59,9 +59,9 @@ public class BenchmarkGenerator {
                     }
                 }
             }
-            if (i % 100 == 0) {
-                System.out.println("left particles: " + currentGrid.getLeftParticles());
-            }
+//            if (i % 100 == 0) {
+//                System.out.println("left particles: " + currentGrid.getLeftParticles());
+//            }
             currentGrid = currentGrid.getNextGrid();
         }
         bf.close();
@@ -72,7 +72,7 @@ public class BenchmarkGenerator {
         for (int particlesQuantity : particlesArray) {
             Grid firstGrid = new Grid(particlesQuantity, gap,EPSILON);
             for (int i = 0; i < iterations; i++) {
-                String filename = String.format("%s_d%d_n%d_i%d.csv", "tp2/out/output", gap, particlesQuantity, i);
+                String filename = String.format("%s_d%d_n%d_i%d.csv", "tp2/out/secondItemVaryingN", gap, particlesQuantity, i);
                 if(REGENERATE_GRID){
                     firstGrid= new Grid(particlesQuantity,gap,EPSILON);
                 }

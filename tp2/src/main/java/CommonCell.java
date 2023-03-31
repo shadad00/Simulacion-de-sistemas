@@ -28,6 +28,9 @@ public class CommonCell extends Cell{
         double yMomentum = Velocity.yMomentum(velocityList);
         int size = this.particleSet.size();
         if((xMomentum != 0 || yMomentum != 0) || size == 6 || size == 0) {
+            if(size == 3 ){
+                return new CommonCell(rotateParticles(4));
+            }
             return new CommonCell(this.particleSet);
         } else {
             int random = size == 3 ? 0 : this.random;

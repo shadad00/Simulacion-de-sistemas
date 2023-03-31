@@ -8,13 +8,13 @@ import java.util.stream.Collectors;
 public class Main {
 
     public static void main(String[] args) throws IOException{
-        Main.run(10000,2000);
+        Main.run(3000,5000);
     }
 
     public static void run(int maxIter, int nParticles) throws IOException {
-        Grid currentGrid = new Grid(nParticles, 50,0.03);
+        Grid currentGrid = new Grid(nParticles, 200,0.05);
 
-        File csv = new File("outputMain.csv");
+        File csv = new File("changing3ParticlesRule_d2000_n5000_i0.csv");
         if (!csv.exists() && !csv.createNewFile()) {
             throw new IOException("Unable to create output.csv");
         }
@@ -25,7 +25,7 @@ public class Main {
         final String FORMAT = "%s,%s,%s,%s\n";
         bf.write(header);
         Cell[][] cells;
-        for (int i = 0; i < maxIter && !currentGrid.isEquilibrated() ; i++) {
+        for (int i = 0; i < maxIter /*&& !currentGrid.isEquilibrated()*/ ; i++) {
             cells = currentGrid.getCells();
             for (int j = 0; j < cells.length; j++) {
                 for (int k = 0; k < cells.length; k++) {

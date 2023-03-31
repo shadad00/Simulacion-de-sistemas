@@ -6,8 +6,8 @@ epsilon = 0.05
 if __name__ == '__main__':
 
     path = r'/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp2/out'
-    for particle_number in [2000, 3000, 5000]:
-        regex = '*output_d50_n' + str(particle_number) + '_i1_aggregate.csv'
+    for particle_number in [2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000]:
+        regex = '*secondItemVaryingN*n' + str(particle_number) + '_i0_aggregate.csv'
         files = Path(path).glob(regex)
         upper = []
         lower = []
@@ -16,6 +16,10 @@ if __name__ == '__main__':
             lower.append(0.5 - epsilon)
 
         dfs = [pd.read_csv(f) for f in files]
+        if len(dfs) == 0:
+            print("xchau")
+            break
+
         data_frame = dfs[0]
         total_particle = data_frame["left_particle"] + data_frame["right_particle"]
         left_particle_ratio = data_frame["left_particle"] / particle_number
@@ -27,5 +31,5 @@ if __name__ == '__main__':
         plt.fill_between([i for i in range(3000)], lower, upper, color='green', alpha=0.2)
         plt.legend()
         # plt.title("Proporción de partículas en cada lado respecto del tiempo")
-        plt.savefig("./plots/FixedTimeRatioN_"+str(particle_number) + '.png')
+        plt.savefig("./plots/SecondFixedTimeRatioN_"+str(particle_number) + '.png')
         plt.clf()

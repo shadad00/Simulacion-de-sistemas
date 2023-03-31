@@ -19,7 +19,7 @@ public enum Velocity {
     }
 
     public Velocity rotateClockwise(int steps) {
-        if( (steps != 1 && steps != 2 && steps != 3) )
+        if( (steps != 1 && steps != 2 && steps != 3 && steps!= 4) )
             throw new InvalidParameterException("Invalid step provided");
         int valuesLength = Velocity.values().length;
         int currentIndex = this.ordinal();
