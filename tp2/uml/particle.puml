@@ -1,0 +1,28 @@
+@startuml
+!pragma layout smetana
+
+class Particle {
+- int id
+- Velocity vel
++ Particle(Velocity vel)
++ Velocity getVelocity()
+}
+
+Particle *---> Velocity
+
+enum Velocity {
+    UP_RIGHT
+    RIGHT
+    DOWN_RIGHT
+    DOW_LEFT
+    LEFT
+    UP_LEFT
+--
+    - double xComponent
+    - double yComponent
+--
+{static} xMomentum(List<Velocity> vl)
+{static} yMomentum(List<Velocity> vl)
+}
+
+@enduml

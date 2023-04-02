@@ -1,0 +1,24 @@
+@startuml
+!pragma layout smetana
+
+class Grid {
+- Cell[][] cells
+- int dim
+- int totalParticles
+- double epsilonEq
+
++ Grid getNextGrid()
++ boolean isEquilibrated()
+- Grid propagate()
+- void collide()
+
+}
+Grid *---> "dimxdim  " Cell
+abstract class Cell {
+# Set<Particle> particleSet
+
++ Cell collide()
+# Set<Particle> rotateParticles(int step)
+}
+
+@enduml

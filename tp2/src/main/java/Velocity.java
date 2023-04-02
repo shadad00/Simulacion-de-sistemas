@@ -2,12 +2,12 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 public enum Velocity {
-    UP_RIGHT(1/2.0,1/2.0),
-    RIGHT (1,0),
-    DOWN_RIGHT(1/2.0,-1/2.0),
-    DOWN_LEFT(-1/2.0,-1/2.0),
-    LEFT (-1,0),
-    UP_LEFT(-1/2.0,1/2.0);
+    UP_RIGHT(1/2.0,1/2.0),      // 0
+    RIGHT (1,0),                // 1
+    DOWN_RIGHT(1/2.0,-1/2.0),   // 2
+    DOWN_LEFT(-1/2.0,-1/2.0),   // 3
+    LEFT (-1,0),                // 4
+    UP_LEFT(-1/2.0,1/2.0);      // 5
 
     private final double xComponent;
     private final double yComponent;

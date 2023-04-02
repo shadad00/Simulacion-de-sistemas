@@ -1,0 +1,28 @@
+@startuml
+!pragma layout smetana
+abstract class Cell {
+# Set<Particle> particleSet
+--
++ boolean isEmpty()
++ void addParticle(Particle p)
+# Set<Particle> rotateParticles(int step)
+==
+{abstract} + Cell collide()
+{abstract} + boolean isSolid()
+}
+
+class SolidCell extends Cell {
+
++ SolidCell()
++ SolidCell(Set<Particle> particles)
++ Cell collide()
+}
+
+class CommonCell extends Cell {
+- int random
++ CommonCell()
++ CommonCell(Set<Particle> particles)
++ Cell collide()
+}
+
+@enduml

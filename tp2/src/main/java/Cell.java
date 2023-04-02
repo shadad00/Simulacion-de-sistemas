@@ -42,4 +42,8 @@ public abstract class Cell {
     public void addAllParticles(Collection<Particle> particles) {
         this.particleSet.addAll(particles);
     }
+
+    public Set<Velocity> getVelocities() {
+        return this.particleSet.stream().map(Particle::getVelocity).collect(Collectors.toSet());
+    }
 }
