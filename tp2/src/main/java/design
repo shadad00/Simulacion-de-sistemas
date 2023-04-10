@@ -1,0 +1,44 @@
+@startuml
+
+class Grid{
+    +cells: Cell[][]
+    public int getLeftParticles();
+    public Grid getNextGrid();
+}
+
+abstract class Cell{
+    Set<Particle> particles
+    public Cell collide();
+    private void rotateParticles();
+}
+
+class SolidCell extends Cell{
+
+}
+
+class CommonCell extends Cell{
+
+}
+
+class Particle{
+    velocity: Velocity;
+    public setVelocity(Velocity velocity);
+}
+
+enum Velocity{
+    UP_RIGHT,
+    RIGHT,
+    DOWN_RIGHT,
+    DOWN_LEFT,
+    LEFT,
+    UP_LEFT;
+    public static rotateVelocity(Velocity velocity);
+}
+
+Grid *-up-|> Cell
+SolidCell *-up-|> Particle
+CommonCell *-up-|> Particle
+Particle *-up-|> Velocity
+
+
+@enduml
