@@ -56,20 +56,20 @@ public class CommonBall extends Ball {
         return -((deltaVelR + Math.sqrt(d)) / (deltaVelSquared));
     }
 
-    public Collision getCollision(final CommonBall ball) {
+    public Collision getCollision(final CommonBall ball, final double simulationTime) {
         final Double time = getCollisionTime(ball);
         if (time == null)
             return null;
 
-        return Collision.withAnotherBall(time, this, ball);
+        return Collision.withAnotherBall(simulationTime + time, this, ball);
     }
 
-    public Collision getCollision(final PocketBall pocket) {
+    public Collision getCollision(final PocketBall pocket, final double simulationTime) {
         final Double time = getCollisionTime(pocket);
         if (time == null)
             return null;
 
-        return Collision.withPocket(time, this, pocket);
+        return Collision.withPocket(simulationTime + time, this, pocket);
     }
 
     @Override

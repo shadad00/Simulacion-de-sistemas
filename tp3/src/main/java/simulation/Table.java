@@ -36,10 +36,16 @@ public class Table {
     }
 
     public void moveUntilAllPocketed() throws IOException {
-        Collision prevCollision = null;
         OvitoWriter writer = new OvitoWriter();
-        writer.openFile("prueba.xyz");
+        writer.openFile("prueba");
+        try {
+            writer.writeFrame(0, balls, pocketBalls, null);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
+        int frame = 0;
+        Collision prevCollision = null;
         while (!balls.isEmpty()) {
             updateCollisions(prevCollision);
 
@@ -49,12 +55,13 @@ public class Table {
             collide(nextCollision);
 
             try {
-                writer.writeFrame(balls, pocketBalls);
+                writer.writeFrame(simulationTime, balls, pocketBalls, nextCollision);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
 
             prevCollision = nextCollision;
+            frame++;
         }
     }
 
@@ -105,7 +112,7 @@ public class Table {
             if (prevCollisionedBalls.contains(otherBall) && ball.getBallNumber() >= otherBall.getBallNumber())
                 continue;
 
-            final Collision collision = ball.getCollision(otherBall);
+            final Collision collision = ball.getCollision(otherBall, simulationTime);
             if (collision != null) {
                 collisions.add(collision);
             }
@@ -114,7 +121,7 @@ public class Table {
 
     private void addPocketCollisions(CommonBall ball) {
         for (final PocketBall pocket : pocketBalls) {
-            final Collision collision = ball.getCollision(pocket);
+            final Collision collision = ball.getCollision(pocket, simulationTime);
             if (collision != null) {
                 collisions.add(collision);
             }
@@ -123,10 +130,15 @@ public class Table {
 
     public void moveUntilCollision(Collision collision) {
         final double deltaTime = collision.getCollisionTime() - simulationTime;
+        if (deltaTime < 0) {
+            throw new RuntimeException();
+        }
 
         for (final CommonBall ball : balls) {
             ball.updatePosition(deltaTime);
         }
+
+        simulationTime = collision.getCollisionTime();
     }
 
     private void addWallCollisions(final CommonBall ball) {
@@ -137,26 +149,36 @@ public class Table {
         double verticalWallCollisionTime;
         double horizontalWallCollisionTime;
 
-        if (ball.getVelocity().getX() > 0) {
+        if (ball.getVelocity().getX() >= 0) {
             verticalWallCollisionTime = (this.width - ball.getPosition().getX() - ball.getRadius()) / ball.getVelocity().getX();
         } else {
             verticalWallCollisionTime = (ball.getRadius() - ball.getPosition().getX()) / ball.getVelocity().getX();
         }
 
         if (Double.isFinite(verticalWallCollisionTime)) {
-            final Collision verticalWallCollision = Collision.withVerticalWall(verticalWallCollisionTime, ball);
+            if (verticalWallCollisionTime < 0) {
+                System.out.println("Bad delta");
+                throw new RuntimeException();
+            }
+
+            final Collision verticalWallCollision = Collision.withVerticalWall(simulationTime + verticalWallCollisionTime, ball);
 
             wallCollisions.add(verticalWallCollision);
         }
 
-        if (ball.getVelocity().getY() > 0) {
+        if (ball.getVelocity().getY() >= 0) {
             horizontalWallCollisionTime = (this.height - ball.getPosition().getY() - ball.getRadius()) / ball.getVelocity().getY();
         } else {
             horizontalWallCollisionTime = (ball.getRadius() - ball.getPosition().getY()) / ball.getVelocity().getY();
         }
 
         if (Double.isFinite(horizontalWallCollisionTime)) {
-            final Collision horizontalWallCollision = Collision.withHorizontalWall(horizontalWallCollisionTime, ball);
+            if (horizontalWallCollisionTime < 0) {
+                System.out.println("Horizontal wall bad");
+                throw new RuntimeException();
+            }
+
+            final Collision horizontalWallCollision = Collision.withHorizontalWall(simulationTime + horizontalWallCollisionTime, ball);
 
             wallCollisions.add(horizontalWallCollision);
         }
@@ -167,7 +189,7 @@ public class Table {
     private void positionWhiteBall(double whiteBallY) {
         Pair<Double> whiteBallPosition = new Pair<>(56., whiteBallY);
         Pair<Double> whiteBallVelocity = new Pair<>(200., 0.);
-        CommonBall whiteBall = CommonBall.buildWhiteBall(whiteBallPosition, whiteBallVelocity, BALL_MASS, BALL_DIAMETER);
+        CommonBall whiteBall = CommonBall.buildWhiteBall(whiteBallPosition, whiteBallVelocity, BALL_MASS, BALL_DIAMETER / 2);
         balls.add(whiteBall);
         collisionables.add(whiteBall);
     }
@@ -189,20 +211,28 @@ public class Table {
 //                collisionables.add(colorBall);
 //            }
 //        }
-        CommonBall colorBall = CommonBall.buildColoredBall(1, new Pair<>(168., 56.), BALL_MASS, BALL_DIAMETER);
+        for (int i = 1; i <= 15; i++) {
+            CommonBall colorBall = CommonBall.buildColoredBall(
+                    i,
+                    new Pair<>(
+                            168. + (BALL_DIAMETER + 5) * (i % 4),
+                            56. + (BALL_DIAMETER + 5) * (i / 4)),
+                    BALL_MASS,
+                    BALL_DIAMETER / 2
+            );
 
-        balls.add(colorBall);
-        collisionables.add(colorBall);
+            balls.add(colorBall);
+            collisionables.add(colorBall);
+        }
     }
 
     private void positionPockets() {
-        // TODO
-        for (int i = 0; i < 2; i++) {
-            double x = i * 112.;
+        for (int i = 0; i <= 1; i++) {
+            double y = i * 112.;
             for (int j = 0; j < 3; j++) {
-                double y = j * (224.0 / 3);
+                double x = j * (224.0 / 2);
                 PocketBall pocketBall = new PocketBall(new Pair<>(x, y), new Pair<>(0., 0.),
-                        0., POCKET_DIAMETER);
+                        0., POCKET_DIAMETER / 2);
                 pocketBalls.add(pocketBall);
             }
         }
