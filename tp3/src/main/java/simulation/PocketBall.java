@@ -1,3 +1,5 @@
+package simulation;
+
 public class PocketBall extends Ball{
 
     public PocketBall(Pair<Double> position, Pair<Double> velocity, Double mass, Double radius) {
@@ -6,11 +8,6 @@ public class PocketBall extends Ball{
 
     @Override
     public void updatePosition(Double time) {
-        return;
-    }
-
-    @Override
-    public void collide(Collisionable other) {
         return;
     }
 
