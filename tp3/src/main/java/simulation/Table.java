@@ -5,6 +5,7 @@ import simulation.collisions.Collision;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Table {
     private static final double BALL_DIAMETER = 5.7;
@@ -12,6 +13,11 @@ public class Table {
     private static final double BALL_MASS = 165.0;
     private static final double LOWER_EPSILON = 0.02;
     private static final double UPPER_EPSILON = 0.03;
+    public static final double WHITE_BALL_INITIAL_X = 56.;
+    public static final double WHITE_BALL_INITIAL_X_VEL = 200.;
+    public static final double WHITE_BALL_INITIAL_Y_VEL = 0.;
+    public static final double TRIANGLE_X_START = 168.56;
+    public static final double TRIANGLE_Y_START = 56.;
 
     private HashSet<CommonBall> balls;
     private HashSet<PocketBall> pocketBalls;
@@ -187,43 +193,50 @@ public class Table {
     }
 
     private void positionWhiteBall(double whiteBallY) {
-        Pair<Double> whiteBallPosition = new Pair<>(56., whiteBallY);
-        Pair<Double> whiteBallVelocity = new Pair<>(200., 0.);
+        Pair<Double> whiteBallPosition = new Pair<>(WHITE_BALL_INITIAL_X, whiteBallY);
+        Pair<Double> whiteBallVelocity = new Pair<>(WHITE_BALL_INITIAL_X_VEL, WHITE_BALL_INITIAL_Y_VEL);
         CommonBall whiteBall = CommonBall.buildWhiteBall(whiteBallPosition, whiteBallVelocity, BALL_MASS, BALL_DIAMETER / 2);
         balls.add(whiteBall);
         collisionables.add(whiteBall);
     }
 
     private void positionColorBalls() {
-        // TODO
-//        ThreadLocalRandom rng = ThreadLocalRandom.current();
-//        double xBase = 168.56;
-//        double yBase = 56.0;
-//        for (int i = 0; i < 5; i++) { // para un poco estamos haciendolo con el licio //ok
-//            double x = xBase + i * BALL_DIAMETER + rng.nextDouble(LOWER_EPSILON, UPPER_EPSILON);
-//            double yStart = yBase - (i * BALL_DIAMETER + i * UPPER_EPSILON);
-//            for (int j = 0; j <= i; j++) {
-//                double y = yStart + j * BALL_DIAMETER + rng.nextDouble(LOWER_EPSILON, UPPER_EPSILON);
-//
-//                simulation.CommonBall colorBall = new simulation.CommonBall(new simulation.Pair<>(x, y), new simulation.Pair<>(0., 0.), BALL_MASS, BALL_DIAMETER);
-//
-//                balls.add(colorBall);
-//                collisionables.add(colorBall);
-//            }
-//        }
-        for (int i = 1; i <= 15; i++) {
-            CommonBall colorBall = CommonBall.buildColoredBall(
-                    i,
-                    new Pair<>(
-                            168. + (BALL_DIAMETER + 5) * (i % 4),
-                            56. + (BALL_DIAMETER + 5) * (i / 4)),
-                    BALL_MASS,
-                    BALL_DIAMETER / 2
-            );
+        ThreadLocalRandom rnd = ThreadLocalRandom.current();
+        int ballNumber = 1;
+        double db = BALL_DIAMETER;
+        double rb = BALL_DIAMETER / 2;
+        double h = Math.sqrt(3) * rb;
 
-            balls.add(colorBall);
-            collisionables.add(colorBall);
+        for (int i = 0; i < 5; i++) {
+            double xRow = TRIANGLE_X_START + (h + rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * i;
+            double yStart = TRIANGLE_Y_START - ( rb * i );
+            for (int j = 0; j <= i; j++) {
+                double y = yStart + (db + rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * j;
+
+                CommonBall colorBall = CommonBall.buildColoredBall(ballNumber++,
+                        new Pair<>(xRow, y),
+                        BALL_MASS,
+                        BALL_DIAMETER / 2);
+
+                balls.add(colorBall);
+                collisionables.add(colorBall);
+            }
         }
+
+
+//        for (int i = 1; i <= 15; i++) {
+//            CommonBall colorBall = CommonBall.buildColoredBall(
+//                    i,
+//                    new Pair<>(
+//                            168. + (BALL_DIAMETER + 5) * (i % 4),
+//                            56. + (BALL_DIAMETER + 5) * (i / 4)),
+//                    BALL_MASS,
+//                    BALL_DIAMETER / 2
+//            );
+//
+//            balls.add(colorBall);
+//            collisionables.add(colorBall);
+//        }
     }
 
     private void positionPockets() {
