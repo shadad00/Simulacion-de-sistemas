@@ -7,10 +7,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BallToPocketCollision extends Collision {
+public class BallToPocketCollision<T extends Number> extends Collision<T> {
 
-    private int collisionsBall;
-    public BallToPocketCollision(final double collisionTime, final CommonBall ball1, final PocketBall pocket) {
+    private final int collisionsBall;
+    public BallToPocketCollision(final T collisionTime, final CommonBall ball1, final PocketBall pocket) {
         super(collisionTime, ball1, pocket, false, false);
 
         collisionsBall = ball1.getTotalCollisions();

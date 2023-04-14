@@ -3,7 +3,7 @@ package simulation;
 import simulation.collisions.Collision;
 
 public class CommonBall extends Ball {
-    private int ballNumber;
+    private final int ballNumber;
 
     public CommonBall(final int ballNumber, Pair<Double> position, Pair<Double> velocity, final Double mass, final Double radius) {
         super(position, velocity, mass, radius);
@@ -35,14 +35,13 @@ public class CommonBall extends Ball {
         this.position.setY(newY);
     }
 
-    public Double getCollisionTime(Collisionable other) {
-        // Horrible esto de usar doubleValue(), no generalizamos nada el caso float+double,
-        // despues veamos de cambiarlo
-        final double sigma = this.getRadius().doubleValue() + other.getRadius().doubleValue();
-        final double deltaX = this.getPosition().getX().doubleValue() - other.getPosition().getX().doubleValue();
-        final double deltaY = this.getPosition().getY().doubleValue() - other.getPosition().getY().doubleValue();
-        final double deltaVelX = this.getVelocity().getX().doubleValue() - other.getVelocity().getX().doubleValue();
-        final double deltaVelY = this.getVelocity().getY().doubleValue() - other.getVelocity().getY().doubleValue();
+    public Double getCollisionTime(Collisionable<Double> other) {
+
+        final double sigma = this.getRadius() + other.getRadius();
+        final double deltaX = this.getPosition().getX() - other.getPosition().getX();
+        final double deltaY = this.getPosition().getY() - other.getPosition().getY();
+        final double deltaVelX = this.getVelocity().getX() - other.getVelocity().getX();
+        final double deltaVelY = this.getVelocity().getY() - other.getVelocity().getY();
 
         final double deltaRSquared = Math.pow(deltaX, 2) + Math.pow(deltaY, 2);
         final double deltaVelSquared = Math.pow(deltaVelX, 2) + Math.pow(deltaVelY, 2);
@@ -56,7 +55,7 @@ public class CommonBall extends Ball {
         return -((deltaVelR + Math.sqrt(d)) / (deltaVelSquared));
     }
 
-    public Collision getCollision(final CommonBall ball, final double simulationTime) {
+    public Collision<Double> getCollision(final CommonBall ball, final double simulationTime) {
         final Double time = getCollisionTime(ball);
         if (time == null)
             return null;
@@ -64,7 +63,7 @@ public class CommonBall extends Ball {
         return Collision.withAnotherBall(simulationTime + time, this, ball);
     }
 
-    public Collision getCollision(final PocketBall pocket, final double simulationTime) {
+    public Collision<Double> getCollision(final PocketBall pocket, final double simulationTime) {
         final Double time = getCollisionTime(pocket);
         if (time == null)
             return null;
