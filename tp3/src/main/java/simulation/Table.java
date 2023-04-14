@@ -19,13 +19,13 @@ public class Table {
     public static final double TRIANGLE_X_START = 168.56;
     public static final double TRIANGLE_Y_START = 56.;
 
-    private HashSet<CommonBall> balls;
-    private HashSet<PocketBall> pocketBalls;
-    private List<Collisionable> collisionables;
-    private PriorityQueue<Collision> collisions;
+    private final HashSet<CommonBall> balls;
+    private final HashSet<PocketBall> pocketBalls;
+    private final List<Collisionable<Double>> collisionables;
+    private final PriorityQueue<Collision<Double>> collisions;
     private double simulationTime;
-    private double width;
-    private double height;
+    private final double width;
+    private final double height;
 
     public Table(final double whiteBallY, final double width, final double height) {
         this.simulationTime = 0.0;
@@ -51,11 +51,11 @@ public class Table {
         }
 
         int frame = 0;
-        Collision prevCollision = null;
+        Collision<Double> prevCollision = null;
         while (!balls.isEmpty()) {
             updateCollisions(prevCollision);
 
-            Collision nextCollision = nextCollision();
+            Collision<Double> nextCollision = nextCollision();
 
             moveUntilCollision(nextCollision);
             collide(nextCollision);
@@ -78,7 +78,7 @@ public class Table {
      *                          solo para ellas. Si es nulo toma todas las bolas de la mesa.
      * @return
      */
-    public void updateCollisions(Collision previousCollision) {
+    public void updateCollisions(Collision<Double> previousCollision) {
         final Set<CommonBall> ballsToCollide = previousCollision == null ? balls : previousCollision.getCollisionBalls();
 
         for (final CommonBall ball : ballsToCollide) {
@@ -91,8 +91,8 @@ public class Table {
         }
     }
 
-    public Collision nextCollision() {
-        Collision collision;
+    public Collision<Double> nextCollision() {
+        Collision<Double> collision;
 
         do {
             collision = collisions.poll();
@@ -101,7 +101,7 @@ public class Table {
         return collision;
     }
 
-    public void collide(Collision collision) {
+    public void collide(Collision<Double> collision) {
         collision.collide();
         System.out.println(collision);
 
@@ -113,12 +113,12 @@ public class Table {
 
     private void addBallsCollisions(final CommonBall ball, final Set<CommonBall> prevCollisionedBalls) {
         for (final CommonBall otherBall : balls) {
-            // Queremos evitar la doble colision p.ej (ball 1, ball 15) y despues (ball 15, ball 1)
+            // Queremos evitar la doble colision p.ej (ball 1, ball getCollisionTime15) y despues (ball 15, ball 1)
             // Y tambien "auto" colisiones p.ej. (ball 1, ball 1)
             if (prevCollisionedBalls.contains(otherBall) && ball.getBallNumber() >= otherBall.getBallNumber())
                 continue;
 
-            final Collision collision = ball.getCollision(otherBall, simulationTime);
+            final Collision<Double> collision = ball.getCollision(otherBall, simulationTime);
             if (collision != null) {
                 collisions.add(collision);
             }
@@ -127,15 +127,15 @@ public class Table {
 
     private void addPocketCollisions(CommonBall ball) {
         for (final PocketBall pocket : pocketBalls) {
-            final Collision collision = ball.getCollision(pocket, simulationTime);
+            final Collision<Double> collision = ball.getCollision(pocket, simulationTime);
             if (collision != null) {
                 collisions.add(collision);
             }
         }
     }
 
-    public void moveUntilCollision(Collision collision) {
-        final double deltaTime = collision.getCollisionTime() - simulationTime;
+    public void moveUntilCollision(Collision<Double> collision) {
+        final Double deltaTime = collision.getCollisionTime() - simulationTime;
         if (deltaTime < 0) {
             throw new RuntimeException();
         }
@@ -150,7 +150,7 @@ public class Table {
     private void addWallCollisions(final CommonBall ball) {
         // Tenemos dos opciones, o calculamos ad-hoc la colision con paredes o generamos instancias de collisionable
         // para paredes y ya estaria cubierto con el for de arriba
-        final Set<Collision> wallCollisions = new HashSet<>();
+        final Set<Collision<Double>> wallCollisions = new HashSet<>();
 
         double verticalWallCollisionTime;
         double horizontalWallCollisionTime;
@@ -167,7 +167,7 @@ public class Table {
                 throw new RuntimeException();
             }
 
-            final Collision verticalWallCollision = Collision.withVerticalWall(simulationTime + verticalWallCollisionTime, ball);
+            final Collision<Double> verticalWallCollision = Collision.withVerticalWall(simulationTime + verticalWallCollisionTime, ball);
 
             wallCollisions.add(verticalWallCollision);
         }
@@ -184,7 +184,7 @@ public class Table {
                 throw new RuntimeException();
             }
 
-            final Collision horizontalWallCollision = Collision.withHorizontalWall(simulationTime + horizontalWallCollisionTime, ball);
+            final Collision<Double> horizontalWallCollision = Collision.withHorizontalWall(simulationTime + horizontalWallCollisionTime, ball);
 
             wallCollisions.add(horizontalWallCollision);
         }

@@ -7,11 +7,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BallToHorizontalWallCollision extends Collision {
+public class BallToHorizontalWallCollision<T extends Number> extends Collision<T> {
 
-    private int ballCollisions;
+    private final int ballCollisions;
 
-    public BallToHorizontalWallCollision(final double collisionTime, CommonBall ball) {
+    public BallToHorizontalWallCollision(final T collisionTime, CommonBall ball) {
         super(collisionTime, ball, null, false, true);
 
         ballCollisions = ball.getTotalCollisions();

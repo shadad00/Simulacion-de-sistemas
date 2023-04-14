@@ -7,12 +7,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BallToBallCollision extends Collision {
+public class BallToBallCollision<T extends Number> extends Collision<T> {
 
-    private int collisionsBall1;
-    private int collisionsBall2;
+    private final int collisionsBall1;
+    private final int collisionsBall2;
 
-    public BallToBallCollision(final double collisionTime, final CommonBall ball1, final CommonBall ball2) {
+    public BallToBallCollision(final T collisionTime, final CommonBall ball1, final CommonBall ball2) {
         super(collisionTime, ball1, ball2, false, false);
 
         collisionsBall1 = ball1.getTotalCollisions();
@@ -35,11 +35,11 @@ public class BallToBallCollision extends Collision {
         final CommonBall ball1 = getBall();
         final CommonBall ball2 = getCollisionableBall();
 
-        final double sigma = ball1.getRadius().doubleValue() + ball2.getRadius().doubleValue();
-        final double deltaX = ball1.getPosition().getX().doubleValue() - ball2.getPosition().getX().doubleValue();
-        final double deltaY = ball1.getPosition().getY().doubleValue() - ball2.getPosition().getY().doubleValue();
-        final double deltaVelX = ball1.getVelocity().getX().doubleValue() - ball2.getVelocity().getX().doubleValue();
-        final double deltaVelY = ball1.getVelocity().getY().doubleValue() - ball2.getVelocity().getY().doubleValue();
+        final double sigma = ball1.getRadius() + ball2.getRadius();
+        final double deltaX = ball1.getPosition().getX() - ball2.getPosition().getX();
+        final double deltaY = ball1.getPosition().getY() - ball2.getPosition().getY();
+        final double deltaVelX = ball1.getVelocity().getX() - ball2.getVelocity().getX();
+        final double deltaVelY = ball1.getVelocity().getY() - ball2.getVelocity().getY();
 
         final double deltaVelR = deltaX * deltaVelX + deltaY * deltaVelY;
 

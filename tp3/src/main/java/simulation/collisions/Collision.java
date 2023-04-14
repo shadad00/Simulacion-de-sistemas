@@ -8,14 +8,14 @@ import java.util.Objects;
 import java.util.Set;
 
 // Refactor to event
-public abstract class Collision<T extends Number> implements Comparable<Collision> {
-    private double collisionTime;
-    private CommonBall ball;
-    private Collisionable collisionable;
-    private boolean withVerticalWall;
-    private boolean withHorizontalWall;
+public abstract class Collision<T extends Number> implements Comparable<Collision<T>> {
+    private final T collisionTime;
+    private final CommonBall ball;
+    private final Collisionable<Double> collisionable;
+    private final boolean withVerticalWall;
+    private final boolean withHorizontalWall;
 
-    protected Collision(double collisionTime, CommonBall ball, Collisionable collisionable, boolean withVerticalWall, boolean withHorizontalWall) {
+    protected Collision(T collisionTime, CommonBall ball, Collisionable<Double> collisionable, boolean withVerticalWall, boolean withHorizontalWall) {
         this.collisionTime = collisionTime;
         this.ball = ball;
         this.collisionable = collisionable;
@@ -31,26 +31,26 @@ public abstract class Collision<T extends Number> implements Comparable<Collisio
      * @param anotherBall
      * @return
      */
-    public static Collision withAnotherBall(double collisionTime, final CommonBall ball, final CommonBall anotherBall) {
+     public static <T extends Number> Collision<T> withAnotherBall(T collisionTime, final CommonBall ball, final CommonBall anotherBall) {
         final CommonBall ball1 = ball.getBallNumber() < anotherBall.getBallNumber() ? ball : anotherBall;
         final CommonBall ball2 = ball.getBallNumber() < anotherBall.getBallNumber() ? anotherBall : ball;
 
-        return new BallToBallCollision(collisionTime, ball1, ball2);
+        return new BallToBallCollision<>(collisionTime, ball1, ball2);
     }
 
-    public static Collision withPocket(double collisionTime, final CommonBall ball, final PocketBall pocket) {
-        return new BallToPocketCollision(collisionTime, ball, pocket);
+    public static Collision<Double> withPocket(double collisionTime, final CommonBall ball, final PocketBall pocket) {
+        return new BallToPocketCollision<>(collisionTime, ball, pocket);
     }
 
-    public static Collision withVerticalWall(double collisionTime, final CommonBall ball) {
-        return new BallToVerticalWallCollision(collisionTime, ball);
+    public static Collision<Double> withVerticalWall(double collisionTime, final CommonBall ball) {
+        return new BallToVerticalWallCollision<>(collisionTime, ball);
     }
 
-    public static Collision withHorizontalWall(double collisionTime, final CommonBall ball) {
-        return new BallToHorizontalWallCollision(collisionTime, ball);
+    public static Collision<Double> withHorizontalWall(double collisionTime, final CommonBall ball) {
+        return new BallToHorizontalWallCollision<>(collisionTime, ball);
     }
 
-    public double getCollisionTime() {
+    public T getCollisionTime() {
         return collisionTime;
     }
 
@@ -58,7 +58,7 @@ public abstract class Collision<T extends Number> implements Comparable<Collisio
         return ball;
     }
 
-    public Collisionable getCollisionable() {
+    public Collisionable<Double> getCollisionable() {
         return collisionable;
     }
 
@@ -108,7 +108,7 @@ public abstract class Collision<T extends Number> implements Comparable<Collisio
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Collision<?> collision = (Collision<?>) o;
-        return Double.compare(collision.collisionTime, collisionTime) == 0 && withVerticalWall == collision.withVerticalWall && withHorizontalWall == collision.withHorizontalWall && Objects.equals(ball, collision.ball) && Objects.equals(collisionable, collision.collisionable);
+        return Double.compare(collision.collisionTime.doubleValue(), collisionTime.doubleValue()) == 0 && withVerticalWall == collision.withVerticalWall && withHorizontalWall == collision.withHorizontalWall && Objects.equals(ball, collision.ball) && Objects.equals(collisionable, collision.collisionable);
     }
 
     @Override
@@ -118,6 +118,6 @@ public abstract class Collision<T extends Number> implements Comparable<Collisio
 
     @Override
     public int compareTo(final Collision collision) {
-        return Double.compare(this.getCollisionTime(), collision.getCollisionTime());
+        return Double.compare(this.getCollisionTime().doubleValue(), collision.getCollisionTime().doubleValue());
     }
 }
