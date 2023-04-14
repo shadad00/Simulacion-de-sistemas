@@ -26,6 +26,7 @@ public class Table {
     private double simulationTime;
     private double width;
     private double height;
+    private double initWhiteBallY;
 
     public Table(final double whiteBallY, final double width, final double height) {
         this.simulationTime = 0.0;
@@ -35,15 +36,17 @@ public class Table {
         this.balls = new HashSet<>();
         this.pocketBalls = new HashSet<>();
         this.collisionables = new ArrayList<>();
+        this.initWhiteBallY = whiteBallY;
 
         positionWhiteBall(whiteBallY);
         positionColorBalls();
         positionPockets();
     }
 
-    public void moveUntilAllPocketed() throws IOException {
+    public void moveUntilAllPocketed(int simulationNumber) throws IOException {
         OvitoWriter writer = new OvitoWriter();
-        writer.openFile("prueba");
+        writer.openFile(String.format("prueba_%.4f_%s", this.initWhiteBallY, simulationNumber));
+
         try {
             writer.writeFrame(0, balls, pocketBalls, null);
         } catch (IOException e) {
@@ -69,6 +72,8 @@ public class Table {
             prevCollision = nextCollision;
             frame++;
         }
+
+        writer.closeFile();
     }
 
     /**
@@ -103,7 +108,6 @@ public class Table {
 
     public void collide(Collision collision) {
         collision.collide();
-        System.out.println(collision);
 
         if (collision.isWithPocket()) {
             final CommonBall ball = collision.getBall();
@@ -205,13 +209,15 @@ public class Table {
         int ballNumber = 1;
         double db = BALL_DIAMETER;
         double rb = BALL_DIAMETER / 2;
-        double h = Math.sqrt(3) * rb;
+        double rbe = rb + UPPER_EPSILON / 2;
+//        double h = Math.sqrt(3) * rb;
+        double h  = Math.sqrt(3 * Math.pow(rb, 2) + 3 * rb * UPPER_EPSILON + 5. / 4 * Math.pow(UPPER_EPSILON, 2));
 
         for (int i = 0; i < 5; i++) {
-            double xRow = TRIANGLE_X_START + (h + rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * i;
-            double yStart = TRIANGLE_Y_START - ( rb * i );
+            double xRow = TRIANGLE_X_START + h * i - (UPPER_EPSILON - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON));
+            double yStart = TRIANGLE_Y_START - ( rbe * i );
             for (int j = 0; j <= i; j++) {
-                double y = yStart + (db + rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * j;
+                double y = yStart + (db + UPPER_EPSILON / 2) * j + (UPPER_EPSILON - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON));
 
                 CommonBall colorBall = CommonBall.buildColoredBall(ballNumber++,
                         new Pair<>(xRow, y),
@@ -222,6 +228,8 @@ public class Table {
                 collisionables.add(colorBall);
             }
         }
+
+        checkNoBallOverlap();
 
 
 //        for (int i = 1; i <= 15; i++) {
@@ -237,6 +245,20 @@ public class Table {
 //            balls.add(colorBall);
 //            collisionables.add(colorBall);
 //        }
+    }
+
+    private void checkNoBallOverlap() {
+        for (CommonBall ball : balls) {
+            for (CommonBall otherBall : balls) {
+                if (ball.equals(otherBall))
+                    continue;
+
+                if (ball.distanceTo(otherBall) < 0) {
+                    printTable();
+                    throw new RuntimeException(String.format("Ball overlap between %s and %s", ball.getBallNumber(), otherBall.getBallNumber()));
+                }
+            }
+        }
     }
 
     private void positionPockets() {
