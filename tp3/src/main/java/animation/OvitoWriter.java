@@ -12,8 +12,8 @@ import java.util.Set;
 
 public class OvitoWriter {
 
-    private static String IN_FILE = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y56.00_i7.csv";
-    private static String OUT_FILE = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/holis";
+    private static String IN_FILE = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y42.00_i2.csv";
+    private static String OUT_FILE = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/chay";
     public static void main(String[] args) throws IOException {
         System.out.println(IN_FILE);
         generateAnimation(IN_FILE, OUT_FILE);

@@ -2,9 +2,9 @@ import java.io.IOException;
 
 public class BenchmarkGenerator {
     private final static double[] WHITE_BALL_Y_RANGE =
-            new double[]{42., 42.01, 44.8, 46.2, 47.6, 49., 50.4, 51.8, 55.9, 56.};
+            new double[]{42., 43.75, 45.5, 47.25, 49.,50, 50.75, 52.5, 54.25, 56.};
 
-    private final static int SIMULATIONS_PER_Y_POSITION = 10;
+    private final static int SIMULATIONS_PER_Y_POSITION = 20;
     private static final double TABLE_HEIGHT = 112.;
     private static final double TABLE_WIDTH = 224.;
 
