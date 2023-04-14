@@ -8,32 +8,16 @@ import java.io.IOException;
 
 
 public class Main {
+    private final static double[] WHITE_BALL_Y_RANGE = new double[]{42., 56.};
+    private final static int WHITE_BALL_Y_POSITIONS = 5;
+    private final static int SIMULATIONS_PER_Y_POSITION = 3;
+
     public static void main(String[] args) throws IOException {
-        final Table table = new Table(56.2, 224, 112);
+        for (int i = 0; i < WHITE_BALL_Y_POSITIONS; i++) {
+            final double whiteBallY = Math.random() * (WHITE_BALL_Y_RANGE[1] - WHITE_BALL_Y_RANGE[0]) + WHITE_BALL_Y_RANGE[0];
 
-        File csvFile = new File("prueba.csv");
-        if (!csvFile.exists() && !csvFile.createNewFile()) {
-            throw new IOException("boludito");
-        }
-        BufferedWriter bw = new BufferedWriter(new FileWriter(csvFile));
-        final String HEADER = "iter,time,ball_id,pos_x,pos_y,vel_x,vel_y,ball_radius,ball_mass,collision_count";
-        final String FORMAT = "%d,%f,%d,%f,%f,%f,%f,%f,%f,%d\n";
-
-        bw.write(HEADER + "\n");
-        for (Table currentTable : table) {
-            for (CommonBall ball : currentTable.getBalls()) {
-                    bw.write(String.format(FORMAT,
-                        table.getIteration(),
-                        table.getSimulationTime(),
-                        ball.getBallNumber(),
-                        ball.getPosition().getX(),
-                        ball.getPosition().getY(),
-                        ball.getVelocity().getX(),
-                        ball.getVelocity().getY(),
-                        ball.getRadius(),
-                        ball.getMass(),
-                        ball.getTotalCollisions()
-                        ));
+            for (int j = 0; j < SIMULATIONS_PER_Y_POSITION; j++) {
+                final Table table = new Table(whiteBallY, 224, 112);
             }
         }
     }

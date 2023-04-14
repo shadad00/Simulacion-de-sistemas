@@ -2,6 +2,7 @@ package simulation;
 
 import simulation.collisions.Collision;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -27,6 +28,8 @@ public class Table implements Iterable<Table> {
     private final double width;
     private final double height;
     private Collision<Double> prevCollision = null;
+    private double initWhiteBallY;
+
 
     public Table(final Set<CommonBall> balls, final double width, final double height, final double time, final int iteration){
         this.height = height;
@@ -37,8 +40,6 @@ public class Table implements Iterable<Table> {
         positionPockets();
     }
 
-
-
     public Table(final double whiteBallY, final double width, final double height) {
         this.simulationTime = 0.0;
         this.width = width;
@@ -47,6 +48,7 @@ public class Table implements Iterable<Table> {
         this.balls = new HashSet<>();
         this.pocketBalls = new HashSet<>();
         this.collisionables = new ArrayList<>();
+        this.initWhiteBallY = whiteBallY;
 
         positionWhiteBall(whiteBallY);
         positionColorBalls();
@@ -58,7 +60,7 @@ public class Table implements Iterable<Table> {
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
-                return !balls.isEmpty() && simulationTime >= 0;
+                return !balls.isEmpty();
             }
 
             @Override
@@ -108,22 +110,6 @@ public class Table implements Iterable<Table> {
         this.collisions = collisionQueue;
     }
 
-    public void moveUntilAllPocketed()  {
-        int frame = 0;
-        Collision<Double> prevCollision = null;
-        while (!balls.isEmpty()) {
-            updateCollisions(prevCollision);
-
-            Collision<Double> nextCollision = nextCollision();
-
-            moveUntilCollision(nextCollision);
-            collide(nextCollision);
-
-
-            prevCollision = nextCollision;
-            frame++;
-        }
-    }
 
     /**
      * Calcula las proximas colisiones y devuelve la mas proxima.
@@ -157,7 +143,6 @@ public class Table implements Iterable<Table> {
 
     public void collide(Collision<Double> collision) {
         collision.collide();
-        System.out.println(collision);
 
         if (collision.isWithPocket()) {
             final CommonBall ball = collision.getBall();
@@ -257,15 +242,15 @@ public class Table implements Iterable<Table> {
     private void positionColorBalls() {
         ThreadLocalRandom rnd = ThreadLocalRandom.current();
         int ballNumber = 1;
-        double db = BALL_DIAMETER;
         double rb = BALL_DIAMETER / 2;
-        double h = (Math.sqrt(3) * rb) + UPPER_EPSILON;
+        double rbe = rb + UPPER_EPSILON / 2;
+        double h  = Math.sqrt(3 * Math.pow(rb, 2) + 3 * rb * UPPER_EPSILON + 5. / 4 * Math.pow(UPPER_EPSILON, 2));
 
         for (int i = 0; i < 5; i++) {
-            double xRow = TRIANGLE_X_START + (h - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * i;
-            double yStart = TRIANGLE_Y_START - ( rb * i );
+            double xRow = TRIANGLE_X_START + h * i - (UPPER_EPSILON - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON));
+            double yStart = TRIANGLE_Y_START - ( rbe * i );
             for (int j = 0; j <= i; j++) {
-                double y = yStart + (db + rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * j;
+                double y = yStart + (BALL_DIAMETER + UPPER_EPSILON / 2) * j + (UPPER_EPSILON - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON));
 
                 CommonBall colorBall = CommonBall.buildColoredBall(ballNumber++,
                         new Pair<>(xRow, y),
@@ -276,6 +261,8 @@ public class Table implements Iterable<Table> {
                 collisionables.add(colorBall);
             }
         }
+
+        checkNoBallOverlap();
 
 
 //        for (int i = 1; i <= 15; i++) {
@@ -291,6 +278,20 @@ public class Table implements Iterable<Table> {
 //            balls.add(colorBall);
 //            collisionables.add(colorBall);
 //        }
+    }
+
+    private void checkNoBallOverlap() {
+        for (CommonBall ball : balls) {
+            for (CommonBall otherBall : balls) {
+                if (ball.equals(otherBall))
+                    continue;
+
+                if (ball.distanceTo(otherBall) < 0) {
+                    printTable();
+                    throw new RuntimeException(String.format("Ball overlap between %s and %s", ball.getBallNumber(), otherBall.getBallNumber()));
+                }
+            }
+        }
     }
 
     private void positionPockets() {

@@ -35,7 +35,7 @@ public class OvitoWriter {
     private int frame = 0;
 
     public void openFile(String filePath) throws IOException {
-        writer = new BufferedWriter(new FileWriter(String.format("%s.xyz", filePath), true));
+        writer = new BufferedWriter(new FileWriter(String.format("%s.xyz", filePath), false));
     }
     public void writeFrame(final double time, Set<CommonBall> balls, Set<PocketBall> pockets, final Collision collision) throws IOException {
         final int totalParticles = balls.size() + pockets.size();
