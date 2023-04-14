@@ -10,6 +10,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>tp3</artifactId>
+    <dependencies>
+        <dependency>
+            <groupId>com.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>5.7.1</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
 
 </project>

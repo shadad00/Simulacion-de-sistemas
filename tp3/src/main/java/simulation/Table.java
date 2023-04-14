@@ -1,13 +1,11 @@
 package simulation;
 
-import animation.OvitoWriter;
 import simulation.collisions.Collision;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Table {
+public class Table implements Iterable<Table> {
     private static final double BALL_DIAMETER = 5.7;
     private static final double POCKET_DIAMETER = BALL_DIAMETER * 2;
     private static final double BALL_MASS = 165.0;
@@ -19,13 +17,27 @@ public class Table {
     public static final double TRIANGLE_X_START = 168.56;
     public static final double TRIANGLE_Y_START = 56.;
 
-    private final HashSet<CommonBall> balls;
-    private final HashSet<PocketBall> pocketBalls;
-    private final List<Collisionable<Double>> collisionables;
-    private final PriorityQueue<Collision<Double>> collisions;
+    private int iteration = 0;
+
+    private final Set<CommonBall> balls;
+    private Set<PocketBall> pocketBalls;
+    private List<Collisionable<Double>> collisionables;
+    private PriorityQueue<Collision<Double>> collisions;
     private double simulationTime;
     private final double width;
     private final double height;
+    private Collision<Double> prevCollision = null;
+
+    public Table(final Set<CommonBall> balls, final double width, final double height, final double time, final int iteration){
+        this.height = height;
+        this.width = width;
+        this.balls = balls;
+        this.simulationTime = time;
+        this.iteration = iteration;
+        positionPockets();
+    }
+
+
 
     public Table(final double whiteBallY, final double width, final double height) {
         this.simulationTime = 0.0;
@@ -41,15 +53,62 @@ public class Table {
         positionPockets();
     }
 
-    public void moveUntilAllPocketed() throws IOException {
-        OvitoWriter writer = new OvitoWriter();
-        writer.openFile("prueba");
-        try {
-            writer.writeFrame(0, balls, pocketBalls, null);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    public Iterator<Table> iterator() {
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return !balls.isEmpty() && simulationTime >= 0;
+            }
 
+            @Override
+            public Table next() {
+                iteration++;
+                return getNextTable();
+            }
+        };
+    }
+
+    public int getIteration() {
+        return iteration;
+    }
+
+    public double getSimulationTime() {
+        return simulationTime;
+    }
+
+    public Set<CommonBall> getBalls() {
+        return balls;
+    }
+
+    public Table getNextTable() {
+        updateCollisions(prevCollision);
+        Collision<Double> nextCollision = nextCollision();
+        moveUntilCollision(nextCollision);
+        collide(nextCollision);
+        prevCollision = nextCollision;
+        return new Table(this.width, this.height, this.simulationTime,
+                this.balls, this.pocketBalls, this.collisionables, this.collisions);
+    }
+
+    public Table(Double width,
+                   Double height,
+                   Double simulationTime,
+                   Set<CommonBall> commonBalls,
+                   Set<PocketBall> pocketBalls,
+                   List<Collisionable<Double>> collisionables,
+                   PriorityQueue<Collision<Double>> collisionQueue
+                   ) {
+        this.width = width;
+        this.height = height;
+        this.simulationTime = simulationTime;
+        this.balls = commonBalls;
+        this.pocketBalls = pocketBalls;
+        this.collisionables = collisionables;
+        this.collisions = collisionQueue;
+    }
+
+    public void moveUntilAllPocketed()  {
         int frame = 0;
         Collision<Double> prevCollision = null;
         while (!balls.isEmpty()) {
@@ -60,11 +119,6 @@ public class Table {
             moveUntilCollision(nextCollision);
             collide(nextCollision);
 
-            try {
-                writer.writeFrame(simulationTime, balls, pocketBalls, nextCollision);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
 
             prevCollision = nextCollision;
             frame++;
@@ -205,10 +259,10 @@ public class Table {
         int ballNumber = 1;
         double db = BALL_DIAMETER;
         double rb = BALL_DIAMETER / 2;
-        double h = Math.sqrt(3) * rb;
+        double h = (Math.sqrt(3) * rb) + UPPER_EPSILON;
 
         for (int i = 0; i < 5; i++) {
-            double xRow = TRIANGLE_X_START + (h + rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * i;
+            double xRow = TRIANGLE_X_START + (h - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * i;
             double yStart = TRIANGLE_Y_START - ( rb * i );
             for (int j = 0; j <= i; j++) {
                 double y = yStart + (db + rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON)) * j;

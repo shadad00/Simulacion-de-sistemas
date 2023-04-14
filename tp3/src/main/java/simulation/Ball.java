@@ -6,7 +6,7 @@ public abstract class Ball implements Collisionable<Double>{
     private final Double mass;
     private final Double radius;
 
-    private int totalCollisions;
+    protected int totalCollisions;
 
     public Ball(Pair<Double> position, Pair<Double> velocity, Double mass, Double radius) {
         this.position = position;

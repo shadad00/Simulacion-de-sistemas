@@ -5,6 +5,12 @@ import simulation.collisions.Collision;
 public class CommonBall extends Ball {
     private final int ballNumber;
 
+    public CommonBall(final int ballNumber, Pair<Double> position, Pair<Double> velocity, final Double mass, final Double radius, int collision) {
+        this(ballNumber, position, velocity, mass,  radius);
+        this.totalCollisions = collision;
+    }
+    
+    
     public CommonBall(final int ballNumber, Pair<Double> position, Pair<Double> velocity, final Double mass, final Double radius) {
         super(position, velocity, mass, radius);
 
