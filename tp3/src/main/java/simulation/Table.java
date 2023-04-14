@@ -2,7 +2,6 @@ package simulation;
 
 import simulation.collisions.Collision;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -37,6 +36,7 @@ public class Table implements Iterable<Table> {
         this.balls = balls;
         this.simulationTime = time;
         this.iteration = iteration;
+        this.pocketBalls = new HashSet<>();
         positionPockets();
     }
 
@@ -65,10 +65,14 @@ public class Table implements Iterable<Table> {
 
             @Override
             public Table next() {
-                iteration++;
+                incrementIteration();
                 return getNextTable();
             }
         };
+    }
+
+    private void incrementIteration(){
+        this.iteration++;
     }
 
     public int getIteration() {
@@ -90,7 +94,7 @@ public class Table implements Iterable<Table> {
         collide(nextCollision);
         prevCollision = nextCollision;
         return new Table(this.width, this.height, this.simulationTime,
-                this.balls, this.pocketBalls, this.collisionables, this.collisions);
+                this.balls, this.pocketBalls, this.collisionables, this.collisions, this.iteration);
     }
 
     public Table(Double width,
@@ -99,7 +103,8 @@ public class Table implements Iterable<Table> {
                    Set<CommonBall> commonBalls,
                    Set<PocketBall> pocketBalls,
                    List<Collisionable<Double>> collisionables,
-                   PriorityQueue<Collision<Double>> collisionQueue
+                   PriorityQueue<Collision<Double>> collisionQueue,
+                   int iteration
                    ) {
         this.width = width;
         this.height = height;
@@ -108,6 +113,7 @@ public class Table implements Iterable<Table> {
         this.pocketBalls = pocketBalls;
         this.collisionables = collisionables;
         this.collisions = collisionQueue;
+        this.iteration = iteration;
     }
 
 
@@ -304,6 +310,10 @@ public class Table implements Iterable<Table> {
                 pocketBalls.add(pocketBall);
             }
         }
+    }
+
+    public Set<PocketBall> getPocketBalls() {
+        return pocketBalls;
     }
 
     public void printTable() {

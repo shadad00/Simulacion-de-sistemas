@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
 
 public class CsvGenerator {
 
@@ -15,7 +16,8 @@ public class CsvGenerator {
 
         Table table = new Table(whiteBallY,width,height);
 
-        File csvFile = new File(outputFile);
+
+        File csvFile = new File("./tp3/out/csv/" + outputFile +".csv");
         if (!csvFile.exists() && !csvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
         }
@@ -25,7 +27,7 @@ public class CsvGenerator {
         writeTable(table);
         for (Table currentTable : table)
             writeTable(currentTable);
-
+        bw.close();
     }
 
     private void writeTable(Table table) throws IOException {

@@ -1,3 +1,5 @@
+package animation;
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -40,12 +42,11 @@ public class Parser implements Iterable<Table>{
 
     public Parser(final String filename) {
         try {
+            System.out.println(filename);
             FileReader fileReader = new FileReader(filename);
             this.csvReader = new CSVReader(fileReader);
             csvReader.readNext();
-        } catch (FileNotFoundException nsf) {
-            nsf.printStackTrace();
-        } catch (CsvValidationException | IOException e) {
+        }catch (CsvValidationException | IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -56,7 +57,7 @@ public class Parser implements Iterable<Table>{
             @Override
             public boolean hasNext() {
                 try {
-                    return csvReader.peek() == null;
+                    return csvReader.peek() != null;
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

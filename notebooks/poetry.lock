@@ -935,7 +935,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 [[package]]
 name = "parso"
 version = "0.8.3"
-description = "A Python Parser"
+description = "A Python animation.Parser"
 category = "main"
 optional = false
 python-versions = ">=3.6"

@@ -2,6 +2,7 @@ package animation;
 
 import simulation.CommonBall;
 import simulation.PocketBall;
+import simulation.Table;
 import simulation.collisions.Collision;
 
 import java.io.BufferedWriter;
@@ -10,6 +11,25 @@ import java.io.IOException;
 import java.util.Set;
 
 public class OvitoWriter {
+
+    private static String IN_FILE = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y56.00_i7.csv";
+    private static String OUT_FILE = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/holis";
+    public static void main(String[] args) throws IOException {
+        System.out.println(IN_FILE);
+        generateAnimation(IN_FILE, OUT_FILE);
+    }
+
+
+    public static void generateAnimation(String inFile, String outFile) throws IOException {
+        Parser parser = new Parser(inFile);
+        OvitoWriter ovitoWriter = new OvitoWriter();
+        ovitoWriter.openFile(outFile);
+        for (Table table : parser) {
+            ovitoWriter.writeFrame(table.getSimulationTime(),table.getBalls(),
+                    table.getPocketBalls(),null);
+        }
+        ovitoWriter.closeFile();
+    }
 
     private final int[][] BALL_COLORS = new int[][] {
             {255, 255, 255},
