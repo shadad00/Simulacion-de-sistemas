@@ -46,6 +46,13 @@ public abstract class Ball implements Collisionable<Double>{
         this.totalCollisions++;
     }
 
+    public double distanceTo(Ball ball) {
+        double diffX = this.getPosition().getX() - ball.getPosition().getX();
+        double diffY = this.getPosition().getY() - ball.getPosition().getY();
+
+        return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) - this.getRadius() - ball.getRadius();
+    }
+
     abstract public boolean isPocket();
 
     abstract public void updatePosition(Double time);
