@@ -3,10 +3,13 @@ package simulation;
 public abstract class Ball implements Collisionable<Double>{
     protected   Pair<Double> position;
     protected   Pair<Double> velocity;
-    private final Double mass;
-    private final Double radius;
+    protected Double mass;
+    protected Double radius;
 
     protected int totalCollisions;
+
+    public Ball() {
+    }
 
     public Ball(Pair<Double> position, Pair<Double> velocity, Double mass, Double radius) {
         this.position = position;

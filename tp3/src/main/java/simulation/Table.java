@@ -40,6 +40,22 @@ public class Table implements Iterable<Table> {
         positionPockets();
     }
 
+    public Table(Table other){
+         this.iteration = other.iteration;
+         this.balls = new HashSet<>();
+         for (CommonBall ball : other.balls)
+             this.balls.add(new CommonBall(ball));
+         this.pocketBalls = new HashSet<>(other.pocketBalls);
+         this.collisionables = new ArrayList<>(other.collisionables);
+         this.collisions = new PriorityQueue<>(other.collisions);
+         this.simulationTime = other.simulationTime;
+         this.width = other.width;
+         this.height = other.height;
+         this.prevCollision = other.prevCollision;
+    }
+
+
+
     public Table(final double whiteBallY, final double width, final double height) {
         this.simulationTime = 0.0;
         this.width = width;
@@ -65,15 +81,11 @@ public class Table implements Iterable<Table> {
 
             @Override
             public Table next() {
-                incrementIteration();
                 return getNextTable();
             }
         };
     }
 
-    private void incrementIteration(){
-        this.iteration++;
-    }
 
     public int getIteration() {
         return iteration;
@@ -94,7 +106,7 @@ public class Table implements Iterable<Table> {
         collide(nextCollision);
         prevCollision = nextCollision;
         return new Table(this.width, this.height, this.simulationTime,
-                this.balls, this.pocketBalls, this.collisionables, this.collisions, this.iteration);
+                this.balls, this.pocketBalls, this.collisionables, this.collisions, this.iteration + 1);
     }
 
     public Table(Double width,
@@ -316,11 +328,31 @@ public class Table implements Iterable<Table> {
         return pocketBalls;
     }
 
+    public List<Collisionable<Double>> getCollisionables() {
+        return collisionables;
+    }
+
     public void printTable() {
         System.out.println("t=" + simulationTime);
 
         for (final CommonBall ball : balls) {
             System.out.println(ball);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Table{" +
+                "iteration=" + iteration +
+                ", balls=" + balls +
+                ", pocketBalls=" + pocketBalls +
+                ", collisionables=" + collisionables +
+                ", collisions=" + collisions +
+                ", simulationTime=" + simulationTime +
+                ", width=" + width +
+                ", height=" + height +
+                ", prevCollision=" + prevCollision +
+                ", initWhiteBallY=" + initWhiteBallY +
+                '}';
     }
 }

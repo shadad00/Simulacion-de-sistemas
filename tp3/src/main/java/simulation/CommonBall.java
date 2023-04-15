@@ -9,7 +9,16 @@ public class CommonBall extends Ball {
         this(ballNumber, position, velocity, mass,  radius);
         this.totalCollisions = collision;
     }
-    
+
+    public CommonBall(CommonBall other){
+        super();
+        this.position = new Pair<>(other.position.getX(), other.getPosition().getY());
+        this.velocity = new Pair<>(other.velocity.getX(), other.velocity.getY());
+        this.mass = other.mass;
+        this.radius = other.radius;
+        this.totalCollisions = other.totalCollisions;
+        this.ballNumber = other.ballNumber;
+    }
     
     public CommonBall(final int ballNumber, Pair<Double> position, Pair<Double> velocity, final Double mass, final Double radius) {
         super(position, velocity, mass, radius);

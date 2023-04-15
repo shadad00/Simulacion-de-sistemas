@@ -13,10 +13,10 @@ public class CsvGenerator {
     private final BufferedWriter bw;
 
     public CsvGenerator(String outputFile, double whiteBallY, double width, double height) throws IOException {
+        this(outputFile, new Table(whiteBallY,width,height));
+    }
 
-        Table table = new Table(whiteBallY,width,height);
-
-
+    public CsvGenerator(String outputFile, Table table) throws IOException{
         File csvFile = new File("./tp3/out/csv/" + outputFile +".csv");
         if (!csvFile.exists() && !csvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
@@ -28,7 +28,10 @@ public class CsvGenerator {
         for (Table currentTable : table)
             writeTable(currentTable);
         bw.close();
+
     }
+
+
 
     private void writeTable(Table table) throws IOException {
         for (CommonBall ball : table.getBalls()) {
