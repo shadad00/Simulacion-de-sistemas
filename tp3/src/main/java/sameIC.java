@@ -10,9 +10,9 @@ import java.util.Set;
 
 public class sameIC {
 
-    private static final double TABLE_HEIGHT = 112.;
-    private static final double TABLE_WIDTH = 224.;
-    private static final double WHITE_BALL_Y = 46.00;
+    private static final float TABLE_HEIGHT = 112.f;
+    private static final float TABLE_WIDTH = 224.f;
+    private static final float WHITE_BALL_Y = 46.00f;
 
     private static final String[] files={"Simulation1","Simulation2"};
 

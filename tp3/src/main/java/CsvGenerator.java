@@ -12,7 +12,7 @@ public class CsvGenerator {
     final static String FORMAT = "%d,%f,%d,%f,%f,%f,%f,%f,%f,%d\n";
     private final BufferedWriter bw;
 
-    public CsvGenerator(String outputFile, double whiteBallY, double width, double height) throws IOException {
+    public CsvGenerator(String outputFile, float whiteBallY, float width, float height) throws IOException {
         this(outputFile, new Table(whiteBallY,width,height));
     }
 

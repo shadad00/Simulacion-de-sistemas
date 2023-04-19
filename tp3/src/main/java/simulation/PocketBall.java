@@ -2,14 +2,15 @@ package simulation;
 
 public class PocketBall extends Ball{
 
-    public PocketBall(Pair<Double> position, Pair<Double> velocity, Double mass, Double radius) {
+    public PocketBall(Pair<Float> position, Pair<Float> velocity, float mass, float radius) {
         super(position, velocity, mass, radius);
     }
 
     @Override
-    public void updatePosition(Double time) {
+    public void updatePosition(Float time) {
         return;
     }
+
 
     @Override
     public boolean isPocket() {

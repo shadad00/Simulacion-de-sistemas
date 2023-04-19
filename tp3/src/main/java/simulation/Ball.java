@@ -1,17 +1,17 @@
 package simulation;
 
-public abstract class Ball implements Collisionable<Double>{
-    protected   Pair<Double> position;
-    protected   Pair<Double> velocity;
-    protected Double mass;
-    protected Double radius;
+public abstract class Ball implements Collisionable<Float>{
+    protected   Pair<Float> position;
+    protected   Pair<Float> velocity;
+    protected float mass;
+    protected float radius;
 
     protected int totalCollisions;
 
     public Ball() {
     }
 
-    public Ball(Pair<Double> position, Pair<Double> velocity, Double mass, Double radius) {
+    public Ball(Pair<Float> position, Pair<Float> velocity, float mass, float radius) {
         this.position = position;
         this.velocity = velocity;
         this.mass = mass;
@@ -19,24 +19,24 @@ public abstract class Ball implements Collisionable<Double>{
         this.totalCollisions = 0;
     }
 
-    public Pair<Double> getPosition() {
+    public Pair<Float> getPosition() {
         return position;
     }
 
-    public Pair<Double> getVelocity() {
+    public Pair<Float> getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(Pair<Double> velocity) {
+    public void setVelocity(Pair<Float> velocity) {
         this.velocity = velocity;
     }
 
-    public Double getMass() {
+    public float getMass() {
         return mass;
     }
 
     @Override
-    public Double getRadius() {
+    public Float getRadius() {
         return radius;
     }
 
@@ -49,14 +49,14 @@ public abstract class Ball implements Collisionable<Double>{
         this.totalCollisions++;
     }
 
-    public double distanceTo(Ball ball) {
-        double diffX = this.getPosition().getX() - ball.getPosition().getX();
-        double diffY = this.getPosition().getY() - ball.getPosition().getY();
+    public float distanceTo(Ball ball) {
+        float diffX = this.getPosition().getX() - ball.getPosition().getX();
+        float diffY = this.getPosition().getY() - ball.getPosition().getY();
 
-        return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) - this.getRadius() - ball.getRadius();
+        return (float) Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) - this.getRadius() - ball.getRadius();
     }
 
     abstract public boolean isPocket();
 
-    abstract public void updatePosition(Double time);
+    abstract public void updatePosition(Float time);
 }

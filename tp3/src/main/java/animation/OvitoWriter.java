@@ -19,8 +19,12 @@ public class OvitoWriter {
     private static String OUT_FILE_50 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y50.00";
     private static String OUT_FILE_56 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y56.00";
 
-    private static String FIRST_SIMULATION = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/Simulation1.csv";
+    private static String FIRST_SIMULATION = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/initial_condition.csv";
     private static String SECOND_SIMULATION = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/Simulation2.csv";
+
+    private static String DOUBLE_SIMULATION = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/double_precision.csv";
+    private static String FLOAT_SIMULATION = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/float.csv";
+
 
     private static String FIRST_SIMULATION_OUT = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/Simulation1";
     private static String SECOND_SIMULATION_OUT = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/Simulation2";
@@ -28,6 +32,7 @@ public class OvitoWriter {
 
     private static String[] IN_FILES = {IN_FILE_42, IN_FILE_50, IN_FILE_56};
     private static String[] IN_FILES_DET = {FIRST_SIMULATION,SECOND_SIMULATION};
+    private static String[] IN_FILES_PREC = {DOUBLE_SIMULATION,FLOAT_SIMULATION};
 
     private static String[] OUT_FILES_DET = {FIRST_SIMULATION_OUT,SECOND_SIMULATION_OUT};
 
@@ -37,7 +42,7 @@ public class OvitoWriter {
 
     public static void main(String[] args) throws IOException {
         for (int i = 0; i < IN_FILES_DET.length; i++) {
-            generateAnimation(IN_FILES_DET[i], OUT_FILES_DET[i]);
+            generateAnimation(IN_FILES_PREC[i], IN_FILES_PREC[i]);
         }
     }
 
@@ -79,7 +84,7 @@ public class OvitoWriter {
     public void openFile(String filePath) throws IOException {
         writer = new BufferedWriter(new FileWriter(String.format("%s.xyz", filePath), false));
     }
-    public void writeFrame(final double time, Set<CommonBall> balls, Set<PocketBall> pockets, final Collision collision) throws IOException {
+    public void writeFrame(final float time, Set<CommonBall> balls, Set<PocketBall> pockets, final Collision collision) throws IOException {
         final int totalParticles = balls.size() + pockets.size();
 
         writer.write(String.format("%s\n", totalParticles));

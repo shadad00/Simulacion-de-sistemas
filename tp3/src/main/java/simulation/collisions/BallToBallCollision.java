@@ -35,24 +35,24 @@ public class BallToBallCollision<T extends Number> extends Collision<T> {
         final CommonBall ball1 = getBall();
         final CommonBall ball2 = getCollisionableBall();
 
-        final double sigma = ball1.getRadius() + ball2.getRadius();
-        final double deltaX = ball1.getPosition().getX() - ball2.getPosition().getX();
-        final double deltaY = ball1.getPosition().getY() - ball2.getPosition().getY();
-        final double deltaVelX = ball1.getVelocity().getX() - ball2.getVelocity().getX();
-        final double deltaVelY = ball1.getVelocity().getY() - ball2.getVelocity().getY();
+        final float sigma = ball1.getRadius() + ball2.getRadius();
+        final float deltaX = ball1.getPosition().getX() - ball2.getPosition().getX();
+        final float deltaY = ball1.getPosition().getY() - ball2.getPosition().getY();
+        final float deltaVelX = ball1.getVelocity().getX() - ball2.getVelocity().getX();
+        final float deltaVelY = ball1.getVelocity().getY() - ball2.getVelocity().getY();
 
-        final double deltaVelR = deltaX * deltaVelX + deltaY * deltaVelY;
+        final float deltaVelR = deltaX * deltaVelX + deltaY * deltaVelY;
 
-        final double j = 2 * ball1.getMass() * getCollisionableBall().getMass() * deltaVelR / (sigma * (getBall().getMass() + getCollisionableBall().getMass()));
-        final double jX = j * deltaX / sigma;
-        final double jY = j * deltaY / sigma;
+        final float j = 2 * ball1.getMass() * getCollisionableBall().getMass() * deltaVelR / (sigma * (getBall().getMass() + getCollisionableBall().getMass()));
+        final float jX = j * deltaX / sigma;
+        final float jY = j * deltaY / sigma;
 
-        final Pair<Double> newVel1 = new Pair<>(
+        final Pair<Float> newVel1 = new Pair<>(
                 ball1.getVelocity().getX() - jX / ball1.getMass(),
                 ball1.getVelocity().getY() - jY / ball1.getMass()
         );
 
-        final Pair<Double> newVel2 = new Pair<>(
+        final Pair<Float> newVel2 = new Pair<>(
                 ball2.getVelocity().getX() + jX / ball2.getMass(),
                 ball2.getVelocity().getY() + jY / ball2.getMass()
         );

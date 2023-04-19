@@ -1,6 +1,5 @@
 package animation;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
@@ -13,9 +12,9 @@ import simulation.Table;
 
 public class Parser implements Iterable<Table>{
 
-    private CSVReader csvReader;
-    private final double width = 224;
-    private final double height = 112;
+    private final CSVReader csvReader;
+    private final float width = 224;
+    private final float height = 112;
     private int currentIteration = 0;
 
     public Table getNextTable() throws IOException, CsvValidationException {
@@ -27,7 +26,7 @@ public class Parser implements Iterable<Table>{
         this.currentIteration++;
 
         ParsedLine any = parsedLineList.stream().findAny()
-                .orElseThrow(()-> new RuntimeException());
+                .orElseThrow(RuntimeException::new);
 
         Set<CommonBall> ballSet = new HashSet<>();
         for(ParsedLine line : parsedLineList){
@@ -77,14 +76,14 @@ public class Parser implements Iterable<Table>{
 
     static class ParsedLine{
         private int iteration;
-        private double time;
+        private float time;
         private int ballId;
-        private double xPosition;
-        private double yPosition;
-        private double xVelocity;
-        private double yVelocity;
-        private double ballRadius;
-        private double ballMass;
+        private float xPosition;
+        private float yPosition;
+        private float xVelocity;
+        private float yVelocity;
+        private float ballRadius;
+        private float ballMass;
         private int collisionCount;
 
         public ParsedLine(String[] tokens){
@@ -93,14 +92,14 @@ public class Parser implements Iterable<Table>{
 
         private void parseTokens(String[] tokens) {
             this.iteration = Integer.parseInt(tokens[0]);
-            this.time = Double.parseDouble(tokens[1]);
+            this.time = Float.parseFloat(tokens[1]);
             this.ballId = Integer.parseInt(tokens[2]);
-            this.xPosition = Double.parseDouble(tokens[3]);
-            this.yPosition = Double.parseDouble(tokens[4]);
-            this.xVelocity = Double.parseDouble(tokens[5]);
-            this.yVelocity = Double.parseDouble(tokens[6]);
-            this.ballRadius = Double.parseDouble(tokens[7]);
-            this.ballMass = Double.parseDouble(tokens[8]);
+            this.xPosition = Float.parseFloat(tokens[3]);
+            this.yPosition = Float.parseFloat(tokens[4]);
+            this.xVelocity = Float.parseFloat(tokens[5]);
+            this.yVelocity = Float.parseFloat(tokens[6]);
+            this.ballRadius = Float.parseFloat(tokens[7]);
+            this.ballMass = Float.parseFloat(tokens[8]);
             this.collisionCount = Integer.parseInt(tokens[9]);
         }
 
