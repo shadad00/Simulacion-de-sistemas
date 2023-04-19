@@ -12,11 +12,33 @@ import java.util.Set;
 
 public class OvitoWriter {
 
-    private static String IN_FILE = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y50.75_i626.csv";
-    private static String OUT_FILE = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/millon";
+    private static String IN_FILE_42 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y42.00_i0.csv";
+    private static String IN_FILE_50 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y50.00_i0.csv";
+    private static String IN_FILE_56 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y56.00_i0.csv";
+    private static String OUT_FILE_42 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y42.00";
+    private static String OUT_FILE_50 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y50.00";
+    private static String OUT_FILE_56 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/pool_y56.00";
+
+    private static String FIRST_SIMULATION = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/Simulation1.csv";
+    private static String SECOND_SIMULATION = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/Simulation2.csv";
+
+    private static String FIRST_SIMULATION_OUT = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/Simulation1";
+    private static String SECOND_SIMULATION_OUT = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp3/src/main/java/animation/Simulation2";
+
+
+    private static String[] IN_FILES = {IN_FILE_42, IN_FILE_50, IN_FILE_56};
+    private static String[] IN_FILES_DET = {FIRST_SIMULATION,SECOND_SIMULATION};
+
+    private static String[] OUT_FILES_DET = {FIRST_SIMULATION_OUT,SECOND_SIMULATION_OUT};
+
+    private static String[] OUT_FILES = {OUT_FILE_42, OUT_FILE_50, OUT_FILE_56};
+
+
+
     public static void main(String[] args) throws IOException {
-        System.out.println(IN_FILE);
-        generateAnimation(IN_FILE, OUT_FILE);
+        for (int i = 0; i < IN_FILES_DET.length; i++) {
+            generateAnimation(IN_FILES_DET[i], OUT_FILES_DET[i]);
+        }
     }
 
 

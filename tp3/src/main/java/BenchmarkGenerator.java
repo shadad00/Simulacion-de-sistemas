@@ -4,7 +4,7 @@ public class BenchmarkGenerator {
     private final static double[] WHITE_BALL_Y_RANGE =
             new double[]{42., 43.75, 45.5, 47.25, 49.,50, 50.75, 52.5, 54.25, 56.};
 
-    private final static int SIMULATIONS_PER_Y_POSITION = 1000;
+    private final static int SIMULATIONS_PER_Y_POSITION = 200;
     private static final double TABLE_HEIGHT = 112.;
     private static final double TABLE_WIDTH = 224.;
 

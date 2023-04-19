@@ -20,7 +20,7 @@ public class Table implements Iterable<Table> {
     private int iteration = 0;
 
     private final Set<CommonBall> balls;
-    private Set<PocketBall> pocketBalls;
+    private final Set<PocketBall> pocketBalls;
     private List<Collisionable<Double>> collisionables;
     private PriorityQueue<Collision<Double>> collisions;
     private double simulationTime;
@@ -41,6 +41,7 @@ public class Table implements Iterable<Table> {
     }
 
     public Table(Table other){
+        this.initWhiteBallY = other.initWhiteBallY;
          this.iteration = other.iteration;
          this.balls = new HashSet<>();
          for (CommonBall ball : other.balls)
@@ -81,11 +82,15 @@ public class Table implements Iterable<Table> {
 
             @Override
             public Table next() {
+                incrementIteration();
                 return getNextTable();
             }
         };
     }
 
+    private void incrementIteration(){
+        this.iteration++;
+    }
 
     public int getIteration() {
         return iteration;
@@ -106,7 +111,7 @@ public class Table implements Iterable<Table> {
         collide(nextCollision);
         prevCollision = nextCollision;
         return new Table(this.width, this.height, this.simulationTime,
-                this.balls, this.pocketBalls, this.collisionables, this.collisions, this.iteration + 1);
+                this.balls, this.pocketBalls, this.collisionables, this.collisions, this.iteration);
     }
 
     public Table(Double width,
@@ -134,7 +139,7 @@ public class Table implements Iterable<Table> {
      *
      * @param previousCollision indica la colision previa, para saber que bolas participaron y actualizar colisiones
      *                          solo para ellas. Si es nulo toma todas las bolas de la mesa.
-     * @return
+     *
      */
     public void updateCollisions(Collision<Double> previousCollision) {
         final Set<CommonBall> ballsToCollide = previousCollision == null ? balls : previousCollision.getCollisionBalls();
@@ -165,6 +170,7 @@ public class Table implements Iterable<Table> {
         if (collision.isWithPocket()) {
             final CommonBall ball = collision.getBall();
             balls.remove(ball);
+            collisionables.remove(ball);
         }
     }
 
@@ -281,21 +287,6 @@ public class Table implements Iterable<Table> {
         }
 
         checkNoBallOverlap();
-
-
-//        for (int i = 1; i <= 15; i++) {
-//            CommonBall colorBall = CommonBall.buildColoredBall(
-//                    i,
-//                    new Pair<>(
-//                            168. + (BALL_DIAMETER + 5) * (i % 4),
-//                            56. + (BALL_DIAMETER + 5) * (i / 4)),
-//                    BALL_MASS,
-//                    BALL_DIAMETER / 2
-//            );
-//
-//            balls.add(colorBall);
-//            collisionables.add(colorBall);
-//        }
     }
 
     private void checkNoBallOverlap() {
@@ -328,9 +319,6 @@ public class Table implements Iterable<Table> {
         return pocketBalls;
     }
 
-    public List<Collisionable<Double>> getCollisionables() {
-        return collisionables;
-    }
 
     public void printTable() {
         System.out.println("t=" + simulationTime);
