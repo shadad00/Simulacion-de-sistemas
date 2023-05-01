@@ -1,15 +1,16 @@
 package simulation;
 
+
 import com.opencsv.CSVWriter;
-import solvers.*;
-import utils.Pair;
+import solvers.IntegralSolver;
+import solvers.SpringGear5Solver;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpringModel {
+public class SpringGearModel {
     public static final double SPRING_K = Math.pow(10, 4);     // [N/m]
     public static final int SPRING_A = 100;
     public static final double SPRING_GAMMA = 100;             // [kg/s
@@ -21,41 +22,37 @@ public class SpringModel {
             "ax", "ay", "mass", "radius"
     };
     private static final double FINAL_TIME = 5;                // [s]
-    protected final IntegralSolver integralSolver;
-    protected final Particle particle;
+    protected final SpringGear5Solver solver;
+    protected final Particle5 particle;
 
-    public SpringModel(final IntegralSolver integralSolver) {
-        this.integralSolver = integralSolver;
-        double vx0 = - SPRING_A * (SPRING_GAMMA / (2 * PARTICLE_MASS));
-        double ax0 = - (SPRING_K / PARTICLE_MASS) * SPRING_A - SPRING_GAMMA * vx0 / PARTICLE_MASS;
-        this.particle = new Particle(1,
-                new ParticleDynamics(Pair.of(SPRING_A, 0),
-                        Pair.of(vx0, 0),
-                        Pair.of(ax0, 0)),
-                PARTICLE_MASS,
-                PARTICLE_RADIUS);
+    public SpringGearModel() {
+        this.solver = new SpringGear5Solver(SPRING_K, 5, SPRING_GAMMA);
+        double rx = SPRING_A;
+        double rx1 = -SPRING_A * (SPRING_GAMMA / (2 * PARTICLE_MASS));
+        double rx2 = -(SPRING_K / PARTICLE_MASS) * rx;
+        double rx3 = -(SPRING_K / PARTICLE_MASS) * rx1;
+        double rx4 = -(SPRING_K / PARTICLE_MASS) * rx2;
+        double rx5 = -(SPRING_K / PARTICLE_MASS) * rx3;
+        this.particle = new Particle5(1,
+                new ParticleDynamics5(
+                        rx, rx1, rx2,
+                        rx3, rx4, rx5
+                ), PARTICLE_MASS, PARTICLE_RADIUS);
+        System.out.println(particle);
     }
 
     public static void main(String[] args) {
-        IntegralSolver[] solvers = new IntegralSolver[]{
-                new EulerSimpleSolver(),
-                new VerletOriginalSolver(),
-                new BeemanSolver(),
-        };
-
         double[] dts = new double[]{1e-2, 1e-3, 1e-4, 1e-5, 1e-6};
 
-
-        for (IntegralSolver solver : solvers) {
-            for (double dt : dts) {
-                SpringModel springModel = new SpringModel(solver);
-                springModel.run(dt);
-            }
+        for (double dt : dts) {
+            SpringGearModel model = new SpringGearModel();
+            System.out.println("Running for dt: " + dt);
+            model.run(dt);
         }
     }
 
-    public void run(double dt) {
-        String path = String.format("./tp4/out/spring/csv/%s_dt%.1e.csv", integralSolver.toString(), dt);
+    public void run(final double dt) {
+        String path = String.format("./tp4/out/spring/csv/%s_dt%.1e.csv", solver.toString(), dt);
         try (CSVWriter writer = new CSVWriter(new FileWriter(path))) {
             writer.writeNext(CSV_HEADER, false);
             double time = 0;
@@ -67,7 +64,7 @@ public class SpringModel {
                 strings.addAll(List.of(particle.getCsvStrings()));
                 String[] s = new String[strings.size()];
                 writer.writeNext(strings.toArray(s), false);
-                particle.evolve(integralSolver, dt);
+                particle.evolve(solver, dt);
 
                 time += dt;
                 step++;
