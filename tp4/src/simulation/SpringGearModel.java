@@ -43,32 +43,36 @@ public class SpringGearModel {
 
     public static void main(String[] args) {
         double[] dts = new double[]{1e-2, 1e-3, 1e-4, 1e-5, 1e-6};
+        double dt2 = 1e-2;
 
         for (double dt : dts) {
             SpringGearModel model = new SpringGearModel();
-            System.out.println("Running for dt: " + dt);
-            model.run(dt);
+            model.run(dt, dt2);
         }
     }
 
-    public void run(final double dt) {
+    public void run(final double dt, final double dt2) {
         String path = String.format("./tp4/out/spring/csv/%s_dt%.1e.csv", solver.toString(), dt);
         try (CSVWriter writer = new CSVWriter(new FileWriter(path))) {
             writer.writeNext(CSV_HEADER, false);
             double time = 0;
             int step = 0;
+            int printStep = dt2 > dt ? (int) (dt2 / dt) : 1;
             while (time <= FINAL_TIME) {
-                ArrayList<String> strings = new ArrayList<>();
-                strings.add(String.valueOf(step));
-                strings.add(String.valueOf(time));
-                strings.addAll(List.of(particle.getCsvStrings()));
-                String[] s = new String[strings.size()];
-                writer.writeNext(strings.toArray(s), false);
+                if (step % printStep == 0) {
+                    ArrayList<String> strings = new ArrayList<>();
+                    strings.add(String.valueOf(step));
+                    strings.add(String.valueOf(time));
+                    strings.addAll(List.of(particle.getCsvStrings()));
+                    String[] s = new String[strings.size()];
+                    writer.writeNext(strings.toArray(s), false);
+                }
                 particle.evolve(solver, dt);
-
                 time += dt;
                 step++;
             }
+            System.out.println("dt : " + dt);
+            System.out.println("LAST TIME :" + time);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
