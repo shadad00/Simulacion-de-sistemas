@@ -2,8 +2,8 @@ package simulation;
 
 
 import com.opencsv.CSVWriter;
-import solvers.IntegralSolver;
 import solvers.SpringGear5Solver;
+import utils.Pair;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,20 +23,18 @@ public class SpringGearModel {
     };
     private static final double FINAL_TIME = 5;                // [s]
     protected final SpringGear5Solver solver;
-    protected final Particle5 particle;
+    protected final Particle particle;
 
     public SpringGearModel() {
         this.solver = new SpringGear5Solver(SPRING_K, 5, SPRING_GAMMA);
         double rx = SPRING_A;
         double rx1 = -SPRING_A * (SPRING_GAMMA / (2 * PARTICLE_MASS));
         double rx2 = -(SPRING_K / PARTICLE_MASS) * rx;
-        double rx3 = -(SPRING_K / PARTICLE_MASS) * rx1;
-        double rx4 = -(SPRING_K / PARTICLE_MASS) * rx2;
-        double rx5 = -(SPRING_K / PARTICLE_MASS) * rx3;
-        this.particle = new Particle5(1,
-                new ParticleDynamics5(
-                        rx, rx1, rx2,
-                        rx3, rx4, rx5
+        this.particle = new Particle(1,
+                new ParticleDynamics(
+                        new Pair<>(rx,0.),
+                        new Pair<>(rx1, 0.),
+                        new Pair<>(rx2, 0.)
                 ), PARTICLE_MASS, PARTICLE_RADIUS);
         System.out.println(particle);
     }

@@ -1,12 +1,13 @@
 package solvers;
 
-import simulation.ParticleDynamics5;
+import simulation.ParticleDynamics;
+import utils.Pair;
 
 import java.security.InvalidParameterException;
 
 import static java.lang.Math.pow;
 
-public class SpringGear5Solver {
+public class SpringGear5Solver implements IntegralSolver{
     private static final double[][] alphas = new double[][]{
             {0, 1, 1, -1, -1, -1},
             {1. / 6, 5. / 6, 1, 1. / 3, -1, -1},
@@ -28,15 +29,15 @@ public class SpringGear5Solver {
     }
 
 
-    public ParticleDynamics5 solve(final ParticleDynamics5 d, final double fx, final double mass, final double dt) {
+    public ParticleDynamics solve(final ParticleDynamics d, final Pair<Double> force, final double mass, final double dt) {
         double km = K / mass;
 
-        double rx = d.rx;
-        double rx1 = d.rx1;
-        double rx2 = d.rx2;
-        double rx3 = d.rx3;
-        double rx4 = d.rx4;
-        double rx5 = d.rx5;
+        double rx = d.getR().getX();
+        double rx1 = d.getV().getX();
+        double rx2 = d.getA().getX();
+        double rx3 = -(km) * rx1;
+        double rx4 = -(km) * rx2;
+        double rx5 = -(km) * rx3;
 
         double rxp, rxp1, rxp2, rxp3, rxp4, rxp5; // predicciones
         rxp = rx + rx1 * dt + rx2 * (pow(dt, 2) / 2) + rx3 * (pow(dt, 3) / 6) + rx4 * (pow(dt, 4) / 24) + rx5 * (pow(dt, 5) / 120);
@@ -71,9 +72,10 @@ public class SpringGear5Solver {
         rxc4 = rxp4 + alphas[idx][4] * R2 * 24 / pow(dt, 4);
         rxc5 = rxp5 + alphas[idx][5] * R2 * 120 / pow(dt, 5);
 
-        return new ParticleDynamics5(
-                rxc, rxc1, rxc2,
-                rxc3, rxc4, rxc5
+        return new ParticleDynamics(
+                new Pair<>(rxc, 0.),
+                new Pair<>(rxc1, 0.),
+                new Pair<>(rxc2, 0.)
         );
     }
 
