@@ -49,7 +49,7 @@ public class SpringModel {
             IntegralSolver[] solvers = new IntegralSolver[]{
                     new EulerSimpleSolver(),
                     new VerletOriginalSolver(),
-                    new BeemanSolver(),
+                    new BeemanSolver(SPRING_K, SPRING_GAMMA),
                     new SpringGear5Solver(SPRING_K,5, SPRING_GAMMA)
             };
             for (IntegralSolver solver : solvers) {
@@ -78,6 +78,7 @@ public class SpringModel {
                 particle.evolve(integralSolver, dt);
                 time += dt;
                 step++;
+//                k++;
             }
             System.out.println("dt : " + dt);
             System.out.println("LAST TIME :" + time);
