@@ -40,7 +40,7 @@ public class SpringGear5Solver implements IntegralSolver{
         double rx5 = -(km) * rx3;
 
         double rxp, rxp1, rxp2, rxp3, rxp4, rxp5; // predicciones
-        rxp = rx + rx1 * dt + rx2 * (pow(dt, 2) / 2) + rx3 * (pow(dt, 3) / 6) + rx4 * (pow(dt, 4) / 24) + rx5 * (pow(dt, 5) / 120);
+        rxp  = rx + rx1 * dt + rx2 * (pow(dt, 2) / 2) + rx3 * (pow(dt, 3) / 6) + rx4 * (pow(dt, 4) / 24) + rx5 * (pow(dt, 5) / 120);
         rxp1 = rx1 + rx2 * dt + rx3 * (pow(dt, 2) / 2) + rx4 * (pow(dt, 3) / 6) + rx5 * (pow(dt, 4) / 24);
         rxp2 = rx2 + rx3 * dt + rx4 * (pow(dt, 2) / 2) + rx5 * (pow(dt, 3) / 6);
         rxp3 = rx3 + rx4 * dt + rx5 * (pow(dt, 2) / 2);
@@ -55,7 +55,7 @@ public class SpringGear5Solver implements IntegralSolver{
          */
 
         double drx2 = (-km * rxp -  (gamma/mass) * rx1) - rxp2;
-        double R2 = (drx2 * pow(dt, 2)) / 2;
+        double R2 = drx2 * pow(dt, 2) / 2;
 
 
         /** Corregir
