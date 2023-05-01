@@ -4,3 +4,6 @@
 src/main/resources/application.properties
 *.csv
 /target
+*.mp4
+*.xyz
+*.png

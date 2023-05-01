@@ -29,28 +29,30 @@ public class SpringModel {
 
     public SpringModel(final IntegralSolver integralSolver) {
         this.integralSolver = integralSolver;
-        double vx0 = -SPRING_A * (SPRING_GAMMA / (2 * PARTICLE_MASS));
-        double ax0 = -(SPRING_K / PARTICLE_MASS) * SPRING_A - SPRING_GAMMA * vx0 / PARTICLE_MASS;
+        double rx = SPRING_A;
+        double rx1 = -SPRING_A * (SPRING_GAMMA / (2 * PARTICLE_MASS));
+        double rx2 = -(SPRING_K / PARTICLE_MASS) * rx;
         this.particle = new Particle(1,
-                new ParticleDynamics(Pair.of(SPRING_A, 0),
-                        Pair.of(vx0, 0),
-                        Pair.of(ax0, 0)),
+                new ParticleDynamics(Pair.of(rx, 0),
+                        Pair.of(rx1, 0),
+                        Pair.of(rx2, 0)),
                 PARTICLE_MASS,
                 PARTICLE_RADIUS);
     }
 
     public static void main(String[] args) {
-        IntegralSolver[] solvers = new IntegralSolver[]{
-                new EulerSimpleSolver(),
-                new VerletOriginalSolver(),
-                new BeemanSolver(),
-        };
 
         double[] dts = new double[]{1e-2, 1e-3, 1e-4, 1e-5, 1e-6};
         double dt2 = 1e-2;
 
-        for (IntegralSolver solver : solvers) {
-            for (double dt : dts) {
+        for(double dt: dts){
+            IntegralSolver[] solvers = new IntegralSolver[]{
+                    new EulerSimpleSolver(),
+                    new VerletOriginalSolver(),
+                    new BeemanSolver(),
+                    new SpringGear5Solver(SPRING_K,5, SPRING_GAMMA)
+            };
+            for (IntegralSolver solver : solvers) {
                 SpringModel springModel = new SpringModel(solver);
                 springModel.run(dt, dt2);
             }

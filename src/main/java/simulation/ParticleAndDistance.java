@@ -1,6 +1,6 @@
 package simulation;
 
-import java.util.Objects;
+
 
 public class ParticleAndDistance {
     private final Particle otherParticle;
