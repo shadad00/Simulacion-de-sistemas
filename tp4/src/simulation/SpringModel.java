@@ -45,7 +45,7 @@ public class SpringModel {
             IntegralSolver[] solvers = new IntegralSolver[]{
                     new EulerSimpleSolver(),
                     new VerletOriginalSolver(),
-                    new BeemanSolver(),
+                    new BeemanSolver(SPRING_K, SPRING_GAMMA),
                     new SpringGear5Solver(SPRING_K,5, SPRING_GAMMA)
             };
             for (IntegralSolver solver : solvers) {
@@ -61,17 +61,21 @@ public class SpringModel {
             writer.writeNext(CSV_HEADER, false);
             double time = 0;
             int step = 0;
+            int k = 0;
             while (time <= FINAL_TIME) {
-                ArrayList<String> strings = new ArrayList<>();
-                strings.add(String.valueOf(step));
-                strings.add(String.valueOf(time));
-                strings.addAll(List.of(particle.getCsvStrings()));
-                String[] s = new String[strings.size()];
-                writer.writeNext(strings.toArray(s), false);
+//                if( k == 100){
+                    ArrayList<String> strings = new ArrayList<>();
+                    strings.add(String.valueOf(step));
+                    strings.add(String.valueOf(time));
+                    strings.addAll(List.of(particle.getCsvStrings()));
+                    String[] s = new String[strings.size()];
+                    writer.writeNext(strings.toArray(s), false);
+//                    k=0;
+//                }
                 particle.evolve(integralSolver, dt);
-
                 time += dt;
                 step++;
+//                k++;
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
