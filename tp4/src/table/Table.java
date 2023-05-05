@@ -1,10 +1,12 @@
 package table;
 
 
-import simulation.Pair;
+import utils.Pair;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static java.lang.Math.pow;
 
 public class Table implements Iterable<Table> {
     protected static final double BALL_DIAMETER = 5.7;

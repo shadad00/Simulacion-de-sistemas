@@ -1,8 +1,7 @@
 package table;
 
-import simulation.Pair;
+import utils.Pair;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
