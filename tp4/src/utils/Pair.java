@@ -9,7 +9,7 @@ public class Pair {
     private double x;
     private double y;
 
-    public static final Pair ZERO = Pair.of(0, 0);
+    public static final Pair ZERO = Pair.of(0., 0.);
 
     public Pair(final double x, final double y) {
         this.x = x;

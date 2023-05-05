@@ -12,10 +12,8 @@ import static java.lang.Math.pow;
 @Setter
 public class CommonBall extends Ball {
     private static final double k = Math.pow(10, 6); // TODO: revisar si las unidades estan bien N/m
-
     private final int ballNumber;
     private final double[] multipliers = {3. / 20, 251. / 360, 1, 11. / 18, 1. / 6, 1. / 60};
-    private boolean first = true;
     private double[][] position_derivatives = null;
 
 
@@ -71,11 +69,9 @@ public class CommonBall extends Ball {
         position_derivatives[0] = derivative_predictions[0];
         position_derivatives[1] = derivative_predictions[1];
 
-
-
         setPosition(new Pair(position_derivatives[0][0],position_derivatives[1][0]));
         setVelocity(new Pair(position_derivatives[0][1],position_derivatives[1][1]));
-        setAcceleration(new Pair(force.getX()/mass, force.getY()/mass));
+        setAcceleration(new Pair(position_derivatives[0][2], position_derivatives[1][2]));
     }
 
     public boolean isOverlapping(Ball otherBall){
@@ -83,9 +79,7 @@ public class CommonBall extends Ball {
         double yDiff = otherBall.getPosition().getY() - getPosition().getY();
         double dist = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
         double sumRadius = getRadius() + otherBall.getRadius();
-        if (dist >= sumRadius)
-            return false;
-        return true;
+        return ! (dist > sumRadius) ;
     }
 
     public Pair forceBetween(CommonBall otherBall) {
@@ -95,7 +89,7 @@ public class CommonBall extends Ball {
         double sumRadius = getRadius() + otherBall.getRadius();
 
         // Si no estan en colision, la fuerza entre ellos es nula -> <0, 0>
-        if (dist >= sumRadius)
+        if (dist > sumRadius)
             return Pair.ZERO;
 
         // Ignoramos el versor normal r^ ya que vamos a proyectar sobre x e y directamente
@@ -107,43 +101,27 @@ public class CommonBall extends Ball {
     }
 
     public Pair forceBetweenRightWall(double wallX) {
-        double xDiff = wallX - getPosition().getX();
-        if (xDiff - getRadius() >= 0)
+        if (position.getX() + getRadius() < wallX)
             return Pair.ZERO;
-
-        double Fx = - k * (Math.abs(xDiff) - getRadius());
-
-        return Pair.of(Fx, 0);
+        return Pair.of(-k, 0);
     }
 
     public Pair forceBetweenLeftWall() {
-        double xDiff = getPosition().getX();
-        if (xDiff - getRadius() >= 0)
+        if (position.getX() - getRadius() > 0)
             return Pair.ZERO;
-
-        double Fx = k * (Math.abs(xDiff) - getRadius());
-
-        return Pair.of(Fx, 0);
+        return Pair.of(k, 0);
     }
 
     public Pair forceBetweenTopWall(double wallY) {
-        double yDiff = wallY - getPosition().getY();
-        if (yDiff - getRadius() >= 0)
+        if (position.getY() + getRadius() < wallY)
             return Pair.ZERO;
-
-        double Fy = - k * (Math.abs(yDiff) - getRadius());
-
-        return Pair.of(0, Fy);
+        return Pair.of(0, -k);
     }
 
     public Pair forceBetweenBottomWall() {
-        double yDiff = getPosition().getY();
-        if (yDiff - getRadius() >= 0)
+        if ( position.getY() - getRadius() > 0 )
             return Pair.ZERO;
-
-        double Fy = k * (Math.abs(yDiff) - getRadius());
-
-        return Pair.of(0, Fy);
+        return Pair.of(0, k);
     }
 
     @Override

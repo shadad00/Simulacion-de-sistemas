@@ -12,12 +12,15 @@ public class CsvGenerator {
     private final BufferedWriter bw;
 
     public CsvGenerator(String outputFile, double whiteBallY, double width, double height,
-                        double finalTime, double deltaTime, boolean pockets
+                        double finalTime, double deltaTime, boolean pockets,
+                        int persistingMultiplier
                         ) throws IOException {
-        this(outputFile, new Table(whiteBallY,width,height, finalTime, deltaTime), pockets);
+        this(outputFile, new Table(whiteBallY,width,height, finalTime, deltaTime),
+                pockets, persistingMultiplier);
     }
 
-    public CsvGenerator(String outputFile, Table table, boolean pockets) throws IOException{
+    public CsvGenerator(String outputFile, Table table,
+                        boolean pockets, int persistingMultiplier) throws IOException{
         File csvFile = new File("./" + outputFile +".csv");
         if (!csvFile.exists() && !csvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
@@ -26,17 +29,23 @@ public class CsvGenerator {
             table.positionPockets();
         bw = new BufferedWriter(new FileWriter(csvFile));
         bw.write(HEADER + "\n");
-        writeTable(table);
-        for (Table currentTable : table)
-            writeTable(currentTable);
+        writeTable(table, persistingMultiplier);
+        int i = 0;
+        for (Table currentTable : table){
+            i++;
+            if ( i == persistingMultiplier){
+                writeTable(currentTable, persistingMultiplier);
+                i = 0;
+            }
+        }
         bw.close();
 
     }
 
-    private void writeTable(Table table) throws IOException {
+    private void writeTable(Table table, int persistingMultiplier) throws IOException {
         for (CommonBall ball : table.getBalls()) {
             bw.write(String.format(FORMAT,
-                    table.getIteration(),
+                    table.getIteration() / persistingMultiplier,
                     table.getSimulationTime(),
                     ball.getBallNumber(),
                     ball.getPosition().getX(),

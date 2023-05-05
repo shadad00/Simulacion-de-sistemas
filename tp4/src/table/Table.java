@@ -26,7 +26,7 @@ public class Table implements Iterable<Table> {
     protected final double width;
     protected final double height;
     protected double initWhiteBallY;
-    protected double finalTime=0;
+    protected double finalTime = 0;
     protected double deltaTime = 0;
 
     protected Set<PocketBall> pocketBalls = new HashSet<>();
@@ -95,7 +95,7 @@ public class Table implements Iterable<Table> {
     }
 
     public boolean hasFinished(){
-        return this.balls.size() < balls_goal || Double.compare(this.simulationTime, this.finalTime) >= 0;
+        return this.balls.size() < balls_goal || Double.compare(this.simulationTime, this.finalTime) > 0;
     }
 
     public Table(Double width,
@@ -131,7 +131,7 @@ public class Table implements Iterable<Table> {
 
 
     private void updateForce(CommonBall ball){
-        Pair newForce = Pair.of(0, 0);
+        Pair newForce = Pair.of(0., 0.);
 
         for (CommonBall otherBall : balls) {
             if (ball.equals(otherBall))

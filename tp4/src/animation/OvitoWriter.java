@@ -12,7 +12,7 @@ import java.util.Set;
 
 public class OvitoWriter {
 
-    private static String IN_FILE_42 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp4/src/animation/pool_y42.00_i0.csv";
+    private static String IN_FILE_42 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp4/src/animation/pool_dt0.000100.csv";
 
     private static String OUT_FILE_42 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp4/src/animation/pool_y42.00_i0";
 
