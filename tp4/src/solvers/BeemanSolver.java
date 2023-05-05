@@ -15,7 +15,7 @@ public class BeemanSolver implements IntegralSolver {
     }
 
     @Override
-    public ParticleDynamics solve(final ParticleDynamics dynamics, final Pair<Double> force, final double mass, final double dt) {
+    public ParticleDynamics solve(final ParticleDynamics dynamics, final Pair force, final double mass, final double dt) {
         double km = k / mass;
         double rx = dynamics.getR().getX();
         double vx = dynamics.getV().getX();

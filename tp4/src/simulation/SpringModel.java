@@ -1,10 +1,7 @@
 package simulation;
 
 import com.opencsv.CSVWriter;
-import solvers.BeemanSolver;
-import solvers.EulerSimpleSolver;
-import solvers.IntegralSolver;
-import solvers.VerletOriginalSolver;
+import solvers.*;
 import utils.Pair;
 
 import java.io.FileWriter;

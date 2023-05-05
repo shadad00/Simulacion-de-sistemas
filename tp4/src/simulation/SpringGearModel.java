@@ -32,9 +32,9 @@ public class SpringGearModel {
         double rx2 = -(SPRING_K / PARTICLE_MASS) * rx;
         this.particle = new Particle(1,
                 new ParticleDynamics(
-                        new Pair<>(rx,0.),
-                        new Pair<>(rx1, 0.),
-                        new Pair<>(rx2, 0.)
+                        new Pair(rx,0.),
+                        new Pair(rx1, 0.),
+                        new Pair(rx2, 0.)
                 ), PARTICLE_MASS, PARTICLE_RADIUS);
         System.out.println(particle);
     }

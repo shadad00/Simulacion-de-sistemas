@@ -5,17 +5,24 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Pair<T extends Number> {
-    private T x;
-    private T y;
+public class Pair {
+    private double x;
+    private double y;
 
-    public Pair(final T x, final T y) {
+    public static final Pair ZERO = Pair.of(0, 0);
+
+    public Pair(final double x, final double y) {
         this.x = x;
         this.y = y;
     }
 
-    public static Pair<Double> of(final double x, final double y) {
-        return new Pair<>(x, y);
+    public static Pair of(final double x, final double y) {
+        return new Pair(x, y);
+    }
+
+    public void add(final Pair otherForce) {
+        this.x += otherForce.getX();
+        this.y += otherForce.getY();
     }
 
     @Override

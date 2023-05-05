@@ -32,7 +32,7 @@ public class Particle {
         this.neighbours = new HashSet<>();
     }
 
-    private Pair<Double> getForce() {
+    private Pair getForce() {
         double fy = 0;
         double fx = -((K * dynamics.getR().getX()) + (GAMMA * dynamics.getV().getX()));
 

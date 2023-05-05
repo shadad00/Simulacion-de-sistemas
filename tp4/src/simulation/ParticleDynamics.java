@@ -9,7 +9,7 @@ import utils.Pair;
 @Setter
 @AllArgsConstructor
 public class ParticleDynamics {
-    private Pair<Double> r;
-    private Pair<Double> v;
-    private Pair<Double> a;
+    private Pair r;
+    private Pair v;
+    private Pair a;
 }

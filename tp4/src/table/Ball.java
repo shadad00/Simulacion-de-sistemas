@@ -4,18 +4,18 @@ package table;
 import utils.Pair;
 
 public abstract class Ball {
-    protected Pair<Double> position;
-    protected Pair<Double> velocity;
+    protected Pair position;
+    protected Pair velocity;
 
-    protected Pair<Double> acceleration;
-    protected Pair<Double> force;
+    protected Pair acceleration;
+    protected Pair force;
 
     protected Double mass;
     protected Double radius;
 
     public Ball(){}
 
-    public Ball(Pair<Double> position, Pair<Double> velocity, Pair<Double> acceleration, Pair<Double> force
+    public Ball(Pair position, Pair velocity, Pair acceleration, Pair force
             ,Double mass, Double radius) {
         this.position = position;
         this.velocity = velocity;
@@ -37,27 +37,27 @@ public abstract class Ball {
 
     abstract public void updatePosition(Double dt);
 
-    public Pair<Double> getPosition() {
+    public Pair getPosition() {
         return position;
     }
 
-    public void setPosition(Pair<Double> position) {
+    public void setPosition(Pair position) {
         this.position = position;
     }
 
-    public Pair<Double> getVelocity() {
+    public Pair getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(Pair<Double> velocity) {
+    public void setVelocity(Pair velocity) {
         this.velocity = velocity;
     }
 
-    public Pair<Double> getForce() {
+    public Pair getForce() {
         return force;
     }
 
-    public void setForce(Pair<Double> force) {
+    public void setForce(Pair force) {
         this.force = force;
     }
 
@@ -77,11 +77,12 @@ public abstract class Ball {
         this.radius = radius;
     }
 
-    public Pair<Double> getAcceleration() {
+    public Pair getAcceleration() {
         return acceleration;
     }
 
-    public void setAcceleration(Pair<Double> acceleration) {
+    public void setAcceleration(Pair acceleration) {
         this.acceleration = acceleration;
     }
+
 }

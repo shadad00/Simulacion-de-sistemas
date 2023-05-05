@@ -7,7 +7,7 @@ public class VerletOriginalSolver implements IntegralSolver {
 
     private ParticleDynamics last = null;
     @Override
-    public ParticleDynamics solve(final ParticleDynamics dynamics, final Pair<Double> force, final double mass, final double dt) {
+    public ParticleDynamics solve(final ParticleDynamics dynamics, final Pair force, final double mass, final double dt) {
         EulerSimpleSolver euler = new EulerSimpleSolver();
 
 

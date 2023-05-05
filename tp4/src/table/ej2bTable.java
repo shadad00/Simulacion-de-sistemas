@@ -8,7 +8,6 @@ import java.util.Set;
 public class ej2bTable extends Table{
 
     private final Set<PocketBall> pocketBalls;
-    protected double initWhiteBallY;
 
 
     public ej2bTable(Set<CommonBall> balls, double width, double height,
@@ -20,15 +19,12 @@ public class ej2bTable extends Table{
 
     public ej2bTable(ej2bTable other) {
         super(other);
-        this.initWhiteBallY = other.initWhiteBallY;
         this.pocketBalls = new HashSet<>(other.pocketBalls);
     }
 
     public ej2bTable(double whiteBallY, double width, double height, final double finalTime, final double deltaTime) {
-        super(width, height, finalTime, deltaTime);
-        this.initWhiteBallY = whiteBallY;
+        super(whiteBallY,width, height, finalTime, deltaTime);
         this.pocketBalls = new HashSet<>();
-        positionWhiteBall(whiteBallY);
         positionPockets();
     }
 
@@ -45,21 +41,11 @@ public class ej2bTable extends Table{
             double y = i * 112.;
             for (int j = 0; j < 3; j++) {
                 double x = j * (224.0 / 2);
-                PocketBall pocketBall = new PocketBall(new Pair<>(x, y), new Pair<>(0., 0.),
+                PocketBall pocketBall = new PocketBall(new Pair(x, y), new Pair(0., 0.),
                         0., POCKET_DIAMETER / 2);
                 pocketBalls.add(pocketBall);
             }
         }
     }
-
-    private void positionWhiteBall(double whiteBallY) {
-        Pair<Double> whiteBallPosition = new Pair<>(WHITE_BALL_INITIAL_X, whiteBallY);
-        Pair<Double> whiteBallVelocity = new Pair<>(WHITE_BALL_INITIAL_X_VEL, WHITE_BALL_INITIAL_Y_VEL);
-        CommonBall whiteBall = CommonBall.buildWhiteBall(whiteBallPosition, whiteBallVelocity, BALL_MASS, BALL_DIAMETER / 2);
-        balls.add(whiteBall);
-    }
-
-
-
 
 }

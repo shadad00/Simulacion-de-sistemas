@@ -4,8 +4,8 @@ import utils.Pair;
 
 public class PocketBall extends Ball {
 
-    public PocketBall(Pair<Double> position, Pair<Double> velocity, Double mass, Double radius) {
-        super(position, velocity, new Pair<>(0.,0.),new Pair<>(0.,0.),
+    public PocketBall(Pair position, Pair velocity, Double mass, Double radius) {
+        super(position, velocity, new Pair(0.,0.),new Pair(0.,0.),
                 mass, radius);
     }
 

@@ -5,7 +5,7 @@ import utils.Pair;
 
 public class EulerSimpleSolver implements IntegralSolver {
     @Override
-    public ParticleDynamics solve(final ParticleDynamics dynamics, final Pair<Double> force, final double mass, final double dt) {
+    public ParticleDynamics solve(final ParticleDynamics dynamics, final Pair force, final double mass, final double dt) {
         double rx = dynamics.getR().getX();
         double vx = dynamics.getV().getX();
         double fx = force.getX();

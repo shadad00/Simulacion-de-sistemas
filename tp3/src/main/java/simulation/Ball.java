@@ -1,8 +1,8 @@
 package simulation;
 
 public abstract class Ball implements Collisionable<Double>{
-    protected   Pair<Double> position;
-    protected   Pair<Double> velocity;
+    protected Pair<Double> position;
+    protected Pair<Double> velocity;
     protected Double mass;
     protected Double radius;
 

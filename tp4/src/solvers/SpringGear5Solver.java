@@ -18,6 +18,10 @@ public class SpringGear5Solver implements IntegralSolver{
     private final int order;
     private final double gamma;
 
+    private boolean isInitialized = false;
+    private double rx3;
+    private double rx4;
+    private double rx5;
 
     public SpringGear5Solver(final double k, int order, final double gamma) {
         this.K = k;
@@ -29,15 +33,18 @@ public class SpringGear5Solver implements IntegralSolver{
     }
 
 
-    public ParticleDynamics solve(final ParticleDynamics d, final Pair<Double> force, final double mass, final double dt) {
+    public ParticleDynamics solve(final ParticleDynamics d, final Pair force, final double mass, final double dt) {
         double km = K / mass;
 
         double rx = d.getR().getX();
         double rx1 = d.getV().getX();
         double rx2 = d.getA().getX();
-        double rx3 = -(km) * rx1;
-        double rx4 = -(km) * rx2;
-        double rx5 = -(km) * rx3;
+        if (!isInitialized) {
+            rx3 = -(km) * rx1;
+            rx4 = -(km) * rx2;
+            rx5 = -(km) * rx3;
+            isInitialized = true;
+        }
 
         double rxp, rxp1, rxp2, rxp3, rxp4, rxp5; // predicciones
         rxp  = rx + rx1 * dt + rx2 * (pow(dt, 2) / 2) + rx3 * (pow(dt, 3) / 6) + rx4 * (pow(dt, 4) / 24) + rx5 * (pow(dt, 5) / 120);
@@ -73,9 +80,9 @@ public class SpringGear5Solver implements IntegralSolver{
         rxc5 = rxp5 + alphas[idx][5] * R2 * 120 / pow(dt, 5);
 
         return new ParticleDynamics(
-                new Pair<>(rxc, 0.),
-                new Pair<>(rxc1, 0.),
-                new Pair<>(rxc2, 0.)
+                new Pair(rxc, 0.),
+                new Pair(rxc1, 0.),
+                new Pair(rxc2, 0.)
         );
     }
 
