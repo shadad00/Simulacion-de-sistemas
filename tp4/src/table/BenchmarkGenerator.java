@@ -10,9 +10,9 @@ public class BenchmarkGenerator {
     private static final double TABLE_HEIGHT = 112.;
     private static final double TABLE_WIDTH = 224.;
     
-    private static final double FINAL_TIME = 5.;
-    
+    private static final double FINAL_TIME = 100.;
     private static final double DELTA_TIME = .001;
+    private static boolean POCKETS = true;
 
     public static void main(String[] args) {
         runAll();
@@ -35,7 +35,9 @@ public class BenchmarkGenerator {
                     TABLE_WIDTH,
                     TABLE_HEIGHT,
                     FINAL_TIME,
-                    DELTA_TIME);
+                    DELTA_TIME,
+                    POCKETS
+            );
         } catch (IOException e) {
             e.printStackTrace();
         }

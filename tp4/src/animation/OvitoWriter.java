@@ -16,6 +16,7 @@ public class OvitoWriter {
 
     private static String OUT_FILE_42 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp4/src/animation/pool_y42.00_i0";
 
+    private static boolean POCKET = true;
 
     private static String[] IN_FILES = {IN_FILE_42};
 
@@ -24,9 +25,8 @@ public class OvitoWriter {
 
 
     public static void main(String[] args) throws IOException {
-        boolean pocket = false;
         for (int i = 0; i < IN_FILES.length; i++) {
-            generateAnimation(IN_FILES[i], OUT_FILES[i], pocket);
+            generateAnimation(IN_FILES[i], OUT_FILES[i], POCKET);
         }
     }
 

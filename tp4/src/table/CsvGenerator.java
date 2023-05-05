@@ -12,17 +12,18 @@ public class CsvGenerator {
     private final BufferedWriter bw;
 
     public CsvGenerator(String outputFile, double whiteBallY, double width, double height,
-                        double finalTime, double deltaTime
+                        double finalTime, double deltaTime, boolean pockets
                         ) throws IOException {
-        this(outputFile, new Table(whiteBallY,width,height, finalTime, deltaTime));
+        this(outputFile, new Table(whiteBallY,width,height, finalTime, deltaTime), pockets);
     }
 
-    public CsvGenerator(String outputFile, Table table) throws IOException{
+    public CsvGenerator(String outputFile, Table table, boolean pockets) throws IOException{
         File csvFile = new File("./" + outputFile +".csv");
         if (!csvFile.exists() && !csvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
         }
-
+        if(pockets)
+            table.positionPockets();
         bw = new BufferedWriter(new FileWriter(csvFile));
         bw.write(HEADER + "\n");
         writeTable(table);

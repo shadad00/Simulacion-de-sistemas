@@ -54,9 +54,9 @@ public class CommonBall extends Ball {
             }
         }
 
-        double drx2 = force.getX() / mass  - derivative_predictions[0][2];
+        double drx2 = (force.getX() / mass)  - derivative_predictions[0][2];
         double R2x = drx2 * pow(dt, 2) / 2;
-        double dry2 = force.getY() / mass - derivative_predictions[1][2];
+        double dry2 = (force.getY() / mass)  - derivative_predictions[1][2];
         double R2y = dry2 * pow(dt, 2) / 2;
         double[] rectifier = {R2x, R2y};
 
@@ -76,6 +76,16 @@ public class CommonBall extends Ball {
         setPosition(new Pair(position_derivatives[0][0],position_derivatives[1][0]));
         setVelocity(new Pair(position_derivatives[0][1],position_derivatives[1][1]));
         setAcceleration(new Pair(force.getX()/mass, force.getY()/mass));
+    }
+
+    public boolean isOverlapping(Ball otherBall){
+        double xDiff = otherBall.getPosition().getX() - getPosition().getX();
+        double yDiff = otherBall.getPosition().getY() - getPosition().getY();
+        double dist = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+        double sumRadius = getRadius() + otherBall.getRadius();
+        if (dist >= sumRadius)
+            return false;
+        return true;
     }
 
     public Pair forceBetween(CommonBall otherBall) {

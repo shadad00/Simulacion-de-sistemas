@@ -6,7 +6,6 @@ import utils.Pair;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static java.lang.Math.pow;
 
 public class Table implements Iterable<Table> {
     protected static final double BALL_DIAMETER = 5.7;
@@ -19,10 +18,10 @@ public class Table implements Iterable<Table> {
     public static final double WHITE_BALL_INITIAL_Y_VEL = 0.;
     public static final double TRIANGLE_X_START = 168.56;
     public static final double TRIANGLE_Y_START = 56.;
-    private static final int BALLS_GOAL = 8;
+    private int balls_goal = 8;
 
     protected int iteration = 0;
-    protected final Set<CommonBall> balls;
+    protected Set<CommonBall> balls;
     protected double simulationTime;
     protected final double width;
     protected final double height;
@@ -30,7 +29,7 @@ public class Table implements Iterable<Table> {
     protected double finalTime=0;
     protected double deltaTime = 0;
 
-    protected Set<PocketBall> pocketBalls = null;
+    protected Set<PocketBall> pocketBalls = new HashSet<>();
 
     public Table(final Set<CommonBall> balls, final double width, final double height,
                  final double time, int iteration){
@@ -52,8 +51,8 @@ public class Table implements Iterable<Table> {
          this.simulationTime = other.simulationTime;
          this.width = other.width;
          this.height = other.height;
+         this.pocketBalls = other.pocketBalls;
     }
-
 
 
     public Table(double whiteBallY,final double width, final double height, final double finalTime, final double deltaTime) {
@@ -91,11 +90,12 @@ public class Table implements Iterable<Table> {
         balls.forEach(this::updateForce);
         balls.forEach((ball)-> ball.updatePosition(this.deltaTime));
         this.simulationTime += this.deltaTime;
+        this.balls = deleteInsideBalls();
         return new Table(this);
     }
 
     public boolean hasFinished(){
-        return this.balls.size() <= BALLS_GOAL || Double.compare(this.simulationTime, this.finalTime) >= 0;
+        return this.balls.size() < balls_goal || Double.compare(this.simulationTime, this.finalTime) >= 0;
     }
 
     public Table(Double width,
@@ -115,6 +115,21 @@ public class Table implements Iterable<Table> {
         this.deltaTime = deltaTime;
     }
 
+    private Set<CommonBall> deleteInsideBalls(){
+        Set<CommonBall> outsideBalls = new HashSet<>();
+        for (CommonBall ball : this.balls) {
+            boolean add = true;
+            for (PocketBall pocketBall : this.pocketBalls) {
+                if(ball.isOverlapping(pocketBall))
+                    add = false;
+            }
+            if (add)
+                outsideBalls.add(ball);
+        }
+        return outsideBalls;
+    }
+
+
     private void updateForce(CommonBall ball){
         Pair newForce = Pair.of(0, 0);
 
@@ -122,7 +137,7 @@ public class Table implements Iterable<Table> {
             if (ball.equals(otherBall))
                 continue;
 
-            Pair forceBetweenBalls = ball.forceBetween(otherBall);;
+            Pair forceBetweenBalls = ball.forceBetween(otherBall);
             newForce.add(forceBetweenBalls);
         }
 
@@ -132,16 +147,6 @@ public class Table implements Iterable<Table> {
         newForce.add(ball.forceBetweenTopWall(height));
 
         ball.setForce(newForce);
-    }
-
-    private static Pair addForces(Pair force, Pair otherForce) {
-        double xForce = force.getX() + otherForce.getX();
-        double yForce = force.getY() + otherForce.getY();
-
-        force.setX(xForce);
-        force.setY(yForce);
-
-        return force;
     }
 
     private void positionColorBalls() {
@@ -188,14 +193,24 @@ public class Table implements Iterable<Table> {
         balls.add(whiteBall);
     }
 
+    public void positionPockets() {
+        this.balls_goal = 0 ;
+        for (int i = 0; i <= 1; i++) {
+            double y = i * 112.;
+            for (int j = 0; j < 3; j++) {
+                double x = j * (224.0 / 2);
+                PocketBall pocketBall = new PocketBall(new Pair(x, y), new Pair(0., 0.),
+                        0., POCKET_DIAMETER / 2);
+                pocketBalls.add(pocketBall);
+            }
+        }
+    }
+
 
     public int getIteration() {
         return iteration;
     }
 
-    public void setIteration(int iteration) {
-        this.iteration = iteration;
-    }
 
     public Set<CommonBall> getBalls() {
         return balls;
@@ -205,33 +220,6 @@ public class Table implements Iterable<Table> {
         return simulationTime;
     }
 
-    public void setSimulationTime(double simulationTime) {
-        this.simulationTime = simulationTime;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getFinalTime() {
-        return finalTime;
-    }
-
-    public void setFinalTime(double finalTime) {
-        this.finalTime = finalTime;
-    }
-
-    public double getDeltaTime() {
-        return deltaTime;
-    }
-
-    public void setDeltaTime(double deltaTime) {
-        this.deltaTime = deltaTime;
-    }
 
     public Set<PocketBall> getPocketBalls() {
         if (this.pocketBalls == null)

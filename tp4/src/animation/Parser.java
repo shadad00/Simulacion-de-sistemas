@@ -4,7 +4,6 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import table.CommonBall;
 import table.Table;
-import table.ej2bTable;
 import utils.Pair;
 
 import java.io.FileReader;
@@ -13,11 +12,11 @@ import java.util.*;
 
 public class Parser implements Iterable<Table>{
 
-    private CSVReader csvReader;
+    private final CSVReader csvReader;
     private final double width = 224;
     private final double height = 112;
     private int currentIteration = 0;
-    private boolean pockets;
+    private final boolean pockets;
 
 
     public Table getNextTable() throws IOException, CsvValidationException {
@@ -29,20 +28,21 @@ public class Parser implements Iterable<Table>{
         this.currentIteration++;
 
         ParsedLine any = parsedLineList.stream().findAny()
-                .orElseThrow(()-> new RuntimeException());
+                .orElseThrow(RuntimeException::new);
 
         Set<CommonBall> ballSet = new HashSet<>();
         for(ParsedLine line : parsedLineList){
            ballSet.add(new CommonBall(line.ballId, new Pair(line.xPosition,line.yPosition)
                    ,new Pair(line.xVelocity,line.yVelocity),
-                   new Pair(0.,0.),new Pair(0.,0.)
-                   , line.ballMass,
+                   new Pair(line.xForce / line.ballMass,line.yForce / line.ballMass),
+                   new Pair(line.xForce,line.yForce), line.ballMass,
                    line.ballRadius));
         }
 
-        if(!this.pockets)
-            return new Table(ballSet, width, height, any.time, any.iteration);
-        else return new ej2bTable(ballSet, width, height, any.time, any.iteration);
+        Table newTable = new Table(ballSet, width, height, any.time, any.iteration);
+        if(this.pockets)
+            newTable.positionPockets();
+        return newTable;
     }
 
 
