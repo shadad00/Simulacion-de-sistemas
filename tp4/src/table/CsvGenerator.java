@@ -7,8 +7,8 @@ import java.io.IOException;
 
 public class CsvGenerator {
 
-    final static String HEADER = "iter,time,ball_id,pos_x,pos_y,vel_x,vel_y,ball_radius,ball_mass,collision_count";
-    final static String FORMAT = "%d,%f,%d,%f,%f,%f,%f,%f,%f,%d\n";
+    final static String HEADER = "iter,time,ball_id,pos_x,pos_y,vel_x,vel_y,ball_radius,ball_mass,force_x,force_y";
+    final static String FORMAT = "%d,%f,%d,%f,%f,%f,%f,%f,%f,%f,%f\n";
     private final BufferedWriter bw;
 
     public CsvGenerator(String outputFile, double whiteBallY, double width, double height,
@@ -44,7 +44,8 @@ public class CsvGenerator {
                     ball.getVelocity().getY(),
                     ball.getRadius(),
                     ball.getMass(),
-                    0
+                    ball.getForce().getX(),
+                    ball.getForce().getY()
             ));
         }
     }

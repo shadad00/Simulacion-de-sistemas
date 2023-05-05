@@ -63,8 +63,8 @@ public class CommonBall extends Ball {
 
         for (int i = 0; i < derivative_predictions.length; i++) {
             for (int j = 0; j < derivative_predictions[i].length; j++) {
-                double jFact = factorial(j);
-                derivative_predictions[i][j] += multipliers[j] * rectifier[i] * jFact / pow(dt,jFact);
+                int jFact = factorial(j);
+                derivative_predictions[i][j] += multipliers[j] * rectifier[i] * jFact / pow(dt,j);
             }
         }
 
@@ -72,14 +72,15 @@ public class CommonBall extends Ball {
         position_derivatives[1] = derivative_predictions[1];
 
 
-        setPosition(new Pair(position_derivatives[0][0],position_derivatives[0][1]));
-        setVelocity(new Pair(position_derivatives[1][0],position_derivatives[1][1]));
+
+        setPosition(new Pair(position_derivatives[0][0],position_derivatives[1][0]));
+        setVelocity(new Pair(position_derivatives[0][1],position_derivatives[1][1]));
         setAcceleration(new Pair(force.getX()/mass, force.getY()/mass));
     }
 
     public Pair forceBetween(CommonBall otherBall) {
-        double xDiff = getPosition().getX() - otherBall.getPosition().getX();
-        double yDiff = getPosition().getY() - otherBall.getPosition().getY();
+        double xDiff = otherBall.getPosition().getX() - getPosition().getX();
+        double yDiff = otherBall.getPosition().getY() - getPosition().getY();
         double dist = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
         double sumRadius = getRadius() + otherBall.getRadius();
 
@@ -100,7 +101,7 @@ public class CommonBall extends Ball {
         if (xDiff - getRadius() >= 0)
             return Pair.ZERO;
 
-        double Fx = k * Math.abs(xDiff) - getRadius();
+        double Fx = - k * (Math.abs(xDiff) - getRadius());
 
         return Pair.of(Fx, 0);
     }
@@ -110,7 +111,7 @@ public class CommonBall extends Ball {
         if (xDiff - getRadius() >= 0)
             return Pair.ZERO;
 
-        double Fx = k * Math.abs(xDiff) - getRadius();
+        double Fx = k * (Math.abs(xDiff) - getRadius());
 
         return Pair.of(Fx, 0);
     }
@@ -120,7 +121,7 @@ public class CommonBall extends Ball {
         if (yDiff - getRadius() >= 0)
             return Pair.ZERO;
 
-        double Fy = k * Math.abs(yDiff) - getRadius();
+        double Fy = - k * (Math.abs(yDiff) - getRadius());
 
         return Pair.of(0, Fy);
     }
@@ -130,7 +131,7 @@ public class CommonBall extends Ball {
         if (yDiff - getRadius() >= 0)
             return Pair.ZERO;
 
-        double Fy = k * Math.abs(yDiff) - getRadius();
+        double Fy = k * (Math.abs(yDiff) - getRadius());
 
         return Pair.of(0, Fy);
     }

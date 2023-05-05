@@ -92,7 +92,8 @@ public class Parser implements Iterable<Table>{
         private double yVelocity;
         private double ballRadius;
         private double ballMass;
-        private int collisionCount;
+        private double xForce ;
+        private double yForce ;
 
         public ParsedLine(String[] tokens){
             parseTokens(tokens);
@@ -108,7 +109,8 @@ public class Parser implements Iterable<Table>{
             this.yVelocity = Double.parseDouble(tokens[6]);
             this.ballRadius = Double.parseDouble(tokens[7]);
             this.ballMass = Double.parseDouble(tokens[8]);
-            this.collisionCount = Integer.parseInt(tokens[9]);
+            this.xForce = Double.parseDouble(tokens[9]);
+            this.yForce = Double.parseDouble(tokens[10]);
         }
 
     }
