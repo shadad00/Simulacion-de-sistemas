@@ -14,7 +14,7 @@ public class Table implements Iterable<Table> {
     protected static final double LOWER_EPSILON = 0.02;
     protected static final double UPPER_EPSILON = 0.03;
     public static final double WHITE_BALL_INITIAL_X = 56.;
-    public static final double WHITE_BALL_INITIAL_X_VEL = 200.;
+    public static final double WHITE_BALL_INITIAL_X_VEL = 100.;
     public static final double WHITE_BALL_INITIAL_Y_VEL = 0.;
     public static final double TRIANGLE_X_START = 168.56;
     public static final double TRIANGLE_Y_START = 56.;
