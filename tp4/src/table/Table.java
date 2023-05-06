@@ -45,13 +45,14 @@ public class Table implements Iterable<Table> {
          this.finalTime = other.finalTime;
          this.deltaTime = other.deltaTime;
          this.initWhiteBallY = other.initWhiteBallY;
-         this.balls = new HashSet<>();
+         this.balls = new TreeSet<>();
          for (CommonBall ball : other.balls)
              this.balls.add(new CommonBall(ball));
          this.simulationTime = other.simulationTime;
          this.width = other.width;
          this.height = other.height;
          this.pocketBalls = other.pocketBalls;
+        this.balls_goal = other.balls_goal;
     }
 
 
@@ -61,7 +62,7 @@ public class Table implements Iterable<Table> {
         this.height = height;
         this.finalTime = finalTime;
         this.deltaTime = deltaTime;
-        this.balls = new HashSet<>();
+        this.balls = new TreeSet<>();
         positionWhiteBall(whiteBallY);
         positionColorBalls();
     }
@@ -227,6 +228,11 @@ public class Table implements Iterable<Table> {
         return this.pocketBalls;
     }
 
+    public void setDeltaTime(double deltaTime) {
+        this.deltaTime = deltaTime;
+    }
 
-
+    public double getDeltaTime() {
+        return deltaTime;
+    }
 }

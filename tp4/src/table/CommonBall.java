@@ -10,7 +10,7 @@ import static java.lang.Math.pow;
 
 @Getter
 @Setter
-public class CommonBall extends Ball {
+public class CommonBall extends Ball implements Comparable<CommonBall> {
     private static final double k = Math.pow(10, 6); // TODO: revisar si las unidades estan bien N/m
     private final int ballNumber;
     private final double[] multipliers = {3. / 20, 251. / 360, 1, 11. / 18, 1. / 6, 1. / 60};
@@ -26,6 +26,7 @@ public class CommonBall extends Ball {
         this.mass = other.mass;
         this.radius = other.radius;
         this.ballNumber = other.ballNumber;
+        this.position_derivatives = other.getPosition_derivatives();
     }
     
     public CommonBall(final int ballNumber, Pair position,
@@ -171,4 +172,8 @@ public class CommonBall extends Ball {
         return resultado;
     }
 
+    @Override
+    public int compareTo(CommonBall o) {
+        return Integer.compare(this.ballNumber, o.ballNumber);
+    }
 }

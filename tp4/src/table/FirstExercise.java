@@ -20,25 +20,25 @@ public class FirstExercise {
     }
 
     public static void runAll()  {
+
         for (double whiteBallY : WHITE_BALL_Y_RANGE) {
+            Table table = new Table(whiteBallY, TABLE_WIDTH, TABLE_HEIGHT, FINAL_TIME,0.);
             for (int i = 0; i < SIMULATIONS_PER_Y_POSITION; i++) {
-                for (int j = 2; j <= 3; j++) {
-                    run(whiteBallY, i, Math.pow(10, -j), (int) Math.pow(10, j - 2));
+                for (int j = 2; j <= 6; j++) {
+                    Table currentTable = new Table(table);
+                    currentTable.setDeltaTime(Math.pow(10, -j));
+                    run(currentTable , (int) Math.pow(10, j - 2));
                 }
             }
         }
     }
 
-    public static void run(double whiteBallY, int iter, double deltaTime, int persistingMultiplier) {
-        String outputFilename = String.format("pool_dt%f", deltaTime);
+    public static void run(Table currentTable, int persistingMultiplier) {
+        String outputFilename = String.format("pool_dt%f", currentTable.getDeltaTime());
         try {
             System.out.println("Generating " + outputFilename + "...");
             new CsvGenerator(outputFilename,
-                    whiteBallY,
-                    TABLE_WIDTH,
-                    TABLE_HEIGHT,
-                    FINAL_TIME,
-                    deltaTime,
+                    currentTable,
                     POCKETS,
                     persistingMultiplier
             );
