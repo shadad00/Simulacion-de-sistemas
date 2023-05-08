@@ -21,7 +21,7 @@ public class CsvGenerator {
 
     public CsvGenerator(String outputFile, Table table,
                         boolean pockets, int persistingMultiplier) throws IOException{
-        File csvFile = new File("./" + outputFile +".csv");
+        File csvFile = new File("./tp4/out/pool/yposition/" + outputFile +".csv");
         if (!csvFile.exists() && !csvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
         }
