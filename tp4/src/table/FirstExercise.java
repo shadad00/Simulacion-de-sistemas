@@ -11,7 +11,7 @@ public class FirstExercise {
     private static final double TABLE_HEIGHT = 112.;
     private static final double TABLE_WIDTH = 224.;
     
-    private static final double FINAL_TIME = 100.;
+    private static final double FINAL_TIME = 1.;
 
     private static boolean POCKETS = false;
 
@@ -37,7 +37,8 @@ public class FirstExercise {
         String outputFilename = String.format("pool_dt%f", currentTable.getDeltaTime());
         try {
             System.out.println("Generating " + outputFilename + "...");
-            new CsvGenerator(outputFilename,
+            new CsvGenerator("./tp4/out/pool/dt/",
+                    outputFilename,
                     currentTable,
                     POCKETS,
                     persistingMultiplier
