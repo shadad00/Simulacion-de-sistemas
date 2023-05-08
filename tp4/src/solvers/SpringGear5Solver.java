@@ -61,7 +61,7 @@ public class SpringGear5Solver implements IntegralSolver{
          * Δa = Δr2 = a(t+Δt) - ap(t+Δt) = r2(t+Δt) - r2p(t+Δt)
          */
 
-        double drx2 = (-km * rxp -  (gamma/mass) * rx1) - rxp2;
+        double drx2 = (-km * rxp -  (gamma/mass) * rxp1) - rxp2;
         double R2 = drx2 * pow(dt, 2) / 2;
 
 
@@ -79,6 +79,11 @@ public class SpringGear5Solver implements IntegralSolver{
         rxc4 = rxp4 + alphas[idx][4] * R2 * 24 / pow(dt, 4);
         rxc5 = rxp5 + alphas[idx][5] * R2 * 120 / pow(dt, 5);
 
+
+
+        this.rx3 = rxc3;
+        this.rx4 = rxc4;
+        this.rx5 = rxc5;
         return new ParticleDynamics(
                 new Pair(rxc, 0.),
                 new Pair(rxc1, 0.),
