@@ -41,7 +41,7 @@ public class SpringGearModel {
 
     public static void main(String[] args) {
         double[] dts = new double[]{1e-2, 1e-3, 1e-4, 1e-5, 1e-6};
-        double dt2 = 1e-2;
+        double dt2 = 1e-3;
 
         for (double dt : dts) {
             SpringGearModel model = new SpringGearModel();
@@ -55,7 +55,8 @@ public class SpringGearModel {
             writer.writeNext(CSV_HEADER, false);
             double time = 0;
             int step = 0;
-            int printStep = dt2 > dt ? (int) (dt2 / dt) : 1;
+            int printStep = dt2 > dt ? (int) Math.ceil(dt2 / dt) : 1;
+            System.out.printf("step dt=%f dt2=%f division=%f printStep=%d%n",dt,dt2, dt2/dt,printStep);
             while (time <= FINAL_TIME) {
                 if (step % printStep == 0) {
                     ArrayList<String> strings = new ArrayList<>();
@@ -69,8 +70,6 @@ public class SpringGearModel {
                 time += dt;
                 step++;
             }
-            System.out.println("dt : " + dt);
-            System.out.println("LAST TIME :" + time);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
