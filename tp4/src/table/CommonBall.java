@@ -28,7 +28,9 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         this.mass = other.mass;
         this.radius = other.radius;
         this.ballNumber = other.ballNumber;
-        this.position_derivatives = other.getPosition_derivatives();
+        this.position_derivatives = new double[2][];
+        for (int i = 0; i < other.getPosition_derivatives().length; i++)
+            this.position_derivatives[i] = Arrays.copyOf(other.getPosition_derivatives()[i],other.getPosition_derivatives()[i].length);
     }
     
     public CommonBall(final int ballNumber, Pair position,
