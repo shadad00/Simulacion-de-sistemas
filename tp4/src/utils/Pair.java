@@ -25,6 +25,19 @@ public class Pair {
         this.y += otherForce.getY();
     }
 
+    /**
+     * Get the axis value
+     *
+     * @param axis 0 for x, 1 for y
+     */
+    public double getValue(final int axis) {
+        switch (axis) {
+            case 0: return x;
+            case 1: return y;
+            default: throw new IllegalArgumentException("Invalid axis");
+        }
+    }
+
     @Override
     public String toString() {
         return String.format("{%s, %s}", x, y);

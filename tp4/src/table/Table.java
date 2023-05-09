@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Table implements Iterable<Table> {
     protected static final double BALL_DIAMETER = 5.7;
     protected static final double POCKET_DIAMETER = BALL_DIAMETER * 2;
-    protected static final double BALL_MASS = 165.0;
+    protected static final double BALL_MASS = 0.165;
     protected static final double LOWER_EPSILON = 0.02;
     protected static final double UPPER_EPSILON = 0.03;
     public static final double WHITE_BALL_INITIAL_X = 56.;
@@ -18,7 +18,7 @@ public class Table implements Iterable<Table> {
     public static final double WHITE_BALL_INITIAL_Y_VEL = 0.;
     public static final double TRIANGLE_X_START = 168.56;
     public static final double TRIANGLE_Y_START = 56.;
-    private int balls_goal = 8;
+    private int balls_goal = 7;
 
     protected int iteration = 0;
     protected Set<CommonBall> balls;
@@ -88,8 +88,24 @@ public class Table implements Iterable<Table> {
     }
 
     public Table getNextTable() {
-        balls.forEach(this::updateForce);
-        balls.forEach((ball)-> ball.updatePosition(this.deltaTime));
+        // Primero predecimos todos los r
+        for (final CommonBall ball : balls)
+            ball.updateWithPrediction(deltaTime);
+
+        // Usamos las predicciones para calcular fuerzas con valores predichos
+        Map<Integer, Pair> newForces = new HashMap<>();
+        for (final CommonBall ball : balls) {
+            final Pair newForce = nextForce(ball, balls);
+
+            newForces.put(ball.getBallNumber(), newForce);
+        }
+
+        for (final CommonBall ball : balls) {
+            final Pair newForce = newForces.get(ball.getBallNumber());
+
+            ball.correctPrediction(newForce, deltaTime);
+        }
+
         this.simulationTime += this.deltaTime;
         this.balls = deleteInsideBalls();
         return new Table(this);
@@ -131,10 +147,10 @@ public class Table implements Iterable<Table> {
     }
 
 
-    private void updateForce(CommonBall ball){
+    private Pair nextForce(final CommonBall ball, final Set<CommonBall> otherBalls){
         Pair newForce = Pair.of(0., 0.);
 
-        for (CommonBall otherBall : balls) {
+        for (CommonBall otherBall : otherBalls) {
             if (ball.equals(otherBall))
                 continue;
 
@@ -147,7 +163,7 @@ public class Table implements Iterable<Table> {
         newForce.add(ball.forceBetweenRightWall(width));
         newForce.add(ball.forceBetweenTopWall(height));
 
-        ball.setForce(newForce);
+        return newForce;
     }
 
     private void positionColorBalls() {

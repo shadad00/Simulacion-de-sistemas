@@ -11,10 +11,11 @@ import static java.lang.Math.pow;
 @Getter
 @Setter
 public class CommonBall extends Ball implements Comparable<CommonBall> {
-    private static final double k = Math.pow(10, 6); // TODO: revisar si las unidades estan bien N/m
+    private static final double k = Math.pow(10, 2); // TODO: revisar si las unidades estan bien N/m
     private final int ballNumber;
-    private final double[] multipliers = {3. / 20, 251. / 360, 1, 11. / 18, 1. / 6, 1. / 60};
+    private final double[] multipliers = {3. / 20, 251. / 360, 1., 11. / 18, 1. / 6, 1. / 60};
     private double[][] position_derivatives = null;
+    private double[][] predictions = null;
 
 
     public CommonBall(CommonBall other){
@@ -32,43 +33,49 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     public CommonBall(final int ballNumber, Pair position,
                       Pair velocity,Pair acceleration ,Pair force,
                       final Double mass, final Double radius) {
-        super(position, velocity, acceleration, force,mass, radius);
+        super(position, velocity, acceleration, force, mass, radius);
         this.ballNumber = ballNumber;
         this.position_derivatives = new double[2][];
         position_derivatives[0] = new double[]
-                {position.getX(), velocity.getX(),acceleration.getX(),0.,0.};
+                {position.getX(), velocity.getX(),acceleration.getX(),0.,0.,0.};
         position_derivatives[1] = new double[]
-                {position.getY(), velocity.getY(),acceleration.getY(),0.,0.};
+                {position.getY(), velocity.getY(),acceleration.getY(),0.,0.,0.};
 
     }
 
-    @Override
-    public void updatePosition(Double dt) {
-        double[][] derivative_predictions = new double[2][5];
+    public void updateWithPrediction(final Double dt) {
+        double[][] derivative_predictions = new double[2][6];
         for (int i = 0; i < position_derivatives.length; i++) {
             for (int j = 0; j < position_derivatives[i].length; j++) {
                 derivative_predictions[i][j] = taylorEvaluation(
-                        Arrays.copyOfRange(position_derivatives[i],j,
-                                position_derivatives[i].length),dt);
+                        Arrays.copyOfRange(position_derivatives[i], j,
+                                position_derivatives[i].length), dt);
             }
         }
 
-        double drx2 = (force.getX() / mass)  - derivative_predictions[0][2];
+        predictions = derivative_predictions;
+        // Esto es solo para calcular la fuerza en base a las posiciones predichas,
+        // luego cuando se corrige, se setea la posicion final
+        setPosition(Pair.of(predictions[0][0], predictions[1][0]));
+    }
+
+    public void correctPrediction(final Pair newForce, final Double dt) {
+        double drx2 = (newForce.getX() / mass)  - predictions[0][2];
         double R2x = drx2 * pow(dt, 2) / 2;
-        double dry2 = (force.getY() / mass)  - derivative_predictions[1][2];
+        double dry2 = (newForce.getY() / mass)  - predictions[1][2];
         double R2y = dry2 * pow(dt, 2) / 2;
         double[] rectifier = {R2x, R2y};
 
-
-        for (int i = 0; i < derivative_predictions.length; i++) {
-            for (int j = 0; j < derivative_predictions[i].length; j++) {
+        double[][] newPositions = new double[2][6];
+        for (int i = 0; i < predictions.length; i++) {
+            for (int j = 0; j < predictions[i].length; j++) {
                 int jFact = factorial(j);
-                derivative_predictions[i][j] += multipliers[j] * rectifier[i] * jFact / pow(dt,j);
+                newPositions[i][j] = predictions[i][j] + multipliers[j] * rectifier[i] * jFact / pow(dt,j);
             }
         }
 
-        position_derivatives[0] = derivative_predictions[0];
-        position_derivatives[1] = derivative_predictions[1];
+        position_derivatives[0] = newPositions[0];
+        position_derivatives[1] = newPositions[1];
 
         setPosition(new Pair(position_derivatives[0][0],position_derivatives[1][0]));
         setVelocity(new Pair(position_derivatives[0][1],position_derivatives[1][1]));
@@ -104,25 +111,41 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     public Pair forceBetweenRightWall(double wallX) {
         if (position.getX() + getRadius() < wallX)
             return Pair.ZERO;
-        return Pair.of(-k, 0);
+
+        double xDiff = Math.abs(position.getX() - wallX);
+        double F = k * (xDiff - getRadius());
+
+        return Pair.of(F, 0);
     }
 
     public Pair forceBetweenLeftWall() {
         if (position.getX() - getRadius() > 0)
             return Pair.ZERO;
-        return Pair.of(k, 0);
+
+        double xDiff = Math.abs(position.getX());
+        double F = -k * (xDiff - getRadius());
+
+        return Pair.of(F, 0);
     }
 
     public Pair forceBetweenTopWall(double wallY) {
         if (position.getY() + getRadius() < wallY)
             return Pair.ZERO;
-        return Pair.of(0, -k);
+
+        double yDiff = Math.abs(position.getY() - wallY);
+        double F = k * (yDiff - getRadius());
+
+        return Pair.of(0, F);
     }
 
     public Pair forceBetweenBottomWall() {
-        if ( position.getY() - getRadius() > 0 )
+        if (position.getY() - getRadius() > 0)
             return Pair.ZERO;
-        return Pair.of(0, k);
+
+        double yDiff = Math.abs(position.getY());
+        double F = -k * (yDiff - getRadius());
+
+        return Pair.of(0, F);
     }
 
     @Override
