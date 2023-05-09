@@ -5,6 +5,7 @@ import lombok.Setter;
 import utils.Pair;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Set;
 
 import static java.lang.Math.pow;
@@ -56,32 +57,48 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             }
         }
 
-        predictions = derivative_predictions;
+        predictions = Arrays.copyOf(derivative_predictions, derivative_predictions.length);
         // Esto es solo para calcular la fuerza en base a las posiciones predichas,
         // luego cuando se corrige, se setea la posicion final
         setPosition(Pair.of(predictions[0][0], predictions[1][0]));
     }
 
-    public Pair sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight) {
-        Pair newForce = Pair.of(0., 0.);
+    public void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight) {
 
         for (CommonBall otherBall : otherBalls) {
-            if (this.equals(otherBall))
-                continue;
-
             Pair forceBetweenBalls = forceBetween(otherBall);
-            newForce.add(forceBetweenBalls);
+            if (!forceBetweenBalls.equals(Pair.ZERO)){
+                this.force.add(forceBetweenBalls);
+                otherBall.getForce().add(
+                        Pair.of(-forceBetweenBalls.getX(),-forceBetweenBalls.getY()));
+            }
         }
 
-        newForce.add(forceBetweenLeftWall());
-        newForce.add(forceBetweenBottomWall());
-        newForce.add(forceBetweenRightWall(tableWidth));
-        newForce.add(forceBetweenTopWall(tableHeight));
+        Pair force = forceBetweenLeftWall();
+        if(!force.equals(Pair.ZERO)){
+            this.force.add(force);
+            return;
+        }
+        force = forceBetweenBottomWall();
+        if(!force.equals(Pair.ZERO)){
+            this.force.add(force);
+            return;
+        }
+        force = forceBetweenRightWall(tableWidth);
+        if(!force.equals(Pair.ZERO)){
+            this.force.add(force);
+            return;
+        }
+        force = forceBetweenTopWall(tableHeight);
+        if(!force.equals(Pair.ZERO)){
+            this.force.add(force);
+            return;
+        }
 
-        return newForce;
     }
 
-    public void correctPrediction(final Pair newForce, final Double dt) {
+    public void correctPrediction(final Double dt) {
+        Pair newForce = this.getForce();
         double drx2 = (newForce.getX() / mass)  - predictions[0][2];
         double R2x = drx2 * pow(dt, 2) / 2;
         double dry2 = (newForce.getY() / mass)  - predictions[1][2];
@@ -96,8 +113,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             }
         }
 
-        position_derivatives[0] = newPositions[0];
-        position_derivatives[1] = newPositions[1];
+        position_derivatives[0] = Arrays.copyOf(newPositions[0], newPositions[0].length);
+        position_derivatives[1] = Arrays.copyOf(newPositions[1], newPositions[1].length);
 
         setPosition(new Pair(position_derivatives[0][0],position_derivatives[1][0]));
         setVelocity(new Pair(position_derivatives[0][1],position_derivatives[1][1]));
@@ -131,41 +148,41 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     }
 
     public Pair forceBetweenRightWall(double wallX) {
-        if (position.getX() + getRadius() < wallX)
+        if (position.getX() + getRadius() <= wallX)
             return Pair.ZERO;
 
-        double xDiff = Math.abs(position.getX() - wallX);
-        double F = k * (xDiff - getRadius());
+        double xDiff = Math.abs(position.getX() + getRadius() - wallX);
+        double F = - k * Math.abs(xDiff);
 
         return Pair.of(F, 0);
     }
 
     public Pair forceBetweenLeftWall() {
-        if (position.getX() - getRadius() > 0)
+        if (position.getX() - getRadius() >= 0)
             return Pair.ZERO;
 
-        double xDiff = Math.abs(position.getX());
-        double F = -k * (xDiff - getRadius());
+        double xDiff = Math.abs(position.getX() - getRadius());
+        double F = k * Math.abs(xDiff);
 
         return Pair.of(F, 0);
     }
 
     public Pair forceBetweenTopWall(double wallY) {
-        if (position.getY() + getRadius() < wallY)
+        if (position.getY() + getRadius() <= wallY)
             return Pair.ZERO;
 
-        double yDiff = Math.abs(position.getY() - wallY);
-        double F = k * (yDiff - getRadius());
+        double yDiff = Math.abs(position.getY() + getRadius() - wallY);
+        double F = - k * Math.abs(yDiff);
 
         return Pair.of(0, F);
     }
 
     public Pair forceBetweenBottomWall() {
-        if (position.getY() - getRadius() > 0)
+        if (position.getY() - getRadius() >= 0)
             return Pair.ZERO;
 
-        double yDiff = Math.abs(position.getY());
-        double F = -k * (yDiff - getRadius());
+        double yDiff = Math.abs(position.getY() - getRadius());
+        double F = k * Math.abs(yDiff);
 
         return Pair.of(0, F);
     }
@@ -215,6 +232,19 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             resultado *= i;
         }
         return resultado;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CommonBall that = (CommonBall) o;
+        return ballNumber == that.ballNumber;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ballNumber);
     }
 
     @Override

@@ -88,27 +88,28 @@ public class Table implements Iterable<Table> {
     }
 
     public Table getNextTable() {
+        System.out.println(this.iteration);
         // Primero predecimos todos los r
         for (final CommonBall ball : balls)
             ball.updateWithPrediction(deltaTime);
 
-        // Usamos las predicciones para calcular fuerzas con valores predichos
-        Map<Integer, Pair> newForces = new HashMap<>();
-        for (final CommonBall ball : balls) {
-            final Pair newForce = ball.sumForces(balls, width, height);
+        this.balls.forEach(commonBall -> commonBall.setForce(Pair.of(0.,0.)));
 
-            newForces.put(ball.getBallNumber(), newForce);
+        // Usamos las predicciones para calcular fuerzas con valores predichos
+        Set<CommonBall> ballSet = new TreeSet<>(this.balls);
+        for (final CommonBall ball : balls) {
+            ballSet.remove(ball);
+            ball.sumForces(ballSet, width, height);
         }
 
         for (final CommonBall ball : balls) {
-            final Pair newForce = newForces.get(ball.getBallNumber());
-
-            ball.correctPrediction(newForce, deltaTime);
+            ball.correctPrediction(deltaTime);
         }
 
         this.simulationTime += this.deltaTime;
-        this.balls = deleteInsideBalls();
-        return new Table(this);
+        if(this.pocketBalls.size() > 0)
+            this.balls = deleteInsideBalls();
+        return this;
     }
 
     public boolean hasFinished(){

@@ -4,13 +4,13 @@ import java.io.IOException;
 
 public class SecondExercise {
 
-    private final static int SIMULATIONS_PER_Y_POSITION = 2;
+    private final static int SIMULATIONS_PER_Y_POSITION = 1;
     private static final double TABLE_HEIGHT = 112.;
     private static final double TABLE_WIDTH = 224.;
     
-    private static final double FINAL_TIME = 1.;
+    private static final double FINAL_TIME = 6.;
 
-    private static final double DELTA_TIME = Math.pow(10, -4);
+    private static final double DELTA_TIME = Math.pow(10, -5);
     private static final int MULTIPLIER = (int) Math.pow(10, 2);
 
     private static boolean POCKETS = true;
@@ -22,7 +22,7 @@ public class SecondExercise {
     public static void runAll()  {
         double start = 42.;
         double end = 56.;
-        double dy = ( end - start) / 20. ;
+        double dy = ( end - start) / 4 ;
         double current = start;
         while (current <= end){
             for (int i = 0; i < SIMULATIONS_PER_Y_POSITION; i++)
