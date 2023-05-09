@@ -5,6 +5,7 @@ import lombok.Setter;
 import utils.Pair;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import static java.lang.Math.pow;
 
@@ -57,6 +58,25 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         // Esto es solo para calcular la fuerza en base a las posiciones predichas,
         // luego cuando se corrige, se setea la posicion final
         setPosition(Pair.of(predictions[0][0], predictions[1][0]));
+    }
+
+    public Pair sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight) {
+        Pair newForce = Pair.of(0., 0.);
+
+        for (CommonBall otherBall : otherBalls) {
+            if (this.equals(otherBall))
+                continue;
+
+            Pair forceBetweenBalls = forceBetween(otherBall);
+            newForce.add(forceBetweenBalls);
+        }
+
+        newForce.add(forceBetweenLeftWall());
+        newForce.add(forceBetweenBottomWall());
+        newForce.add(forceBetweenRightWall(tableWidth));
+        newForce.add(forceBetweenTopWall(tableHeight));
+
+        return newForce;
     }
 
     public void correctPrediction(final Pair newForce, final Double dt) {

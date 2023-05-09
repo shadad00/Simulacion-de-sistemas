@@ -95,7 +95,7 @@ public class Table implements Iterable<Table> {
         // Usamos las predicciones para calcular fuerzas con valores predichos
         Map<Integer, Pair> newForces = new HashMap<>();
         for (final CommonBall ball : balls) {
-            final Pair newForce = nextForce(ball, balls);
+            final Pair newForce = ball.sumForces(balls, width, height);
 
             newForces.put(ball.getBallNumber(), newForce);
         }
@@ -144,26 +144,6 @@ public class Table implements Iterable<Table> {
                 outsideBalls.add(ball);
         }
         return outsideBalls;
-    }
-
-
-    private Pair nextForce(final CommonBall ball, final Set<CommonBall> otherBalls){
-        Pair newForce = Pair.of(0., 0.);
-
-        for (CommonBall otherBall : otherBalls) {
-            if (ball.equals(otherBall))
-                continue;
-
-            Pair forceBetweenBalls = ball.forceBetween(otherBall);
-            newForce.add(forceBetweenBalls);
-        }
-
-        newForce.add(ball.forceBetweenLeftWall());
-        newForce.add(ball.forceBetweenBottomWall());
-        newForce.add(ball.forceBetweenRightWall(width));
-        newForce.add(ball.forceBetweenTopWall(height));
-
-        return newForce;
     }
 
     private void positionColorBalls() {
