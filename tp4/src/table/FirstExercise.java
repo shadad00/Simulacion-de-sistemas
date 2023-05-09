@@ -27,14 +27,14 @@ public class FirstExercise {
                 for (int j = 2; j <= 6; j++) {
                     Table currentTable = new Table(table);
                     currentTable.setDeltaTime(Math.pow(10, -j));
-                    run(currentTable , (int) Math.pow(10, j - 2));
+                    run(currentTable , (int) Math.pow(10, j - 2),j );
                 }
             }
         }
     }
 
-    public static void run(Table currentTable, int persistingMultiplier) {
-        String outputFilename = String.format("pool_dt%f", currentTable.getDeltaTime());
+    public static void run(Table currentTable, int persistingMultiplier, int j) {
+        String outputFilename = String.format("pool_dt%d", j );
         try {
             System.out.println("Generating " + outputFilename + "...");
             new CsvGenerator("./tp4/out/pool/dt/",
