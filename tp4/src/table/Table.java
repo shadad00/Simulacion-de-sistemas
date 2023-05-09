@@ -10,7 +10,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class Table implements Iterable<Table> {
     protected static final double BALL_DIAMETER = 5.7;
     protected static final double POCKET_DIAMETER = BALL_DIAMETER * 2;
-    protected static final double BALL_MASS = 165.0;
+    protected static final double BALL_MASS = 0.165;
     protected static final double LOWER_EPSILON = 0.02;
     protected static final double UPPER_EPSILON = 0.03;
     public static final double WHITE_BALL_INITIAL_X = 56.;

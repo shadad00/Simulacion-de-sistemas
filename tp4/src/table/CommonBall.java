@@ -11,7 +11,7 @@ import static java.lang.Math.pow;
 @Getter
 @Setter
 public class CommonBall extends Ball implements Comparable<CommonBall> {
-    private static final double k = Math.pow(10, 6); // TODO: revisar si las unidades estan bien N/m
+    private static final double k = Math.pow(10, 2); // TODO: revisar si las unidades estan bien N/m
     private final int ballNumber;
     private final double[] multipliers = {3. / 20, 251. / 360, 1, 11. / 18, 1. / 6, 1. / 60};
     private double[][] position_derivatives = null;
