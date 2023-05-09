@@ -12,9 +12,9 @@ import java.util.Set;
 
 public class OvitoWriter {
 
-    private static String IN_FILE_42 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp4/src/animation/pool_y42.00_i0.csv";
+    private static String IN_FILE_42 = "pool_y42.00_i0.csv";
 
-    private static String OUT_FILE_42 = "/home/shadad/Desktop/tp2pod/simulacion-de-sistemas/tp4/src/animation/pool_y42.00_i0";
+    private static String OUT_FILE_42 = "tp4/src/animation/pool_y42.00_i0";
 
     private static boolean POCKET = true;
 

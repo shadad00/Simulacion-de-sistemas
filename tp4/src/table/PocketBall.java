@@ -10,11 +10,6 @@ public class PocketBall extends Ball {
     }
 
     @Override
-    public void updatePosition(Double dt) {
-        return;
-    }
-
-    @Override
     public boolean isPocket() {
         return true;
     }

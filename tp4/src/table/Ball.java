@@ -35,8 +35,6 @@ public abstract class Ball {
 
     abstract public boolean isPocket();
 
-    abstract public void updatePosition(Double dt);
-
     public Pair getPosition() {
         return position;
     }
