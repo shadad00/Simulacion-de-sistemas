@@ -8,7 +8,7 @@ public class SecondExercise {
     private static final double TABLE_HEIGHT = 112.;
     private static final double TABLE_WIDTH = 224.;
     
-    private static final double FINAL_TIME = 100.;
+    private static final double FINAL_TIME = 1.;
 
     private static final double DELTA_TIME = Math.pow(10, -4);
     private static final int MULTIPLIER = (int) Math.pow(10, 2);
@@ -35,7 +35,8 @@ public class SecondExercise {
         String outputFilename = String.format("pool_y%.2f_i%d", whiteBallY, iteration);
         try {
             System.out.println("Generating " + outputFilename + "...");
-            new CsvGenerator(outputFilename,
+            new CsvGenerator("./tp4/out/pool/yposition/",
+                    outputFilename,
                     whiteBallY,
                     TABLE_WIDTH,
                     TABLE_HEIGHT,

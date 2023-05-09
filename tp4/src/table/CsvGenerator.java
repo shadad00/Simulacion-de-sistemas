@@ -11,17 +11,17 @@ public class CsvGenerator {
     final static String FORMAT = "%d,%f,%d,%f,%f,%f,%f,%f,%f,%f,%f\n";
     private final BufferedWriter bw;
 
-    public CsvGenerator(String outputFile, double whiteBallY, double width, double height,
+    public CsvGenerator(String outputDirectory, String outputFile, double whiteBallY, double width, double height,
                         double finalTime, double deltaTime, boolean pockets,
                         int persistingMultiplier
                         ) throws IOException {
-        this(outputFile, new Table(whiteBallY,width,height, finalTime, deltaTime),
+        this(outputDirectory,outputFile, new Table(whiteBallY,width,height, finalTime, deltaTime),
                 pockets, persistingMultiplier);
     }
 
-    public CsvGenerator(String outputFile, Table table,
+    public CsvGenerator(String outputDirectory, String outputFile, Table table,
                         boolean pockets, int persistingMultiplier) throws IOException{
-        File csvFile = new File("./" + outputFile +".csv");
+        File csvFile = new File( outputDirectory + outputFile +".csv");
         if (!csvFile.exists() && !csvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
         }

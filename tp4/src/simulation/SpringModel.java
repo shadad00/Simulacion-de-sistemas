@@ -4,6 +4,7 @@ import com.opencsv.CSVWriter;
 import solvers.*;
 import utils.Pair;
 
+import javax.swing.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,14 +41,14 @@ public class SpringModel {
     public static void main(String[] args) {
 
         double[] dts = new double[]{1e-2, 1e-3, 1e-4, 1e-5, 1e-6};
-        double dt2 = 1e-2;
+        double dt2 = 1e-3;
 
-        for(double dt: dts){
+        for (double dt : dts) {
             IntegralSolver[] solvers = new IntegralSolver[]{
                     new EulerSimpleSolver(),
                     new VerletOriginalSolver(),
                     new BeemanSolver(SPRING_K, SPRING_GAMMA),
-                    new SpringGear5Solver(SPRING_K,5, SPRING_GAMMA)
+                    new SpringGear5Solver(SPRING_K, 5, SPRING_GAMMA)
             };
             for (IntegralSolver solver : solvers) {
                 SpringModel springModel = new SpringModel(solver);
@@ -62,7 +63,7 @@ public class SpringModel {
             writer.writeNext(CSV_HEADER, false);
             double time = 0;
             int step = 0;
-            int printStep = dt2 > dt ? (int) (dt2 / dt) : 1;
+            int printStep = dt2 > dt ? (int) Math.ceil(dt2 / dt) : 1;
             while (time <= FINAL_TIME) {
                 if (step % printStep == 0) {
                     ArrayList<String> strings = new ArrayList<>();
@@ -77,8 +78,6 @@ public class SpringModel {
                 step++;
 //                k++;
             }
-            System.out.println("dt : " + dt);
-            System.out.println("LAST TIME :" + time);
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
