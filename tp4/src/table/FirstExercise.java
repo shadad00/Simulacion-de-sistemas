@@ -27,7 +27,7 @@ public class FirstExercise {
                 for (int j = 2; j <= 6; j++) {
                     Table currentTable = new Table(table);
                     currentTable.setDeltaTime(Math.pow(10, -j));
-                    run(currentTable , (int) Math.pow(10, j + 2 - 2),j );
+                    run(currentTable , (int) Math.pow(10, j  - 2),j );
                 }
             }
         }

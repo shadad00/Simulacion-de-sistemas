@@ -19,6 +19,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     private double[][] position_derivatives = null;
     private double[][] predictions = null;
 
+    private Pair positionPrediction = Pair.of(0.,0.) ;
+
 
     public CommonBall(CommonBall other){
         super();
@@ -63,14 +65,14 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         setPosition(Pair.of(predictions[0][0], predictions[1][0]));
     }
 
+
     public void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight) {
+       this.force = new Pair(0,0);
 
         for (CommonBall otherBall : otherBalls) {
             Pair forceBetweenBalls = forceBetween(otherBall);
             if (!forceBetweenBalls.equals(Pair.ZERO)){
                 this.force.add(forceBetweenBalls);
-                otherBall.getForce().add(
-                        Pair.of(-forceBetweenBalls.getX(),-forceBetweenBalls.getY()));
             }
         }
 
@@ -120,6 +122,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         setVelocity(new Pair(position_derivatives[0][1],position_derivatives[1][1]));
         setAcceleration(new Pair(position_derivatives[0][2], position_derivatives[1][2]));
     }
+
+
 
     public boolean isOverlapping(Ball otherBall){
         double xDiff = otherBall.getPosition().getX() - getPosition().getX();
@@ -250,5 +254,9 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     @Override
     public int compareTo(CommonBall o) {
         return Integer.compare(this.ballNumber, o.ballNumber);
+    }
+
+    public Double getRadius() {
+        return radius;
     }
 }

@@ -5,6 +5,8 @@ import utils.Pair;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 public class Table implements Iterable<Table> {
@@ -29,6 +31,8 @@ public class Table implements Iterable<Table> {
     protected double finalTime = 0;
     protected double deltaTime = 0;
 
+    protected NoPeriodicGrid cim ;
+
     protected Set<PocketBall> pocketBalls = new HashSet<>();
 
     public Table(final Set<CommonBall> balls, final double width, final double height,
@@ -47,7 +51,7 @@ public class Table implements Iterable<Table> {
          this.initWhiteBallY = other.initWhiteBallY;
          this.balls = new TreeSet<>();
          for (CommonBall ball : other.balls)
-             this.balls.add(new CommonBall(ball));
+             this.balls.add(new CommonBallWithEuler(ball));
          this.simulationTime = other.simulationTime;
          this.width = other.width;
          this.height = other.height;
@@ -89,17 +93,25 @@ public class Table implements Iterable<Table> {
 
     public Table getNextTable() {
         System.out.println(this.iteration);
+
         // Primero predecimos todos los r
         for (final CommonBall ball : balls)
             ball.updateWithPrediction(deltaTime);
 
-        this.balls.forEach(commonBall -> commonBall.setForce(Pair.of(0.,0.)));
+        this.cim = new NoPeriodicGrid( 2* this.width, 12 );
+        this.cim.placeBalls(this.balls);
+        this.cim.computeDistanceBetweenBalls();
 
-        // Usamos las predicciones para calcular fuerzas con valores predichos
-        Set<CommonBall> ballSet = new TreeSet<>(this.balls);
         for (final CommonBall ball : balls) {
-            ballSet.remove(ball);
-            ball.sumForces(ballSet, width, height);
+            Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
+            Set<CommonBall> other;
+            if (otherDistance != null){
+                other = otherDistance.stream().map(
+                        ballAndDistance -> ballAndDistance.getOtherBall()).
+                        collect(Collectors.toSet());
+            }else
+                other = new HashSet<>();
+            ball.sumForces( other, width, height);
         }
 
         for (final CommonBall ball : balls) {
@@ -160,7 +172,7 @@ public class Table implements Iterable<Table> {
             for (int j = 0; j <= i; j++) {
                 double y = yStart + (BALL_DIAMETER + UPPER_EPSILON / 2) * j + (UPPER_EPSILON - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON));
 
-                CommonBall colorBall = CommonBall.buildColoredBall(ballNumber++,
+                CommonBall colorBall = CommonBallWithEuler.buildColoredBall(ballNumber++,
                         new Pair(xRow, y),
                         BALL_MASS,
                         BALL_DIAMETER / 2);
@@ -187,12 +199,12 @@ public class Table implements Iterable<Table> {
     private void positionWhiteBall(double whiteBallY) {
         Pair whiteBallPosition = new Pair(WHITE_BALL_INITIAL_X, whiteBallY);
         Pair whiteBallVelocity = new Pair(WHITE_BALL_INITIAL_X_VEL, WHITE_BALL_INITIAL_Y_VEL);
-        CommonBall whiteBall = CommonBall.buildWhiteBall(whiteBallPosition, whiteBallVelocity, BALL_MASS, BALL_DIAMETER / 2);
+        CommonBall whiteBall = CommonBallWithEuler.buildWhiteBall(whiteBallPosition, whiteBallVelocity, BALL_MASS, BALL_DIAMETER / 2);
         balls.add(whiteBall);
     }
 
     public void positionPockets() {
-        this.balls_goal = 0 ;
+        this.balls_goal = 1 ;
         for (int i = 0; i <= 1; i++) {
             double y = i * 112.;
             for (int j = 0; j < 3; j++) {

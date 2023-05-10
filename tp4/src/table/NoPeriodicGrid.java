@@ -1,4 +1,5 @@
-package simulation;
+package table;
+
 
 import java.util.*;
 
@@ -14,20 +15,20 @@ public class NoPeriodicGrid extends Grid {
     }
 
     @Override
-    protected void placeParticle(Particle particle) {
-        final Cell cell = getParticleCell(particle);
+    protected void placeBall(CommonBall ball) {
+        final Cell cell = getBallCell(ball);
 
-        cell.addParticle(particle);
+        cell.addBall(ball);
     }
 
     @Override
-    public double distanceBetweenParticles(final Particle p1, final Particle p2) {
-        final double xDelta = p1.getX() - p2.getX();
-        final double yDelta = p1.getY() - p2.getY();
+    public double distanceBetweenBalls(final CommonBall p1, final CommonBall p2) {
+        final double xDelta = p1.getPosition().getX() - p2.getPosition().getX();
+        final double yDelta = p1.getPosition().getY() - p2.getPosition().getY();
         final double totalRadius = p1.getRadius() + p2.getRadius();
         final double distance = Math.sqrt((Math.pow(xDelta, 2) + Math.pow(yDelta, 2))) - totalRadius;
 
-        return distance >= 0 ? distance : 0 ;
+        return distance ;
     }
 
     @Override
@@ -50,6 +51,15 @@ public class NoPeriodicGrid extends Grid {
         }
 
         return candidateCells;
+    }
+
+
+    public void clearParticles() {
+        for (int i = 0; i < this.cellQuantity; i++) {
+            for (int j = 0; j < this.cellQuantity; j++) {
+                this.cells[i][j] = new Cell(i, j);
+            }
+        }
     }
 
 }
