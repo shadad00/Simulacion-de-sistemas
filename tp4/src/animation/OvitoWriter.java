@@ -12,17 +12,18 @@ import java.util.Set;
 
 public class OvitoWriter {
 
-    private static String IN_FILE_42 = "tp4/src/animation/pool_y49.00_i3.csv";
+    private static String IN_FILE_42 = "tp4/src/animation/pool_y42.00_i0.csv";
 
+    private static String IN_FILE_50 = "tp4/src/animation/pool_y45.50_i0.csv";
+    private static String IN_FILE_53 = "tp4/src/animation/pool_y55.30_i0.csv";
     private static String OUT_FILE_42 = "tp4/src/animation/pool_y42.00_i0";
 
+    private static String OUT_FILE_50 = "tp4/src/animation/pool_y45.50_i0";
+    private static String OUT_FILE_53 = "tp4/src/animation/pool_y55.30_i0";
+
+    private static String[] IN_FILES = {IN_FILE_42, IN_FILE_50, IN_FILE_53};
+    private static String[] OUT_FILES = {OUT_FILE_42, OUT_FILE_50, OUT_FILE_53};
     private static boolean POCKET = true;
-
-    private static String[] IN_FILES = {IN_FILE_42};
-
-    private static String[] OUT_FILES = {OUT_FILE_42};
-
-
 
     public static void main(String[] args) throws IOException {
         for (int i = 0; i < IN_FILES.length; i++) {

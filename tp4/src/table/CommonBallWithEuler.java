@@ -16,14 +16,14 @@ public class CommonBallWithEuler extends CommonBall{
 
 
     @Override
-    public void updateWithPrediction(Double dt) {
+    public void updateWithPrediction() {
         lastPosition = position;
         position.setX(position.getX() + velocity.getX() * dt);
         position.setY(position.getY() + velocity.getY() * dt);
     }
 
     @Override
-    public void correctPrediction(Double dt) {
+    public void correctPrediction() {
         acceleration.setX(force.getX() / mass);
         acceleration.setY(force.getY() / mass);
         velocity.setX(velocity.getX() + acceleration.getX() * dt);
@@ -33,16 +33,23 @@ public class CommonBallWithEuler extends CommonBall{
     }
 
 
-    public static CommonBallWithEuler buildWhiteBall(Pair position, Pair velocity, final Double mass, final Double radius) {
-        return new CommonBallWithEuler(0, position, velocity,
-                new Pair(0., 0.),new Pair(0., 0.),
+    public static CommonBallWithEuler buildWhiteBall(Pair position, Pair velocity,
+            final Double mass, final Double radius, double deltaTime) {
+        CommonBallWithEuler commonBallWithEuler = new CommonBallWithEuler(0, position, velocity,
+                new Pair(0., 0.), new Pair(0., 0.),
                 mass, radius);
+        commonBallWithEuler.setDt(deltaTime);
+        return commonBallWithEuler;
     }
 
-    public static CommonBallWithEuler buildColoredBall(final int ballNumber, Pair position, final Double mass, final Double radius) {
-        return new CommonBallWithEuler(ballNumber, position, new Pair(0., 0.),
-                new Pair(0., 0.),new Pair(0., 0.),
+    public static CommonBallWithEuler buildColoredBall(final int ballNumber, Pair position,
+        final Double mass, final Double radius, double deltaTime) {
+        CommonBallWithEuler commonBallWithEuler = new CommonBallWithEuler(ballNumber, position, new Pair(0., 0.),
+                new Pair(0., 0.), new Pair(0., 0.),
                 mass, radius);
+        commonBallWithEuler
+                .setDt(deltaTime);
+        return commonBallWithEuler;
     }
 
 }

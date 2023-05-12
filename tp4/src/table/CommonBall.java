@@ -16,11 +16,17 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     private static final double k = Math.pow(10, 2); // TODO: revisar si las unidades estan bien N/m
     private final int ballNumber;
     private final double[] multipliers = {3. / 20, 251. / 360, 1., 11. / 18, 1. / 6, 1. / 60};
-    private double[][] position_derivatives = null;
+    private double[][] position_derivatives;
     private double[][] predictions = null;
 
     private Pair positionPrediction = Pair.of(0.,0.) ;
 
+    protected double dt;
+
+    protected int[] factorials = { factorial(0), factorial(1), factorial(2),
+        factorial(3),factorial(4),factorial(5) };
+
+    protected double[] dt_k;
 
     public CommonBall(CommonBall other){
         super();
@@ -49,7 +55,18 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
 
     }
 
-    public void updateWithPrediction(final Double dt) {
+    public void setDt(double dt){
+        this.dt = dt;
+        dt_k = new double[6];
+        for (int k = 0; k < dt_k.length; k++) {
+            dt_k[k] = Math.pow(dt, k);
+        }
+
+    }
+
+
+    public void updateWithPrediction() {
+
         double[][] derivative_predictions = new double[2][6];
         for (int i = 0; i < position_derivatives.length; i++) {
             for (int j = 0; j < position_derivatives[i].length; j++) {
@@ -76,42 +93,26 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             }
         }
 
-        Pair force = forceBetweenLeftWall();
-        if(!force.equals(Pair.ZERO)){
-            this.force.add(force);
-            return;
-        }
-        force = forceBetweenBottomWall();
-        if(!force.equals(Pair.ZERO)){
-            this.force.add(force);
-            return;
-        }
-        force = forceBetweenRightWall(tableWidth);
-        if(!force.equals(Pair.ZERO)){
-            this.force.add(force);
-            return;
-        }
-        force = forceBetweenTopWall(tableHeight);
-        if(!force.equals(Pair.ZERO)){
-            this.force.add(force);
-            return;
-        }
+        this.force.add(forceBetweenLeftWall());
+        this.force.add(forceBetweenBottomWall());
+        this.force.add(forceBetweenRightWall(tableWidth));
+        this.force.add(forceBetweenTopWall(tableHeight));
 
     }
 
-    public void correctPrediction(final Double dt) {
+    public void correctPrediction() {
         Pair newForce = this.getForce();
         double drx2 = (newForce.getX() / mass)  - predictions[0][2];
-        double R2x = drx2 * pow(dt, 2) / 2;
+        double R2x = drx2 * dt_k[2] / 2;
         double dry2 = (newForce.getY() / mass)  - predictions[1][2];
-        double R2y = dry2 * pow(dt, 2) / 2;
+        double R2y = dry2 * dt_k[2] / 2;
         double[] rectifier = {R2x, R2y};
 
         double[][] newPositions = new double[2][6];
         for (int i = 0; i < predictions.length; i++) {
             for (int j = 0; j < predictions[i].length; j++) {
-                int jFact = factorial(j);
-                newPositions[i][j] = predictions[i][j] + multipliers[j] * rectifier[i] * jFact / pow(dt,j);
+                int jFact = factorials[j];
+                newPositions[i][j] = predictions[i][j] + multipliers[j] * rectifier[i] * jFact / dt_k[j];
             }
         }
 
@@ -210,22 +211,28 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     }
 
 
-    public static CommonBall buildWhiteBall(Pair position, Pair velocity, final Double mass, final Double radius) {
-        return new CommonBall(0, position, velocity,
-                new Pair(0., 0.),new Pair(0., 0.),
+    public static CommonBall buildWhiteBall(Pair position, Pair velocity, final Double mass,
+                                            final Double radius, double deltaTime) {
+        CommonBall commonBall = new CommonBall(0, position, velocity,
+                new Pair(0., 0.), new Pair(0., 0.),
                 mass, radius);
+        commonBall.setDt(deltaTime);
+        return commonBall;
     }
 
-    public static CommonBall buildColoredBall(final int ballNumber, Pair position, final Double mass, final Double radius) {
-        return new CommonBall(ballNumber, position, new Pair(0., 0.),
-                new Pair(0., 0.),new Pair(0., 0.),
+    public static CommonBall buildColoredBall(final int ballNumber, Pair position,
+                                              final Double mass, final Double radius, double deltaTime) {
+        CommonBall commonBall = new CommonBall(ballNumber, position, new Pair(0., 0.),
+                new Pair(0., 0.), new Pair(0., 0.),
                 mass, radius);
+        commonBall.setDt(deltaTime);
+        return commonBall;
     }
 
     private double taylorEvaluation(double[] derivatives, double dt){
         double value = 0;
         for (int i = 0; i < derivatives.length; i++) {
-            value += derivatives[i] * (Math.pow(dt,i) / factorial(i));
+            value += derivatives[i] * (this.dt_k[i] / factorials[i]);
         }
         return value;
     }

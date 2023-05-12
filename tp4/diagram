@@ -1,0 +1,38 @@
+@startuml
+
+class table{
+    Set<CommonBall> balls;
+    void placeBalls();
+    Table getNextTable();
+    boolean hasFinished();
+}
+
+table --> "1" CommonBall : balls
+table --> "1" cellIndexMethod : cellIndexMethod
+
+
+class cellIndexMethod{
+    Set<CommonBalls> balls;
+    void placeBalls();
+    void computeDistance();
+    Set<CommonBalls> getNeighbors(CommonBall ball);
+}
+
+class Ball{
+    Position;
+    Velocity;
+    Acceleration;
+}
+
+
+class CommonBall extends Ball{
+    void predictPosition();
+    void computeNewForce();
+    void correctPrediction();
+}
+
+class PocketBall extends Ball{
+    boolean isOverlapping(CommonBall other)
+}
+
+@enduml

@@ -11,7 +11,7 @@ public class FirstExercise {
     private static final double TABLE_HEIGHT = 112.;
     private static final double TABLE_WIDTH = 224.;
     
-    private static final double FINAL_TIME = 10;
+    private static final double FINAL_TIME = 100;
 
     private static boolean POCKETS = false;
 
