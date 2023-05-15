@@ -5,6 +5,9 @@ import lombok.Getter;
 import solvers.IntegralSolver;
 import utils.Pair;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -67,15 +70,23 @@ public class Particle {
     public String[] getCsvStrings() {
         return new String[]{
                 String.valueOf(this.id),
-                String.valueOf(this.dynamics.getR().getX()),
-                String.valueOf(this.dynamics.getR().getY()),
-                String.valueOf(this.dynamics.getV().getX()),
-                String.valueOf(this.dynamics.getV().getY()),
-                String.valueOf(this.dynamics.getA().getX()),
-                String.valueOf(this.dynamics.getA().getY()),
-                String.valueOf(this.getMass()),
-                String.valueOf(this.getRadius()),
+                getFullPrecision(this.dynamics.getR().getX()),
+                getFullPrecision(this.dynamics.getR().getY()),
+                getFullPrecision(this.dynamics.getV().getX()),
+                getFullPrecision(this.dynamics.getV().getY()),
+                getFullPrecision(this.dynamics.getA().getX()),
+                getFullPrecision(this.dynamics.getA().getY()),
+                getFullPrecision(this.getMass()),
+                getFullPrecision(this.getRadius()),
         };
+    }
+
+    private String getFullPrecision(double num) {
+        DecimalFormat df = new DecimalFormat("#.################################");
+//        System.out.printf("Formatteando num = %f%n", num);
+//        BigDecimal bd = new BigDecimal(num);
+//        bd = bd.divide(BigDecimal.valueOf(Math.pow(10, 10)));
+        return df.format(num);
     }
 
     public String getCsv() {
