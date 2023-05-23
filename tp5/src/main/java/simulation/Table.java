@@ -3,74 +3,78 @@ package simulation;
 
 import utils.Pair;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 public class Table implements Iterable<Table> {
-    protected static final double BALL_DIAMETER = 5.7;
-    protected static final double POCKET_DIAMETER = BALL_DIAMETER * 2;
-    protected static final double BALL_MASS = 0.165;
-    protected static final double LOWER_EPSILON = 0.02;
-    protected static final double UPPER_EPSILON = 0.03;
-    public static final double WHITE_BALL_INITIAL_X = 56.;
-    public static final double WHITE_BALL_INITIAL_X_VEL = 100.;
-    public static final double WHITE_BALL_INITIAL_Y_VEL = 0.;
-    public static final double TRIANGLE_X_START = 168.56;
-    public static final double TRIANGLE_Y_START = 56.;
-    private int balls_goal = 9;
+    protected static final double BALL_MASS = 1;
+    protected static final double LOWER_RADIUS = 0.85;
+    protected static final double UPPER_RADIUS = 1.15;
+    protected static int N = 200;
+    protected double deltaTime = Math.pow(10, -3);
+    protected static double WIDTH = 20;
+    protected static double HEIGHT = 70;
+
+    protected static double AMPLITUDE = 0.15;
 
     protected int iteration = 0;
     protected Set<CommonBall> balls;
     protected double simulationTime;
-    protected final double width;
-    protected final double height;
-    protected double initWhiteBallY;
-    protected double finalTime = 0;
-    protected double deltaTime = 0;
+
+    protected double leftGap;
+    protected double rightGap;
+    protected int frequency;
+
+    protected double offset;
+
+
+    protected double finalTime = 1000;
 
     protected NoPeriodicGrid cim ;
 
-    protected Set<PocketBall> pocketBalls = new HashSet<>();
 
-    public Table(final Set<CommonBall> balls, final double width, final double height,
-                 final double time, int iteration){
-        this.height = height;
-        this.width = width;
+    public Table(Double simulationTime,
+                 Set<CommonBall> commonBalls,
+                 int iteration,
+                 double finalTime,
+                 double deltaTime
+    ) {
+        this.simulationTime = simulationTime;
+        this.balls = commonBalls;
+        this.iteration = iteration;
+        this.finalTime = finalTime;
+        this.deltaTime = deltaTime;
+    }
+
+
+    public Table(final Set<CommonBall> balls, final double time, int iteration){
         this.balls = balls;
         this.simulationTime = time;
         this.iteration = iteration;
     }
 
     public Table(Table other){
+         this.frequency = other.frequency;
+         this.leftGap = other.leftGap;
+         this.rightGap = other.rightGap;
          this.iteration = other.iteration;
          this.finalTime = other.finalTime;
          this.deltaTime = other.deltaTime;
-         this.initWhiteBallY = other.initWhiteBallY;
          this.balls = new TreeSet<>();
          for (CommonBall ball : other.balls)
-             this.balls.add(new CommonBallWithEuler(ball));
+             this.balls.add(new CommonBall(ball));
          this.simulationTime = other.simulationTime;
-         this.width = other.width;
-         this.height = other.height;
-         this.pocketBalls = other.pocketBalls;
-        this.balls_goal = other.balls_goal;
     }
 
 
-    public Table(double whiteBallY, final double width, final double height, final double finalTime, final double deltaTime) {
+    public Table(final double gapWidth, final int frequency) {
         this.simulationTime = 0.0;
-        this.width = width;
-        this.height = height;
-        this.finalTime = finalTime;
-        this.deltaTime = deltaTime;
         this.balls = new TreeSet<>();
-        positionWhiteBall(whiteBallY);
-        positionColorBalls();
+        this.leftGap = (WIDTH / 2) - (gapWidth / 2);
+        this.rightGap = (WIDTH / 2) + (gapWidth / 2);
+        this.frequency = frequency;
+        positionBalls();
     }
 
     @Override
@@ -94,13 +98,13 @@ public class Table implements Iterable<Table> {
     }
 
     public Table getNextTable() {
-        System.out.println(this.iteration);
+        moveWalls();
 
         // Primero predecimos todos los r
         for (final CommonBall ball : balls)
             ball.updateWithPrediction();
 
-        this.cim = new NoPeriodicGrid( 2* this.width, 12 );
+        this.cim = new NoPeriodicGrid( 2 * HEIGHT, 12 );
         this.cim.placeBalls(this.balls);
         this.cim.computeDistanceBetweenBalls();
 
@@ -109,11 +113,11 @@ public class Table implements Iterable<Table> {
             Set<CommonBall> other;
             if (otherDistance != null){
                 other = otherDistance.stream().map(
-                        ballAndDistance -> ballAndDistance.getOtherBall()).
+                                BallAndDistance::getOtherBall).
                         collect(Collectors.toSet());
             }else
                 other = new HashSet<>();
-            ball.sumForces( other, width, height);
+            ball.sumForces( other, WIDTH, HEIGHT, leftGap, rightGap, offset);
         }
 
         for (final CommonBall ball : balls) {
@@ -121,104 +125,53 @@ public class Table implements Iterable<Table> {
         }
 
         this.simulationTime += this.deltaTime;
-        if(this.pocketBalls.size() > 0)
-            this.balls = deleteInsideBalls();
+        reinsertBalls();
         return this;
     }
 
     public boolean hasFinished(){
-        return this.balls.size() < balls_goal /*|| Double.compare(this.simulationTime, this.finalTime) > 0*/;
+        return Double.compare(this.simulationTime, this.finalTime) > 0;
     }
 
-    public Table(Double width,
-                 Double height,
-                 Double simulationTime,
-                 Set<CommonBall> commonBalls,
-                 int iteration,
-                 double finalTime,
-                 double deltaTime
-                   ) {
-        this.width = width;
-        this.height = height;
-        this.simulationTime = simulationTime;
-        this.balls = commonBalls;
-        this.iteration = iteration;
-        this.finalTime = finalTime;
-        this.deltaTime = deltaTime;
-    }
 
-    private Set<CommonBall> deleteInsideBalls(){
-        Set<CommonBall> outsideBalls = new HashSet<>();
+
+    private void reinsertBalls(){
+        Random random = new Random();
         for (CommonBall ball : this.balls) {
-            boolean add = true;
-            for (PocketBall pocketBall : this.pocketBalls) {
-                if(ball.isOverlapping(pocketBall)){
-                    add = false;
-                    break;
-                }
-            }
-            if (add)
-                outsideBalls.add(ball);
-        }
-        return outsideBalls;
-    }
-
-    private void positionColorBalls() {
-        ThreadLocalRandom rnd = ThreadLocalRandom.current();
-        int ballNumber = 1;
-        double rb = BALL_DIAMETER / 2;
-        double rbe = rb + UPPER_EPSILON / 2;
-        double h  = Math.sqrt(3 * Math.pow(rb, 2) + 3 * rb * UPPER_EPSILON + 5. / 4 * Math.pow(UPPER_EPSILON, 2));
-
-        for (int i = 0; i < 5; i++) {
-            double xRow = TRIANGLE_X_START + h * i - (UPPER_EPSILON - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON));
-            double yStart = TRIANGLE_Y_START - ( rbe * i );
-            for (int j = 0; j <= i; j++) {
-                double y = yStart + (BALL_DIAMETER + UPPER_EPSILON / 2) * j + (UPPER_EPSILON - rnd.nextDouble(LOWER_EPSILON, UPPER_EPSILON));
-
-                CommonBall colorBall = CommonBall.buildColoredBall(ballNumber++,
-                        new Pair(xRow, y),
-                        BALL_MASS,
-                        BALL_DIAMETER / 2,
-                        deltaTime);
-
-                balls.add(colorBall);
+            if(ball.getPosition().getY() <= (HEIGHT / 10)){
+                double yPosition = 40 + (70 - 40) * random.nextDouble();
+                ball.setVelocity(Pair.ZERO);
+                ball.setAcceleration(Pair.ZERO);
+                ball.setPosition(Pair.of(ball.getPosition().getX(), yPosition));
+                //todo: the ball has passed through the gap.
             }
         }
 
-        checkNoBallOverlap();
     }
 
-    private void checkNoBallOverlap() {
-        for (CommonBall ball : balls)
-            for (CommonBall otherBall : balls) {
-                if (ball.equals(otherBall))
-                    continue;
-
-                if (ball.distanceTo(otherBall) < 0)
-                    throw new RuntimeException(String.format("Ball overlap between %s and %s", ball.getBallNumber(), otherBall.getBallNumber()));
-
-            }
-    }
-
-    private void positionWhiteBall(double whiteBallY) {
-        Pair whiteBallPosition = new Pair(WHITE_BALL_INITIAL_X, whiteBallY);
-        Pair whiteBallVelocity = new Pair(WHITE_BALL_INITIAL_X_VEL, WHITE_BALL_INITIAL_Y_VEL);
-        CommonBall whiteBall = CommonBall.buildWhiteBall(whiteBallPosition, whiteBallVelocity, BALL_MASS, BALL_DIAMETER / 2, deltaTime);
-        balls.add(whiteBall);
-    }
-
-    public void positionPockets() {
-//        this.balls_goal = 1 ;
-        for (int i = 0; i <= 1; i++) {
-            double y = i * 112.;
-            for (int j = 0; j < 3; j++) {
-                double x = j * (224.0 / 2);
-                PocketBall pocketBall = new PocketBall(new Pair(x, y), new Pair(0., 0.),
-                        0., POCKET_DIAMETER / 2);
-                pocketBalls.add(pocketBall);
-            }
+    private void positionBalls() {
+        Random random = new Random();
+        for (int i = 0; i < N; i++) {
+            Pair position = Pair.of(random.nextDouble() * WIDTH, random.nextDouble() * HEIGHT);
+            double ballRadius = LOWER_RADIUS + (UPPER_RADIUS - LOWER_RADIUS) * random.nextDouble();
+            CommonBall addingBall = new CommonBall(i, position, BALL_MASS,  ballRadius);
+            while(checkNoBallOverlap(addingBall))
+                addingBall.setPosition(Pair.of(random.nextDouble() * WIDTH, random.nextDouble() * HEIGHT));
+            addingBall.setDt(deltaTime);
+            this.balls.add(addingBall);
         }
+
+    }
+
+    private boolean checkNoBallOverlap(Ball pivotBall) {
+        for (CommonBall otherBall : balls)
+            if (pivotBall.distanceTo(otherBall) < 0)
+                return true;
+        return false;
+    }
+
+    private void moveWalls(){
+        offset = AMPLITUDE * Math.sin(frequency * simulationTime);
     }
 
 
@@ -236,11 +189,6 @@ public class Table implements Iterable<Table> {
     }
 
 
-    public Set<PocketBall> getPocketBalls() {
-        if (this.pocketBalls == null)
-            return new HashSet<>();
-        return this.pocketBalls;
-    }
 
     public void setDeltaTime(double deltaTime) {
         this.deltaTime = deltaTime;

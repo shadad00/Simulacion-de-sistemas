@@ -14,8 +14,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     protected double dt;
     protected double[] dt_k;
 
-    private double k_n ;
-    private double k_t;
+    private static double K_N;
+    private static double K_T;
 
     private Pair lastAcceleration = Pair.ZERO;
 
@@ -23,7 +23,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
 
     private Pair predictedAcceleration = Pair.ZERO;
 
-    private static double G = 9.81;
+    private static double G = 981; //en cm por seg.
 
     public CommonBall(CommonBall other){
         super();
@@ -34,20 +34,12 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         this.mass = other.mass;
         this.radius = other.radius;
         this.ballNumber = other.ballNumber;
-        this.k_t = other.k_t;
-        this.k_n = other.k_n;
-
     }
     
     public CommonBall(final int ballNumber, Pair position,
-                      Pair velocity, Pair acceleration , Pair force,
-                      final Double mass, final Double radius,
-                      double k_n , double k_t
-    ) {
-        super(position, velocity, acceleration, force, mass, radius);
+                      final Double mass, final Double radius) {
+        super(position, Pair.ZERO, Pair.ZERO, Pair.ZERO, mass, radius);
         this.ballNumber = ballNumber;
-        this.k_t = k_t;
-        this.k_n = k_n;
     }
 
     public void setDt(double dt){
@@ -59,7 +51,6 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     }
 
     public void updateWithPrediction(){
-        predictedVelocity = this.velocity;
 
         double rx,ry;
         rx = position.getX() + velocity.getX() * dt + ((2./3. * acceleration.getX()) - (1/6. * lastAcceleration.getX())) * dt_k[2];
@@ -83,7 +74,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     }
 
 
-    public void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight) {
+    public void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
+                          final double leftGap, final double rightGap, final double offset) {
        this.force = new Pair(0,- mass * G);
 
         for (CommonBall otherBall : otherBalls) {
@@ -94,9 +86,9 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         }
 
         this.force.add(forceBetweenLeftWall());
-        this.force.add(forceBetweenBottomWall());
+        this.force.add(forceBetweenBottomWall(offset, leftGap, rightGap));
         this.force.add(forceBetweenRightWall(tableWidth));
-        this.force.add(forceBetweenTopWall(tableHeight));
+        this.force.add(forceBetweenTopWall(tableHeight + offset));
 
         predictedAcceleration = Pair.of(this.force.getX() / mass, this.force.getY() / mass);
     }
@@ -143,19 +135,21 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
 
     }
 
-    public Pair forceBetweenBottomWall() {
-        if (position.getY() - getRadius() >= 0)
+    public Pair forceBetweenBottomWall(double offset, double leftGap, double rightGap) {
+        // if the particle is in the gap, there is no wall.
+        if (position.getY() - getRadius() >= offset ||
+                (position.getX() - getRadius() >= leftGap && position.getX() + getRadius() <= rightGap) )
             return Pair.ZERO;
-        double dseta = Math.abs(position.getY() - getRadius());
-        return computeForce(dseta, 0,1, getVelocity());
 
+        double dseta = Math.abs(position.getY() - getRadius() - offset);
+        return computeForce(dseta, 0,1, getVelocity());
     }
 
     private Pair computeForce(double dseta, double ex, double ey, Pair relativeVelocity){
         Pair tang = Pair.of(-ey, ex);
 
-        double Fn = - k_n * dseta ;
-        double Ft = - k_t * dseta * (relativeVelocity.dot(tang));
+        double Fn = -K_N * dseta ;
+        double Ft = -K_T * dseta * (relativeVelocity.dot(tang));
 
         double Fx = Fn * (ex) + Ft * (-ey);
         double Fy = Fn * (ey) + Ft * (ex);
