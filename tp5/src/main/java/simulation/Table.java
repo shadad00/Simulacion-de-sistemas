@@ -29,7 +29,7 @@ public class Table implements Iterable<Table> {
     protected double offset;
 
 
-    protected double finalTime = 1000;
+    protected double finalTime = 10;
 
     protected NoPeriodicGrid cim ;
 

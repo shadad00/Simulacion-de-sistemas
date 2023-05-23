@@ -42,6 +42,16 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         this.ballNumber = ballNumber;
     }
 
+    public CommonBall(int ballId, Pair position, Pair velocity, Pair acceleration, Pair force, double ballMass, double ballRadius) {
+        this.ballNumber = ballId;
+        setPosition(position);
+        setVelocity(velocity);
+        setAcceleration(acceleration);
+        setForce(force);
+        this.mass = ballMass;
+        this.radius = ballRadius;
+    }
+
     public void setDt(double dt){
         this.dt = dt;
         dt_k = new double[3];
