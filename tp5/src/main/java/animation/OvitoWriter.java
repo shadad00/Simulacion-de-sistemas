@@ -3,6 +3,7 @@ package animation;
 
 import simulation.CommonBall;
 import simulation.Table;
+import utils.Pair;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -24,6 +25,13 @@ public class OvitoWriter {
     private static String[] OUT_FILES = {OUT_FILE_42};
     private static boolean POCKET = true;
 
+    private static CommonBall[] FIXED_BALLS = {
+            new CommonBall(-1,Pair.of(0,0),1.,.1),
+            new CommonBall(-1,Pair.of(20,0),1.,.1),
+            new CommonBall(-1,Pair.of(0,70),1.,.1),
+            new CommonBall(-1,Pair.of(20,70),1.,.1)
+    };
+
     public static void main(String[] args) throws IOException {
         for (int i = 0; i < IN_FILES.length; i++) {
             generateAnimation(IN_FILES[i], OUT_FILES[i], POCKET);
@@ -36,8 +44,8 @@ public class OvitoWriter {
         OvitoWriter ovitoWriter = new OvitoWriter();
         ovitoWriter.openFile(outFile);
         for (Table table : parser) {
-            ovitoWriter.writeFrame(table.getSimulationTime(),table.getBalls()/*,
-                    table.getPocketBalls()*/);
+            ovitoWriter.writeFrame(table.getOffset(),
+                    table.getSimulationTime(),table.getBalls());
         }
         ovitoWriter.closeFile();
     }
@@ -68,14 +76,14 @@ public class OvitoWriter {
     public void openFile(String filePath) throws IOException {
         writer = new BufferedWriter(new FileWriter(String.format("%s.xyz", filePath), false));
     }
-    public void writeFrame(final double time, Set<CommonBall> balls/*, Set<PocketBall> pockets*/) throws IOException {
-        final int totalParticles = balls.size() /*+ pockets.size()*/;
+    public void writeFrame(final double offset, final double time, Set<CommonBall> balls/*, Set<PocketBall> pockets*/) throws IOException {
+        final int totalParticles = balls.size() + FIXED_BALLS.length;
 
         writer.write(String.format("%s\n", totalParticles));
         writer.write(String.format("#%s (%s) <%s>\n", frame++, time, "none"));
 
         writeBalls(balls);
-//        writePocket(pockets);
+        writeFixed(offset);
 
         writer.flush();
     }
@@ -92,9 +100,9 @@ public class OvitoWriter {
                     ball.getPosition().getY(),
                     ball.getVelocity().getX(),
                     ball.getVelocity().getY(),
-                    BALL_COLORS[1][0] / 255.,
-                    BALL_COLORS[1][1] / 255.,
-                    BALL_COLORS[1][2] / 255.,
+                    BALL_COLORS[5][0] / 255.,
+                    BALL_COLORS[5][1] / 255.,
+                    BALL_COLORS[5][2] / 255.,
                     ball.getRadius()
             );
 
@@ -102,21 +110,21 @@ public class OvitoWriter {
         }
     }
 
-//    private void writePocket(Set<PocketBall> pockets) throws IOException {
-//        for (final PocketBall pocket : pockets) {
-//            final String line = String.format(
-//                    "%s %s %s %s %s %s %s %s\n",
-//                    pocket.getPosition().getX(),
-//                    pocket.getPosition().getY(),
-//                    pocket.getVelocity().getX(),
-//                    pocket.getVelocity().getY(),
-//                    125 / 255.,
-//                    125 / 255.,
-//                    125 / 255.,
-//                    pocket.getRadius()
-//            );
-//
-//            writer.write(line);
-//        }
-//    }
+    private void writeFixed(double offset) throws IOException {
+        for (final CommonBall ball : FIXED_BALLS) {
+            final String line = String.format(
+                    "%s %s %s %s %s %s %s %s\n",
+                    ball.getPosition().getX() + offset,
+                    ball.getPosition().getY() + offset,
+                    ball.getVelocity().getX() + offset,
+                    ball.getVelocity().getY() + offset,
+                    125 / 255.,
+                    125 / 255.,
+                    125 / 255.,
+                    ball.getRadius()
+            );
+
+            writer.write(line);
+        }
+    }
 }

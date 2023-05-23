@@ -14,8 +14,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     protected double dt;
     protected double[] dt_k;
 
-    private static double K_N;
-    private static double K_T;
+    private static double K_N = 250;
+    private static double K_T = 500;
 
     private Pair lastAcceleration = Pair.ZERO;
 

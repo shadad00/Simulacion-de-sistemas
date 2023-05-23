@@ -11,7 +11,7 @@ public class Table implements Iterable<Table> {
     protected static final double BALL_MASS = 1;
     protected static final double LOWER_RADIUS = 0.85;
     protected static final double UPPER_RADIUS = 1.15;
-    protected static int N = 200;
+    protected static int N = 100;
     protected double deltaTime = Math.pow(10, -3);
     protected static double WIDTH = 20;
     protected static double HEIGHT = 70;
@@ -138,7 +138,9 @@ public class Table implements Iterable<Table> {
     private void reinsertBalls(){
         Random random = new Random();
         for (CommonBall ball : this.balls) {
-            if(ball.getPosition().getY() <= (HEIGHT / 10)){
+            if( (ball.getPosition().getY() <= -(HEIGHT / 10)) &&
+                    ((ball.getPosition().getX() - ball.getRadius() >= leftGap) &&
+                    (ball.getPosition().getX() + ball.getRadius() <= rightGap)) ){
                 double yPosition = 40 + (70 - 40) * random.nextDouble();
                 ball.setVelocity(Pair.ZERO);
                 ball.setAcceleration(Pair.ZERO);
@@ -198,5 +200,9 @@ public class Table implements Iterable<Table> {
 
     public double getDeltaTime() {
         return deltaTime;
+    }
+
+    public double getOffset() {
+        return offset;
     }
 }
