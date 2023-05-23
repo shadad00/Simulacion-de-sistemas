@@ -8,15 +8,15 @@ import java.util.stream.Collectors;
 
 
 public class Table implements Iterable<Table> {
-    protected static final double BALL_MASS = 1;
-    protected static final double LOWER_RADIUS = 0.85;
-    protected static final double UPPER_RADIUS = 1.15;
+    protected static final double BALL_MASS = 1; //g
+    protected static final double LOWER_RADIUS = 0.85; // cm
+    protected static final double UPPER_RADIUS = 1.15; //cm
     protected static int N = 100;
     protected double deltaTime = Math.pow(10, -3);
-    protected static double WIDTH = 20;
-    protected static double HEIGHT = 70;
+    protected static double WIDTH = 20; //cm
+    protected static double HEIGHT = 70; //cm
 
-    protected static double AMPLITUDE = 0.15;
+    protected static double AMPLITUDE = 0.15; //cm
 
     protected int iteration = 0;
     protected Set<CommonBall> balls;

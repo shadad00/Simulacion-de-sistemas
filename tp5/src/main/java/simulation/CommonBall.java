@@ -23,7 +23,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
 
     private Pair predictedAcceleration = Pair.ZERO;
 
-    private static double G = 981; //en cm por seg.
+    private static double G = 981; //en cm / seg ^ 2.
 
     public CommonBall(CommonBall other){
         super();
@@ -152,14 +152,14 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             return Pair.ZERO;
 
         double dseta = Math.abs(position.getY() - getRadius() - offset);
-        return computeForce(dseta, 0,1, getVelocity());
+        return computeForce(dseta, 0, 1, getVelocity());
     }
 
     private Pair computeForce(double dseta, double ex, double ey, Pair relativeVelocity){
         Pair tang = Pair.of(-ey, ex);
 
-        double Fn = -K_N * dseta ;
-        double Ft = -K_T * dseta * (relativeVelocity.dot(tang));
+        double Fn = K_N * dseta ;
+        double Ft = K_T * dseta * (relativeVelocity.dot(tang));
 
         double Fx = Fn * (ex) + Ft * (-ey);
         double Fy = Fn * (ey) + Ft * (ex);
