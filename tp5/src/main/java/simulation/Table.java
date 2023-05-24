@@ -4,19 +4,13 @@ package simulation;
 import utils.Pair;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static simulation.UnitConstants.*;
 
 
 public class Table implements Iterable<Table> {
-    protected static final double BALL_MASS = 1; //g
-    protected static final double LOWER_RADIUS = 0.85; // cm
-    protected static final double UPPER_RADIUS = 1.15; //cm
-    protected static int N = 100;
+    protected static int N = 50;
     protected double deltaTime = Math.pow(10, -3);
-    protected static double WIDTH = 20; //cm
-    protected static double HEIGHT = 70; //cm
-
-    protected static double AMPLITUDE = 0.15; //cm
 
     protected int iteration = 0;
     protected Set<CommonBall> balls;
@@ -71,8 +65,8 @@ public class Table implements Iterable<Table> {
     public Table(final double gapWidth, final int frequency) {
         this.simulationTime = 0.0;
         this.balls = new TreeSet<>();
-        this.leftGap = (WIDTH / 2) - (gapWidth / 2);
-        this.rightGap = (WIDTH / 2) + (gapWidth / 2);
+        this.leftGap = (SILO_WIDTH / 2) - (gapWidth / 2);
+        this.rightGap = (SILO_WIDTH / 2) + (gapWidth / 2);
         this.frequency = frequency;
         positionBalls();
     }
@@ -104,20 +98,20 @@ public class Table implements Iterable<Table> {
         for (final CommonBall ball : balls)
             ball.updateWithPrediction();
 
-        this.cim = new NoPeriodicGrid( 2 * HEIGHT, 12 );
-        this.cim.placeBalls(this.balls);
-        this.cim.computeDistanceBetweenBalls();
+//        this.cim = new NoPeriodicGrid( 2 * SILO_HEIGHT, 12 );
+//        this.cim.placeBalls(this.balls);
+//        this.cim.computeDistanceBetweenBalls();
 
         for (final CommonBall ball : balls) {
-            Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
-            Set<CommonBall> other;
-            if (otherDistance != null){
-                other = otherDistance.stream().map(
-                                BallAndDistance::getOtherBall).
-                        collect(Collectors.toSet());
-            }else
-                other = new HashSet<>();
-            ball.sumForces( other, WIDTH, HEIGHT, leftGap, rightGap, offset);
+//            Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
+//            Set<CommonBall> other;
+//            if (otherDistance != null){
+//                other = otherDistance.stream().map(
+//                                BallAndDistance::getOtherBall).
+//                        collect(Collectors.toSet());
+//            }else
+//                other = new HashSet<>();
+            ball.sumForces(this.balls, SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
         }
 
         for (final CommonBall ball : balls) {
@@ -138,27 +132,48 @@ public class Table implements Iterable<Table> {
     private void reinsertBalls(){
         Random random = new Random();
         for (CommonBall ball : this.balls) {
-            if( (ball.getPosition().getY() <= -(HEIGHT / 10)) &&
-                    ((ball.getPosition().getX() - ball.getRadius() >= leftGap) &&
-                    (ball.getPosition().getX() + ball.getRadius() <= rightGap)) ){
-                double yPosition = 40 + (70 - 40) * random.nextDouble();
+            if( (ball.getPosition().getY() <= -(SILO_HEIGHT / 10))) {
+                do {
+                    double xPos = BALL_UPPER_RADIUS + (SILO_WIDTH - 2 * BALL_UPPER_RADIUS) * random.nextDouble();
+                    double yPos = REINSERT_LOWER_BOUND + (REINSERT_UPPER_BOUND - REINSERT_LOWER_BOUND) * random.nextDouble();
+                    
+                    ball.setPosition(Pair.of(xPos, yPos));
+                } while (!checkNoBallOverlap(ball));
+
                 ball.setVelocity(Pair.ZERO);
                 ball.setAcceleration(Pair.ZERO);
-                ball.setPosition(Pair.of(ball.getPosition().getX(), yPosition));
                 //todo: the ball has passed through the gap.
             }
         }
 
     }
 
+//    private void positionBalls() {
+//        final CommonBall fallingBall = new CommonBall(1, Pair.of(SILO_WIDTH / 2, SILO_HEIGHT * 0.8), BALL_MASS, BALL_UPPER_RADIUS);
+//        fallingBall.setVelocity(Pair.of(2, 0.3));
+//        fallingBall.setDt(deltaTime);
+//        this.balls.add(fallingBall);
+//
+//        final CommonBall stationaryBall = new CommonBall(2, Pair.of(SILO_WIDTH / 2.1, SILO_HEIGHT * 0.9), BALL_MASS, BALL_UPPER_RADIUS);
+//        stationaryBall.setVelocity(Pair.of(0, -0.3));
+//        stationaryBall.setDt(deltaTime);
+//        this.balls.add(stationaryBall);
+//    }
+
     private void positionBalls() {
         Random random = new Random();
         for (int i = 0; i < N; i++) {
-            Pair position = Pair.of(random.nextDouble() * WIDTH, random.nextDouble() * HEIGHT);
-            double ballRadius = LOWER_RADIUS + (UPPER_RADIUS - LOWER_RADIUS) * random.nextDouble();
-            CommonBall addingBall = new CommonBall(i, position, BALL_MASS,  ballRadius);
-            while(checkNoBallOverlap(addingBall))
-                addingBall.setPosition(Pair.of(random.nextDouble() * WIDTH, random.nextDouble() * HEIGHT));
+            double ballRadius = BALL_LOWER_RADIUS + (BALL_UPPER_RADIUS - BALL_LOWER_RADIUS) * random.nextDouble();
+
+            CommonBall addingBall;
+            do {
+                final double xPos = ballRadius + random.nextDouble() * (SILO_WIDTH - 2 * ballRadius);
+                final double yPos = ballRadius + random.nextDouble() * (SILO_HEIGHT - 2 * ballRadius);
+                final Pair position = Pair.of(xPos, yPos);
+
+                addingBall = new CommonBall(i, position, BALL_MASS, ballRadius);
+            } while (checkNoBallOverlap(addingBall));
+
             addingBall.setDt(deltaTime);
             this.balls.add(addingBall);
         }
@@ -172,8 +187,8 @@ public class Table implements Iterable<Table> {
         return false;
     }
 
-    private void moveWalls(){
-        offset = AMPLITUDE * Math.sin(frequency * simulationTime);
+    private void moveWalls() {
+        offset = SILO_VIBRATION_AMPLITUDE * Math.sin(frequency * simulationTime);
     }
 
 

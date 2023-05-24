@@ -99,6 +99,13 @@ public abstract class Grid {
         final int particleColumn = (int) Math.floor(ball.getPosition().getX() / this.cellWidth);
         final int particleRow = (int) Math.floor(ball.getPosition().getY() / this.cellWidth);
 
+        try {
+            final Cell cell = cells[particleRow + 5][particleColumn + 5];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            System.out.println(ball);
+            throw ex;
+        }
+
         return cells[particleRow + 5 ][particleColumn + 5];
     }
 

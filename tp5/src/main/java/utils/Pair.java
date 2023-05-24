@@ -25,6 +25,23 @@ public class Pair {
         this.y += otherForce.getY();
     }
 
+    public Pair multiply(final double multiplier) {
+        return Pair.of(this.x * multiplier, this.y * multiplier);
+    }
+
+    /**
+     * Substracts otherPair from this (i.e. this - otherPair).
+     *
+     * @param otherPair other pair
+     * @return Substraction component-wise between this - otherPair
+     */
+    public Pair substract(final Pair otherPair) {
+        return Pair.of(
+                getX() - otherPair.getX(),
+                getY() - otherPair.getY()
+        );
+    }
+
     /**
      * Get the axis value
      *
@@ -45,6 +62,6 @@ public class Pair {
 
 
     public double dot(Pair pair){
-        return x* pair.getX() + y * pair.getY() ;
+        return x * pair.getX() + y * pair.getY() ;
     }
 }
