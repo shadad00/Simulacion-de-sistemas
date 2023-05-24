@@ -6,10 +6,14 @@ import utils.Pair;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Getter
 @Setter
 public class CommonBall extends Ball implements Comparable<CommonBall> {
+
+    private Supplier<Pair> predicted = ()->getPredictedVelocity();
+    private Supplier<Pair> corrected = ()->getVelocity();
     private final int ballNumber;
     protected double dt;
     protected double[] dt_k;
@@ -78,33 +82,42 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         double vxc, vyc;
         vxc = velocity.getX() + ((1/3. * predictedAcceleration.getX()) + (5/6. * acceleration.getX()) - (1/6. * lastAcceleration.getX())) * dt;
         vyc = velocity.getY() + ((1/3. * predictedAcceleration.getY()) + (5/6. * acceleration.getY()) - (1/6. * lastAcceleration.getY())) * dt;
-        setVelocity(Pair.of(vxc, vyc));
+        setVelocity(Pair.of(vxc, vyc));;
+    }
+
+    public void updateAcceleration(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
+                                   final double leftGap, final double rightGap, final double offset){
         lastAcceleration = acceleration;
-        setAcceleration(predictedAcceleration);
+        sumForces(otherBalls, tableWidth, tableHeight, leftGap, rightGap, offset, corrected);
+        acceleration = Pair.of(this.force.getX() / mass, this.force.getY() / mass);
     }
 
 
     public void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
-                          final double leftGap, final double rightGap, final double offset) {
-       this.force = new Pair(0,- mass * G);
+                          final double leftGap, final double rightGap, final double offset){
+        sumForces(otherBalls, tableWidth, tableHeight, leftGap, rightGap, offset, predicted);
+        predictedAcceleration = Pair.of(this.force.getX() / mass, this.force.getY() / mass);
+    }
+
+    private void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
+                          final double leftGap, final double rightGap, final double offset, Supplier<Pair> velocitySupplier) {
+       this.force = new Pair( mass * G, 0);
 
         for (CommonBall otherBall : otherBalls) {
-            Pair forceBetweenBalls = forceBetween(otherBall);
+            Pair forceBetweenBalls = forceBetween(otherBall, velocitySupplier);
             if (!forceBetweenBalls.equals(Pair.ZERO)){
                 this.force.add(forceBetweenBalls);
             }
         }
 
-        this.force.add(forceBetweenLeftWall());
-        this.force.add(forceBetweenBottomWall(offset, leftGap, rightGap));
-        this.force.add(forceBetweenRightWall(tableWidth));
-        this.force.add(forceBetweenTopWall(tableHeight + offset));
-
-        predictedAcceleration = Pair.of(this.force.getX() / mass, this.force.getY() / mass);
+        this.force.add(forceBetweenLeftWall(velocitySupplier));
+        this.force.add(forceBetweenBottomWall(offset, leftGap, rightGap,velocitySupplier));
+        this.force.add(forceBetweenRightWall(tableWidth,velocitySupplier));
+        this.force.add(forceBetweenTopWall(tableHeight + offset,velocitySupplier));
     }
 
 
-    public Pair forceBetween(CommonBall otherBall) {
+    public Pair forceBetween(CommonBall otherBall, Supplier<Pair> velocity) {
         double xDiff = otherBall.getPosition().getX() - getPosition().getX();
         double yDiff = otherBall.getPosition().getY() - getPosition().getY();
         double dist = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
@@ -118,41 +131,41 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         double ex, ey;
         ex = xDiff / dist;
         ey = yDiff / dist;
-        Pair relativeVelocity = Pair.of(velocity.getX() - otherBall.getVelocity().getX(),
-                velocity.getY()- otherBall.getVelocity().getY());
+        Pair relativeVelocity = Pair.of(velocity.get().getX() - otherBall.getPredictedVelocity().getX(),
+                velocity.get().getX()- otherBall.getPredictedVelocity().getY());
         return computeForce(dseta, ex, ey, relativeVelocity);
     }
 
-    public Pair forceBetweenRightWall(double wallX) {
+    public Pair forceBetweenRightWall(double wallX, Supplier<Pair> velocity) {
         if (position.getX() + getRadius() <= wallX)
             return Pair.ZERO;
         double dseta = Math.abs(position.getX() + getRadius() - wallX);
-        return computeForce(dseta, -1,0, getVelocity());
+        return computeForce(dseta, -1,0, velocity.get());
     }
 
-    public Pair forceBetweenLeftWall() {
+    public Pair forceBetweenLeftWall(Supplier<Pair> velocity) {
         if (position.getX() - getRadius() >= 0)
             return Pair.ZERO;
         double dseta = Math.abs(position.getX() - getRadius());
-        return computeForce(dseta, 1,0, getVelocity());
+        return computeForce(dseta, 1,0, velocity.get());
     }
 
-    public Pair forceBetweenTopWall(double wallY) {
+    public Pair forceBetweenTopWall(double wallY, Supplier<Pair> velocity) {
         if (position.getY() + getRadius() <= wallY)
             return Pair.ZERO;
         double dseta = Math.abs(position.getY() + getRadius() - wallY);
-        return computeForce(dseta, 0,-1, getVelocity());
+        return computeForce(dseta, 0,-1, velocity.get());
 
     }
 
-    public Pair forceBetweenBottomWall(double offset, double leftGap, double rightGap) {
+    public Pair forceBetweenBottomWall(double offset, double leftGap, double rightGap, Supplier<Pair> velocity) {
         // if the particle is in the gap, there is no wall.
         if (position.getY() - getRadius() >= offset ||
                 (position.getX() - getRadius() >= leftGap && position.getX() + getRadius() <= rightGap) )
             return Pair.ZERO;
 
-        double dseta = Math.abs(position.getY() - getRadius() - offset);
-        return computeForce(dseta, 0, 1, getVelocity());
+        double dseta = Math.abs(position.getY() - getRadius() + offset);
+        return computeForce(dseta, 0, 1, velocity.get());
     }
 
     private Pair computeForce(double dseta, double ex, double ey, Pair relativeVelocity){
@@ -207,4 +220,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         return ballNumber;
     }
 
+    public Pair getPredictedVelocity() {
+        return predictedVelocity;
+    }
 }

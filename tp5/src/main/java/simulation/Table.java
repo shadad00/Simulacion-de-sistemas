@@ -11,7 +11,7 @@ public class Table implements Iterable<Table> {
     protected static final double BALL_MASS = 1; //g
     protected static final double LOWER_RADIUS = 0.85; // cm
     protected static final double UPPER_RADIUS = 1.15; //cm
-    protected static int N = 100;
+    protected static int N = 1;
     protected double deltaTime = Math.pow(10, -3);
     protected static double WIDTH = 20; //cm
     protected static double HEIGHT = 70; //cm
@@ -48,10 +48,12 @@ public class Table implements Iterable<Table> {
     }
 
 
-    public Table(final Set<CommonBall> balls, final double time, int iteration){
+    public Table(final Set<CommonBall> balls, final double time, int iteration, int frequency){
         this.balls = balls;
         this.simulationTime = time;
         this.iteration = iteration;
+        this.frequency = frequency;
+        moveWalls();
     }
 
     public Table(Table other){
@@ -100,6 +102,7 @@ public class Table implements Iterable<Table> {
     public Table getNextTable() {
         moveWalls();
 
+
         // Primero predecimos todos los r
         for (final CommonBall ball : balls)
             ball.updateWithPrediction();
@@ -108,6 +111,7 @@ public class Table implements Iterable<Table> {
         this.cim.placeBalls(this.balls);
         this.cim.computeDistanceBetweenBalls();
 
+        Map<CommonBall, Set<CommonBall> > adjacencyMap = new HashMap<>();
         for (final CommonBall ball : balls) {
             Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
             Set<CommonBall> other;
@@ -115,14 +119,19 @@ public class Table implements Iterable<Table> {
                 other = otherDistance.stream().map(
                                 BallAndDistance::getOtherBall).
                         collect(Collectors.toSet());
-            }else
+            }else {
                 other = new HashSet<>();
+            }
+            adjacencyMap.put(ball, other);
             ball.sumForces( other, WIDTH, HEIGHT, leftGap, rightGap, offset);
         }
 
         for (final CommonBall ball : balls) {
             ball.correctPrediction();
         }
+
+        for (final CommonBall ball : balls)
+            ball.updateAcceleration( adjacencyMap.get(ball), WIDTH, HEIGHT, leftGap, rightGap, offset);
 
         this.simulationTime += this.deltaTime;
         reinsertBalls();

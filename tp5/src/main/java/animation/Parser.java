@@ -13,10 +13,10 @@ import java.util.*;
 public class Parser implements Iterable<Table>{
 
     private final CSVReader csvReader;
-    private final double width = 224;
-    private final double height = 112;
     private int currentIteration = 0;
     private final boolean pockets;
+    private int frequency ;
+
 
 
     public Table getNextTable() throws IOException, CsvValidationException {
@@ -39,12 +39,14 @@ public class Parser implements Iterable<Table>{
                    line.ballRadius));
         }
 
-        Table newTable = new Table(ballSet, any.time, any.iteration);
+        Table newTable = new Table(ballSet, any.time, any.iteration, frequency);
         return newTable;
     }
 
 
     public Parser(final String filename, boolean pockets) {
+        String[] parts = filename.split("silo_fq|_");
+        frequency = Integer.valueOf(parts[1]);
         try {
             System.out.println(filename);
             FileReader fileReader = new FileReader(filename);
