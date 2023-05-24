@@ -11,7 +11,7 @@ public class Table implements Iterable<Table> {
     protected static final double BALL_MASS = 1; //g
     protected static final double LOWER_RADIUS = 0.85; // cm
     protected static final double UPPER_RADIUS = 1.15; //cm
-    protected static int N = 1;
+    protected static int N = 200;
     protected double deltaTime = Math.pow(10, -3);
     protected static double WIDTH = 20; //cm
     protected static double HEIGHT = 70; //cm
@@ -32,6 +32,8 @@ public class Table implements Iterable<Table> {
     protected double finalTime = 10;
 
     protected NoPeriodicGrid cim ;
+
+    private Set<Integer> outBallsId = new HashSet<>();
 
 
     public Table(Double simulationTime,
@@ -145,19 +147,24 @@ public class Table implements Iterable<Table> {
 
 
     private void reinsertBalls(){
+        this.outBallsId = new HashSet<>();
         Random random = new Random();
         for (CommonBall ball : this.balls) {
             if( (ball.getPosition().getY() <= -(HEIGHT / 10)) &&
                     ((ball.getPosition().getX() - ball.getRadius() >= leftGap) &&
                     (ball.getPosition().getX() + ball.getRadius() <= rightGap)) ){
+                outBallsId.add(ball.getBallNumber());
                 double yPosition = 40 + (70 - 40) * random.nextDouble();
                 ball.setVelocity(Pair.ZERO);
                 ball.setAcceleration(Pair.ZERO);
                 ball.setPosition(Pair.of(ball.getPosition().getX(), yPosition));
-                //todo: the ball has passed through the gap.
             }
         }
 
+    }
+
+    public Set<Integer> getOutBallsId() {
+        return outBallsId;
     }
 
     private void positionBalls() {

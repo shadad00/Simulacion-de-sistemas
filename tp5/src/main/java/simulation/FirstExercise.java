@@ -27,7 +27,7 @@ public class FirstExercise {
         String outputFilename = String.format("silo_fq%d_i%d",freq,  j );
         try {
             System.out.println("Generating " + outputFilename + "...");
-            new CsvGenerator("./tp5/out/silo/",
+            new CsvGenerator("./tp5/out/",
                     outputFilename,
                     currentTable,
                     persistingMultiplier

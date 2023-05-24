@@ -7,9 +7,14 @@ import java.io.IOException;
 
 public class CsvGenerator {
 
-    final static String HEADER = "iter,time,ball_id,pos_x,pos_y,vel_x,vel_y,ball_radius,ball_mass,force_x,force_y";
-    final static String FORMAT = "%d,%f,%d,%.15f,%.15f,%f,%f,%f,%f,%f,%f\n";
-    private final BufferedWriter bw;
+    final static String S_HEADER = "iter,time,ball_id,pos_x,pos_y,vel_x,vel_y,ball_radius,ball_mass,force_x,force_y";
+    final static String S_FORMAT = "%d,%f,%d,%.15f,%.15f,%f,%f,%f,%f,%f,%f\n";
+    private final BufferedWriter sbw;
+
+    final static String F_HEADER = "time,ball_id";
+    final static String F_FORMAT = "%f,%d\n";
+    private final BufferedWriter fbw;
+
 
     public CsvGenerator(String outputDirectory, String outputFile, double gapWidth, int frequency )
             throws IOException {
@@ -18,12 +23,20 @@ public class CsvGenerator {
 
     public CsvGenerator(String outputDirectory, String outputFile, Table table,int persistingMultiplier)
             throws IOException{
-        File csvFile = new File( outputDirectory + outputFile +".csv");
-        if (!csvFile.exists() && !csvFile.createNewFile()) {
+
+        File siloCsvFile = new File( outputDirectory+"silo/" + outputFile +".csv");
+        if (!siloCsvFile.exists() && !siloCsvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
         }
-        bw = new BufferedWriter(new FileWriter(csvFile));
-        bw.write(HEADER + "\n");
+        File fluxCsvFile = new File( outputDirectory+ "flux/" + outputFile +".csv");
+        if (!fluxCsvFile.exists() && !fluxCsvFile.createNewFile()) {
+            throw new IOException("Unable to create output csv file.");
+        }
+
+        sbw = new BufferedWriter(new FileWriter(siloCsvFile));
+        sbw.write(S_HEADER + "\n");
+        fbw = new BufferedWriter(new FileWriter(fluxCsvFile));
+        fbw.write(F_HEADER + "\n");
         writeTable(table, persistingMultiplier);
         int i = 0;
         int j = 0;
@@ -39,12 +52,13 @@ public class CsvGenerator {
         }
         if (last != null)
             writeTableByIteration(last, j + 1);
-        bw.close();
+        sbw.close();
+        fbw.close();
     }
 
     private void writeTableByIteration(Table table, int iteration) throws IOException {
         for (CommonBall ball : table.getBalls()) {
-            bw.write(String.format(FORMAT,
+            sbw.write(String.format(S_FORMAT,
                     iteration,
                     table.getSimulationTime(),
                     ball.getBallNumber(),
@@ -63,7 +77,7 @@ public class CsvGenerator {
 
     private void writeTable(Table table, int persistingMultiplier) throws IOException {
         for (CommonBall ball : table.getBalls()) {
-            bw.write(String.format(FORMAT,
+            sbw.write(String.format(S_FORMAT,
                     table.getIteration() / persistingMultiplier,
                     table.getSimulationTime(),
                     ball.getBallNumber(),
@@ -76,6 +90,9 @@ public class CsvGenerator {
                     ball.getForce().getX(),
                     ball.getForce().getY()
             ));
+        }
+        for (Integer ballId : table.getOutBallsId()){
+            fbw.write(String.format(F_FORMAT,table.getSimulationTime(), ballId));
         }
     }
 
