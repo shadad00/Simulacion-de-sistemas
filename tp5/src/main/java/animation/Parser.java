@@ -41,7 +41,7 @@ public class Parser implements Iterable<Table>{
                    line.ballRadius));
         }
 
-        Table newTable = new Table(ballSet, any.time, any.iteration, frequency, gap);
+        Table newTable = new Table(any.time, ballSet, any.iteration, frequency, gap);
         return newTable;
     }
 

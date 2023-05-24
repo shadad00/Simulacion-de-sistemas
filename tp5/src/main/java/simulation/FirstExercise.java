@@ -2,10 +2,9 @@ package simulation;
 
 import java.io.IOException;
 
-public class FirstExercise {
+import static simulation.UnitConstants.GAP;
 
-    private static final int[] FREQUENCIES = {5, 10, 15, 20, 30, 50};
-    private static final double GAP = 3.;
+public class FirstExercise {
 
     private static final int SIMULATION_PER_FREQUENCY = 1;
 
@@ -15,7 +14,7 @@ public class FirstExercise {
 
     public static void runAll()  {
 
-        for (int freq : FREQUENCIES) {
+        for (int freq : UnitConstants.FREQUENCIES) {
             for (int i = 0; i < SIMULATION_PER_FREQUENCY; i++) {
                     Table currentTable = new Table(GAP, freq);
                     run(currentTable , 1,freq, i );

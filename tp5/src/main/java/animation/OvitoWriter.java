@@ -10,26 +10,24 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Set;
 
+import static simulation.UnitConstants.SILO_HEIGHT;
+import static simulation.UnitConstants.SILO_WIDTH;
+
 public class OvitoWriter {
 
-    private static String IN_FILE_42 = "tp5/src/main/java/animation/silo_fq5_gap3.00_i0.csv";
+    private static String IN_FILE_42 = "tp5/out/silo/silo_fq50_gap0.03_i0.csv";
 
-//    private static String IN_FILE_50 = "tp4/src/animation/pool_y45.50_i0.csv";
-//    private static String IN_FILE_53 = "tp4/src/animation/pool_y55.30_i0.csv";
-    private static String OUT_FILE_42 = "tp5/src/main/java/animation/silo_fq5_gap3.00_i0";
-
-//    private static String OUT_FILE_50 = "tp4/src/animation/pool_y45.50_i0";
-//    private static String OUT_FILE_53 = "tp4/src/animation/pool_y55.30_i0";
+    private static String OUT_FILE_42 = "tp5/out/silo/silo_fq50_gap0.03_i0";
 
     private static String[] IN_FILES = {IN_FILE_42};
     private static String[] OUT_FILES = {OUT_FILE_42};
     private static boolean POCKET = true;
 
     private static CommonBall[] FIXED_BALLS = {
-            new CommonBall(-1,Pair.of(0,0),1.,1.),
-            new CommonBall(-1,Pair.of(20,0),1.,1.),
-            new CommonBall(-1,Pair.of(0,70),1.,1.),
-            new CommonBall(-1,Pair.of(20,70),1.,1.)
+            new CommonBall(-1,Pair.of(0,0),1.,.001),
+            new CommonBall(-1,Pair.of(SILO_WIDTH,0),1.,.001),
+            new CommonBall(-1,Pair.of(0,SILO_HEIGHT),1.,.001),
+            new CommonBall(-1,Pair.of(SILO_WIDTH,SILO_HEIGHT),1.,.001)
     };
 
     public static void main(String[] args) throws IOException {
