@@ -27,6 +27,8 @@ public class Table implements Iterable<Table> {
 
     protected NoPeriodicGrid cim ;
 
+    private Set<Integer> outBallsId = new HashSet<>();
+
 
     public Table(Double simulationTime,
                  Set<CommonBall> commonBalls,
@@ -42,10 +44,12 @@ public class Table implements Iterable<Table> {
     }
 
 
-    public Table(final Set<CommonBall> balls, final double time, int iteration){
+    public Table(final Set<CommonBall> balls, final double time, int iteration, int frequency){
         this.balls = balls;
         this.simulationTime = time;
         this.iteration = iteration;
+        this.frequency = frequency;
+        moveWalls();
     }
 
     public Table(Table other){
@@ -94,6 +98,7 @@ public class Table implements Iterable<Table> {
     public Table getNextTable() {
         moveWalls();
 
+
         // Primero predecimos todos los r
         for (final CommonBall ball : balls)
             ball.updateWithPrediction();
@@ -102,6 +107,7 @@ public class Table implements Iterable<Table> {
 //        this.cim.placeBalls(this.balls);
 //        this.cim.computeDistanceBetweenBalls();
 
+        Map<CommonBall, Set<CommonBall> > adjacencyMap = new HashMap<>();
         for (final CommonBall ball : balls) {
 //            Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
 //            Set<CommonBall> other;
@@ -118,6 +124,9 @@ public class Table implements Iterable<Table> {
             ball.correctPrediction();
         }
 
+        for (final CommonBall ball : balls)
+            ball.updateAcceleration( this.balls, SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
+
         this.simulationTime += this.deltaTime;
         reinsertBalls();
         return this;
@@ -130,6 +139,7 @@ public class Table implements Iterable<Table> {
 
 
     private void reinsertBalls(){
+        this.outBallsId = new HashSet<>();
         Random random = new Random();
         for (CommonBall ball : this.balls) {
             if( (ball.getPosition().getY() <= -(SILO_HEIGHT / 10))) {
@@ -142,23 +152,16 @@ public class Table implements Iterable<Table> {
 
                 ball.setVelocity(Pair.ZERO);
                 ball.setAcceleration(Pair.ZERO);
-                //todo: the ball has passed through the gap.
+
+                outBallsId.add(ball.getBallNumber()); // @Salta para qué querías este set?
             }
         }
 
     }
 
-//    private void positionBalls() {
-//        final CommonBall fallingBall = new CommonBall(1, Pair.of(SILO_WIDTH / 2, SILO_HEIGHT * 0.8), BALL_MASS, BALL_UPPER_RADIUS);
-//        fallingBall.setVelocity(Pair.of(2, 0.3));
-//        fallingBall.setDt(deltaTime);
-//        this.balls.add(fallingBall);
-//
-//        final CommonBall stationaryBall = new CommonBall(2, Pair.of(SILO_WIDTH / 2.1, SILO_HEIGHT * 0.9), BALL_MASS, BALL_UPPER_RADIUS);
-//        stationaryBall.setVelocity(Pair.of(0, -0.3));
-//        stationaryBall.setDt(deltaTime);
-//        this.balls.add(stationaryBall);
-//    }
+    public Set<Integer> getOutBallsId() {
+        return outBallsId;
+    }
 
     private void positionBalls() {
         Random random = new Random();
