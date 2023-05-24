@@ -17,6 +17,8 @@ public class Parser implements Iterable<Table>{
     private final boolean pockets;
     private int frequency ;
 
+    private double gap;
+
 
 
     public Table getNextTable() throws IOException, CsvValidationException {
@@ -39,14 +41,16 @@ public class Parser implements Iterable<Table>{
                    line.ballRadius));
         }
 
-        Table newTable = new Table(ballSet, any.time, any.iteration, frequency);
+        Table newTable = new Table(ballSet, any.time, any.iteration, frequency, gap);
         return newTable;
     }
 
 
     public Parser(final String filename, boolean pockets) {
-        String[] parts = filename.split("silo_fq|_");
-        frequency = Integer.valueOf(parts[1]);
+        String[] parts = filename.split("_|(?<=gap)");
+
+        frequency = Integer.valueOf(parts[1].substring(2));
+        gap = Double.valueOf(parts[3]);
         try {
             System.out.println(filename);
             FileReader fileReader = new FileReader(filename);

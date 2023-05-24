@@ -24,11 +24,11 @@ public class CsvGenerator {
     public CsvGenerator(String outputDirectory, String outputFile, Table table,int persistingMultiplier)
             throws IOException{
 
-        File siloCsvFile = new File( outputDirectory+"silo/" + outputFile +".csv");
+        File siloCsvFile = new File( outputDirectory + "silo/" + outputFile +".csv");
         if (!siloCsvFile.exists() && !siloCsvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
         }
-        File fluxCsvFile = new File( outputDirectory+ "flux/" + outputFile +".csv");
+        File fluxCsvFile = new File( outputDirectory + "flux/" + outputFile +".csv");
         if (!fluxCsvFile.exists() && !fluxCsvFile.createNewFile()) {
             throw new IOException("Unable to create output csv file.");
         }

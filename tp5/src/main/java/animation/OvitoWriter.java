@@ -12,11 +12,11 @@ import java.util.Set;
 
 public class OvitoWriter {
 
-    private static String IN_FILE_42 = "tp5/src/main/java/animation/silo_fq30_i0.csv";
+    private static String IN_FILE_42 = "tp5/src/main/java/animation/silo_fq5_gap3.00_i0.csv";
 
 //    private static String IN_FILE_50 = "tp4/src/animation/pool_y45.50_i0.csv";
 //    private static String IN_FILE_53 = "tp4/src/animation/pool_y55.30_i0.csv";
-    private static String OUT_FILE_42 = "tp5/src/main/java/animation/silo_fq30_i0";
+    private static String OUT_FILE_42 = "tp5/src/main/java/animation/silo_fq5_gap3.00_i0";
 
 //    private static String OUT_FILE_50 = "tp4/src/animation/pool_y45.50_i0";
 //    private static String OUT_FILE_53 = "tp4/src/animation/pool_y55.30_i0";
