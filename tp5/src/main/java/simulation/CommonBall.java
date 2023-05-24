@@ -21,7 +21,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     private static double K_N = 250;
     private static double K_T = 500;
 
-    private Pair lastAcceleration = Pair.ZERO;
+    private Pair lastAcceleration;
 
     private Pair predictedVelocity = Pair.ZERO;
 
@@ -38,12 +38,14 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         this.mass = other.mass;
         this.radius = other.radius;
         this.ballNumber = other.ballNumber;
+        lastAcceleration = Pair.of(0, -mass * G);
     }
     
     public CommonBall(final int ballNumber, Pair position,
                       final Double mass, final Double radius) {
         super(position, Pair.ZERO, Pair.ZERO, Pair.ZERO, mass, radius);
         this.ballNumber = ballNumber;
+        lastAcceleration = Pair.of(0, -mass * G);
     }
 
     public CommonBall(int ballId, Pair position, Pair velocity, Pair acceleration, Pair force, double ballMass, double ballRadius) {
@@ -54,6 +56,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         setForce(force);
         this.mass = ballMass;
         this.radius = ballRadius;
+        lastAcceleration = Pair.of(0, -mass * G);
     }
 
     public void setDt(double dt){
@@ -101,7 +104,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
 
     private void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
                           final double leftGap, final double rightGap, final double offset, Supplier<Pair> velocitySupplier) {
-       this.force = new Pair(0, mass * G);
+       this.force = new Pair(0, -mass * G);
 
         for (CommonBall otherBall : otherBalls) {
             Pair forceBetweenBalls = forceBetween(otherBall, velocitySupplier);
