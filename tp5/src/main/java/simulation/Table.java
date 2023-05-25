@@ -4,12 +4,13 @@ package simulation;
 import utils.Pair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static simulation.UnitConstants.*;
 
 
 public class Table implements Iterable<Table> {
-    protected static int N = 50;
+    protected static int N = 200;
     protected double deltaTime = Math.pow(10, -3);
 
     protected int iteration = 0;
@@ -23,7 +24,7 @@ public class Table implements Iterable<Table> {
     protected double offset;
 
 
-    protected double finalTime = 10;
+    protected double finalTime = 1000;
 
     protected NoPeriodicGrid cim ;
 
@@ -103,21 +104,22 @@ public class Table implements Iterable<Table> {
         for (final CommonBall ball : balls)
             ball.updateWithPrediction();
 
-//        this.cim = new NoPeriodicGrid( 2 * SILO_HEIGHT, 12 );
-//        this.cim.placeBalls(this.balls);
-//        this.cim.computeDistanceBetweenBalls();
+        this.cim = new NoPeriodicGrid( 2 * SILO_HEIGHT, 12 );
+        this.cim.placeBalls(this.balls);
+        this.cim.computeDistanceBetweenBalls();
 
         Map<CommonBall, Set<CommonBall> > adjacencyMap = new HashMap<>();
         for (final CommonBall ball : balls) {
-//            Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
-//            Set<CommonBall> other;
-//            if (otherDistance != null){
-//                other = otherDistance.stream().map(
-//                                BallAndDistance::getOtherBall).
-//                        collect(Collectors.toSet());
-//            }else
-//                other = new HashSet<>();
-            ball.sumForces(this.balls, SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
+            Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
+            Set<CommonBall> other;
+            if (otherDistance != null){
+                other = otherDistance.stream().map(
+                                BallAndDistance::getOtherBall).
+                        collect(Collectors.toSet());
+            }else
+                other = new HashSet<>();
+            adjacencyMap.put(ball,other);
+            ball.sumForces(new HashSet<>(other), SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
         }
 
         for (final CommonBall ball : balls) {
@@ -125,7 +127,7 @@ public class Table implements Iterable<Table> {
         }
 
         for (final CommonBall ball : balls)
-            ball.updateAcceleration( this.balls, SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
+            ball.updateAcceleration( new HashSet<>(adjacencyMap.get(ball)), SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
 
         this.simulationTime += this.deltaTime;
         reinsertBalls();
@@ -142,7 +144,7 @@ public class Table implements Iterable<Table> {
         this.outBallsId = new HashSet<>();
         Random random = new Random();
         for (CommonBall ball : this.balls) {
-            if( (ball.getPosition().getX() <= rightGap && ball.getPosition().getX() >= leftGap)
+            if( (ball.getPosition().getX() + ball.getRadius() <= rightGap && ball.getPosition().getX() - ball.getRadius() >= leftGap)
                     &&(ball.getPosition().getY() <= -(SILO_HEIGHT / 10))) {
                 do {
                     double xPos = BALL_UPPER_RADIUS + (SILO_WIDTH - 2 * BALL_UPPER_RADIUS) * random.nextDouble();
