@@ -20,7 +20,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     protected double dt;
     protected double[] dt_k;
 
-    private Pair lastAcceleration = Pair.ZERO;
+    private Pair lastAcceleration;
 
     private Pair predictedVelocity = Pair.ZERO;
 
@@ -144,7 +144,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             return Pair.ZERO;
 
         double dseta = Math.abs(wallX - (position.getX() + getRadius()));
-        return computeForce(dseta, 1,0, getVelocity());
+        return computeForce(dseta, 1,0, velocity.get());
     }
 
     public Pair forceBetweenLeftWall(Supplier<Pair> velocity) {
@@ -152,7 +152,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             return Pair.ZERO;
 
         double dseta = Math.abs(position.getX() - getRadius());
-        return computeForce(dseta, -1,0, getVelocity());
+        return computeForce(dseta, -1,0, velocity.get());
     }
 
     public Pair forceBetweenTopWall(double wallY, Supplier<Pair> velocity) {
@@ -160,7 +160,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             return Pair.ZERO;
 
         double dseta = Math.abs(position.getY() + getRadius() - wallY);
-        return computeForce(dseta, 0,1, getVelocity());
+        return computeForce(dseta, 0,1, velocity.get());
     }
 
     public Pair forceBetweenBottomWall(double offset, double leftGap, double rightGap, Supplier<Pair> velocity) {
@@ -170,7 +170,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
             return Pair.ZERO;
 
         double dseta = Math.abs(position.getY() - getRadius() - offset);
-        return computeForce(dseta, 0, -1, getVelocity());
+        return computeForce(dseta, 0, -1, velocity.get());
     }
 
     private Pair computeForce(double dseta, double ex, double ey, Pair relativeVelocity){

@@ -142,7 +142,8 @@ public class Table implements Iterable<Table> {
         this.outBallsId = new HashSet<>();
         Random random = new Random();
         for (CommonBall ball : this.balls) {
-            if( (ball.getPosition().getY() <= -(SILO_HEIGHT / 10))) {
+            if( (ball.getPosition().getX() <= rightGap && ball.getPosition().getX() >= leftGap)
+                    &&(ball.getPosition().getY() <= -(SILO_HEIGHT / 10))) {
                 do {
                     double xPos = BALL_UPPER_RADIUS + (SILO_WIDTH - 2 * BALL_UPPER_RADIUS) * random.nextDouble();
                     double yPos = REINSERT_LOWER_BOUND + (REINSERT_UPPER_BOUND - REINSERT_LOWER_BOUND) * random.nextDouble();
@@ -153,10 +154,9 @@ public class Table implements Iterable<Table> {
                 ball.setVelocity(Pair.ZERO);
                 ball.setAcceleration(Pair.ZERO);
 
-                outBallsId.add(ball.getBallNumber()); // @Salta para qué querías este set?
+                outBallsId.add(ball.getBallNumber());
             }
         }
-
     }
 
     public Set<Integer> getOutBallsId() {
