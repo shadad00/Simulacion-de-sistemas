@@ -16,7 +16,7 @@ public class UnitConstants {
     public static final double REINSERT_UPPER_BOUND = 0.7; // m
 
     /* Forces */
-    public static final double K_n = 0.000025; // N/m
-    public static final double K_t = 0.00005; // N/m
+    public static final double K_n = 0.25; // N/m
+    public static final double K_t = 0.5; // N/m
     public static final double G = 9.81; // m/seg²
 }
