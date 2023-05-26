@@ -141,7 +141,7 @@ public class Table implements Iterable<Table> {
         this.outBallsId = new HashSet<>();
         Random random = new Random();
         for (CommonBall ball : this.balls) {
-            if( ball.getPosition().getY() <= -(SILO_HEIGHT / 10)) {
+            if( ball.getPosition().getY() <= 0) {
                 do {
                     double xPos = BALL_UPPER_RADIUS + (SILO_WIDTH - 2 * BALL_UPPER_RADIUS) * random.nextDouble();
                     double yPos = REINSERT_LOWER_BOUND + (REINSERT_UPPER_BOUND - REINSERT_LOWER_BOUND) * random.nextDouble();

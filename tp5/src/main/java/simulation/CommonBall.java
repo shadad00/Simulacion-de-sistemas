@@ -7,7 +7,6 @@ import utils.Pair;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static simulation.UnitConstants.*;
 
@@ -113,10 +112,13 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
                 new CommonBall(-2, Pair.of(0 - 1., position.getY()), mass, 1.));
         otherBalls.add( //top wall
                 new CommonBall(-3, Pair.of(position.getX(), tableHeight + offset + 1.), mass, 1.));
-        if (!(position.getX() - getRadius() >= leftGap && position.getX() + getRadius() <= rightGap)) {
-            otherBalls.add( // bottom wall
+        if (!(position.getX() + getRadius() >= leftGap && position.getX() - getRadius() <= rightGap)) {
+            otherBalls.add( // bottom wall but not in the gap
                     new CommonBall(-4, Pair.of(position.getX(), offset - 1.), mass, 1.)
             );
+        }else{ //the ball is in the gap. I place a ball in the corner.
+            new CommonBall(-4, Pair.of(leftGap - 1., offset - 1.), mass, 1.);
+            new CommonBall(-5, Pair.of(rightGap + 1., offset - 1.), mass, 1.);
         }
 
 
