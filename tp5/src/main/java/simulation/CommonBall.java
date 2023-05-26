@@ -106,6 +106,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
     private void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
                           final double leftGap, final double rightGap, final double offset, Function<CommonBall, Pair> velocityFunction) {
         this.force = Pair.of(0,mass * G);
+
         otherBalls.add( //right wall
                 new CommonBall(-1,Pair.of(tableWidth + 1., position.getY()), mass, 1.));
         otherBalls.add( //left wall

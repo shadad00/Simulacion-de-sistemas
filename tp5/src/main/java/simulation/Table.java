@@ -24,7 +24,7 @@ public class Table implements Iterable<Table> {
     protected double offset;
 
 
-    protected double finalTime = 1000;
+    protected double finalTime = 10;
 
     protected NoPeriodicGrid cim ;
 
@@ -33,15 +33,12 @@ public class Table implements Iterable<Table> {
 
     public Table(Double simulationTime,
                  Set<CommonBall> commonBalls,
-                 int iteration,
-                 double finalTime,
-                 double deltaTime
+                 int frequency
     ) {
         this.simulationTime = simulationTime;
         this.balls = commonBalls;
-        this.iteration = iteration;
-        this.finalTime = finalTime;
-        this.deltaTime = deltaTime;
+        this.frequency = frequency;
+        moveWalls();
     }
 
 
@@ -144,8 +141,7 @@ public class Table implements Iterable<Table> {
         this.outBallsId = new HashSet<>();
         Random random = new Random();
         for (CommonBall ball : this.balls) {
-            if( (ball.getPosition().getX() + ball.getRadius() <= rightGap && ball.getPosition().getX() - ball.getRadius() >= leftGap)
-                    &&(ball.getPosition().getY() <= -(SILO_HEIGHT / 10))) {
+            if( ball.getPosition().getY() <= -(SILO_HEIGHT / 10)) {
                 do {
                     double xPos = BALL_UPPER_RADIUS + (SILO_WIDTH - 2 * BALL_UPPER_RADIUS) * random.nextDouble();
                     double yPos = REINSERT_LOWER_BOUND + (REINSERT_UPPER_BOUND - REINSERT_LOWER_BOUND) * random.nextDouble();
