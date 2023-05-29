@@ -27,7 +27,7 @@ public class SecondExercise {
         String outputFilename = String.format("silo_gap%.2f_i%d",gap,  j );
         try {
             System.out.println("Generating " + outputFilename + "...");
-            new CsvGenerator("./tp5/out/fixed_frequency/",
+            new CsvGenerator("tp5/out/fixed_frequency/",
                     outputFilename,
                     currentTable,
                     persistingMultiplier

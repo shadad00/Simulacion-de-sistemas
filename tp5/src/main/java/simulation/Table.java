@@ -11,7 +11,8 @@ import static simulation.UnitConstants.*;
 
 public class Table implements Iterable<Table> {
     protected static int N = 200;
-    protected double deltaTime = Math.pow(10, -3);
+    protected double finalTime = 10;
+    protected double deltaTime = Math.pow(10, -4);
 
     protected int iteration = 0;
     protected Set<CommonBall> balls;
@@ -22,9 +23,6 @@ public class Table implements Iterable<Table> {
     protected int frequency;
 
     protected double offset;
-
-
-    protected double finalTime = 10;
 
     protected NoPeriodicGrid cim ;
 
