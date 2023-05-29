@@ -2,7 +2,7 @@ package simulation;
 
 public class UnitConstants {
 //    public static final int[] FREQUENCIES = {5, 10, 15, 20, 30, 50};
-    public static final int[] FREQUENCIES = {50};
+    public static final int[] FREQUENCIES = {5};
 
     /* Dimensions */
     public static final double BALL_MASS = 0.001; // kg
@@ -16,7 +16,7 @@ public class UnitConstants {
     public static final double REINSERT_UPPER_BOUND = 0.7; // m
 
     /* Forces */
-    public static final double K_n = 25; // N/m
+    public static final double K_n = 250; // N/m
     public static final double K_t = 2 * K_n; // N/m
     public static final double G = -9.81; // m/seg²
 }

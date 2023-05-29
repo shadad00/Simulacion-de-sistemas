@@ -43,11 +43,17 @@ public class CsvGenerator {
         Table last = new Table(table);
         for (Table currentTable : table){
             i++;
+
+            for (Integer ballId : table.getOutBallsId()){
+                fbw.write(String.format(F_FORMAT,table.getSimulationTime(), ballId));
+            }
+
             if ( i == persistingMultiplier){
                 writeTable(currentTable, persistingMultiplier);
                 j++;
                 i = 0;
             }
+
             last = currentTable;
         }
         if (last != null)
@@ -90,9 +96,6 @@ public class CsvGenerator {
                     ball.getForce().getX(),
                     ball.getForce().getY()
             ));
-        }
-        for (Integer ballId : table.getOutBallsId()){
-            fbw.write(String.format(F_FORMAT,table.getSimulationTime(), ballId));
         }
     }
 

@@ -17,7 +17,7 @@ public class FirstExercise {
         for (int freq : UnitConstants.FREQUENCIES) {
             for (int i = 0; i < SIMULATION_PER_FREQUENCY; i++) {
                     Table currentTable = new Table(GAP, freq);
-                    run(currentTable , 1,freq, i );
+                    run(currentTable , 100, freq, i);
             }
         }
     }
