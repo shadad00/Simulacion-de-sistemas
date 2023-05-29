@@ -106,19 +106,21 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
                           final double leftGap, final double rightGap, final double offset, Function<CommonBall, Pair> velocityFunction) {
         this.force = Pair.of(0,mass * G);
 
+        double maxRadius = UnitConstants.BALL_UPPER_RADIUS;
+
         otherBalls.add( //right wall
-                new CommonBall(-1,Pair.of(tableWidth + 1., position.getY()), mass, 1.));
+                new CommonBall(-1,Pair.of(tableWidth + maxRadius , position.getY()), mass, maxRadius));
         otherBalls.add( //left wall
-                new CommonBall(-2, Pair.of(0 - 1., position.getY()), mass, 1.));
+                new CommonBall(-2, Pair.of(0 - maxRadius, position.getY()), mass, maxRadius));
         otherBalls.add( //top wall
-                new CommonBall(-3, Pair.of(position.getX(), tableHeight + offset + 1.), mass, 1.));
+                new CommonBall(-3, Pair.of(position.getX(), tableHeight + offset + maxRadius), mass, maxRadius));
         if (!(position.getX() + getRadius() >= leftGap && position.getX() - getRadius() <= rightGap)) {
             otherBalls.add( // bottom wall but not in the gap
-                    new CommonBall(-4, Pair.of(position.getX(), offset - 1.), mass, 1.)
+                    new CommonBall(-4, Pair.of(position.getX(), offset - maxRadius), mass, maxRadius)
             );
         }else{ //the ball is in the gap. I place a ball in the corner.
-            new CommonBall(-4, Pair.of(leftGap - 1., offset - 1.), mass, 1.);
-            new CommonBall(-5, Pair.of(rightGap + 1., offset - 1.), mass, 1.);
+            new CommonBall(-4, Pair.of(leftGap - maxRadius, offset - 1.), mass, maxRadius);
+            new CommonBall(-5, Pair.of(rightGap + maxRadius, offset - 1.), mass, maxRadius);
         }
 
 
