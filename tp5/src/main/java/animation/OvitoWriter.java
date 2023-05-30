@@ -16,19 +16,19 @@ import static simulation.UnitConstants.SILO_WIDTH;
 
 public class OvitoWriter {
 
-    private static String IN_FILE_42 = "tp5/out/silo/silo_fq50_gap0.03_i0.csv";
+    private static String IN_FILE_42 = "tp5/out/silo/silo_fq20_gap0.03_i0.csv";
 
-    private static String OUT_FILE_42 = "tp5/out/silo/silo_fq50_gap0.03_i0";
+    private static String OUT_FILE_42 = "tp5/out/silo/silo_fq20_gap0.03_i0";
 
     private static String[] IN_FILES = {IN_FILE_42};
     private static String[] OUT_FILES = {OUT_FILE_42};
     private static boolean POCKET = true;
 
     private static CommonBall[] FIXED_BALLS = {
-            new CommonBall(-1,Pair.of(0,0),1., UnitConstants.BALL_LOWER_RADIUS),
-            new CommonBall(-1,Pair.of(SILO_WIDTH,0),1.,UnitConstants.BALL_LOWER_RADIUS),
-            new CommonBall(-1,Pair.of(0,SILO_HEIGHT),1.,UnitConstants.BALL_LOWER_RADIUS),
-            new CommonBall(-1,Pair.of(SILO_WIDTH,SILO_HEIGHT),1.,UnitConstants.BALL_LOWER_RADIUS)
+            new CommonBall(-1,Pair.of(0,0),1., .001),
+            new CommonBall(-1,Pair.of(SILO_WIDTH,0),1.,.001),
+            new CommonBall(-1,Pair.of(0,SILO_HEIGHT),1.,.001),
+            new CommonBall(-1,Pair.of(SILO_WIDTH,SILO_HEIGHT),1.,.001)
     };
 
     public static void main(String[] args) throws IOException {
