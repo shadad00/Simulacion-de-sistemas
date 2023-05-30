@@ -39,8 +39,6 @@ public class CsvGenerator {
         fbw.write(F_HEADER + "\n");
         writeTable(table, persistingMultiplier);
         int i = 0;
-        int j = 0;
-        Table last = new Table(table);
         for (Table currentTable : table){
             i++;
 
@@ -50,14 +48,9 @@ public class CsvGenerator {
 
             if ( i == persistingMultiplier){
                 writeTable(currentTable, persistingMultiplier);
-                j++;
                 i = 0;
             }
-
-            last = currentTable;
         }
-        if (last != null)
-            writeTableByIteration(last, j + 1);
         sbw.close();
         fbw.close();
     }

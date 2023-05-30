@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class SecondExercise {
 
-    private static final int OPTIMAL_FREQUENCY = 5;
+    private static final int OPTIMAL_FREQUENCY = 20;
     private static final double[] GAPS = {4,5,6};
 
     private static final int SIMULATION_PER_FREQUENCY = 1;
@@ -27,7 +27,7 @@ public class SecondExercise {
         String outputFilename = String.format("silo_gap%.2f_i%d",gap,  j );
         try {
             System.out.println("Generating " + outputFilename + "...");
-            new CsvGenerator("tp5/out/fixed_frequency/",
+            new CsvGenerator("tp5/out/",
                     outputFilename,
                     currentTable,
                     persistingMultiplier

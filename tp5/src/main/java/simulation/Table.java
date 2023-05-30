@@ -11,7 +11,7 @@ import static simulation.UnitConstants.*;
 
 public class Table implements Iterable<Table> {
     protected static int N = 200;
-    protected double finalTime = 10;
+    protected double finalTime = 20;
     protected double deltaTime = Math.pow(10, -4);
 
     protected int iteration = 0;
@@ -92,14 +92,14 @@ public class Table implements Iterable<Table> {
     }
 
     public Table getNextTable() {
-        moveWalls();
 
+        moveWalls();
 
         // Primero predecimos todos los r
         for (final CommonBall ball : balls)
             ball.updateWithPrediction();
 
-        this.cim = new NoPeriodicGrid( 2 * SILO_HEIGHT, 12 );
+        this.cim = new NoPeriodicGrid( 2 * SILO_HEIGHT, 40 );
         this.cim.placeBalls(this.balls);
         this.cim.computeDistanceBetweenBalls();
 
@@ -124,8 +124,8 @@ public class Table implements Iterable<Table> {
         for (final CommonBall ball : balls)
             ball.updateAcceleration( new HashSet<>(adjacencyMap.get(ball)), SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
 
-        this.simulationTime += this.deltaTime;
         reinsertBalls();
+        this.simulationTime += this.deltaTime;
         return this;
     }
 
