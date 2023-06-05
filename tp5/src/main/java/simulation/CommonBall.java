@@ -82,17 +82,18 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         double vxc, vyc;
         vxc = velocity.getX() + ((1/3. * predictedAcceleration.getX()) + (5/6. * acceleration.getX()) - (1/6. * lastAcceleration.getX())) * dt;
         vyc = velocity.getY() + ((1/3. * predictedAcceleration.getY()) + (5/6. * acceleration.getY()) - (1/6. * lastAcceleration.getY())) * dt;
-        setVelocity(Pair.of(vxc, vyc));;
+        setVelocity(Pair.of(vxc, vyc));
+        lastAcceleration = predictedAcceleration;
     }
 
 
-    public void updateAcceleration(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
-                                   final double leftGap, final double rightGap, final double offset){
-        lastAcceleration = acceleration;
-        //to update velocities we should use the corrected velocity.
-        sumForces(otherBalls, tableWidth, tableHeight, leftGap, rightGap, offset, CommonBall::getVelocity);
-        acceleration = Pair.of(this.force.getX() / mass, this.force.getY() / mass);
-    }
+//    public void updateAcceleration(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
+//                                   final double leftGap, final double rightGap, final double offset){
+//        lastAcceleration = acceleration;
+//        //to update velocities we should use the corrected velocity.
+//        sumForces(otherBalls, tableWidth, tableHeight, leftGap, rightGap, offset, CommonBall::getVelocity);
+//        acceleration = Pair.of(this.force.getX() / mass, this.force.getY() / mass);
+//    }
 
 
     public void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
@@ -118,7 +119,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         final boolean isOverGap = (position.getX() >= leftGap) && (position.getX() <= rightGap);
         if (!isOverGap) {
             otherBalls.add( // bottom wall but not in the gap
-                    new CommonBall(-4, Pair.of(position.getX(), offset - maxRadius), mass, maxRadius)
+                    new CommonBall(-4,
+                            Pair.of(position.getX(), offset - maxRadius), mass, maxRadius)
             );
         } else { //the ball is in the gap. I place a ball in the corner.
             new CommonBall(-4, Pair.of(leftGap, offset), mass, 0.0);

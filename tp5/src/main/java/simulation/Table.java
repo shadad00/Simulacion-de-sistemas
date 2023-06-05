@@ -11,8 +11,8 @@ import static simulation.UnitConstants.*;
 
 public class Table implements Iterable<Table> {
     protected static int N = 200;
-    protected double finalTime = 10;
-    protected double deltaTime = Math.pow(10, -4);
+    protected double finalTime = 100;
+    protected double deltaTime = Math.pow(10, -3);
 
     protected int iteration = 0;
     protected Set<CommonBall> balls;
@@ -81,6 +81,7 @@ public class Table implements Iterable<Table> {
 
             @Override
             public Table next() {
+                System.out.println(iteration);
                 incrementIteration();
                 return getNextTable();
             }
@@ -103,7 +104,7 @@ public class Table implements Iterable<Table> {
         this.cim.placeBalls(this.balls);
         this.cim.computeDistanceBetweenBalls();
 
-        Map<CommonBall, Set<CommonBall> > adjacencyMap = new HashMap<>();
+//        Map<CommonBall, Set<CommonBall> > adjacencyMap = new HashMap<>();
         for (final CommonBall ball : balls) {
             Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
             Set<CommonBall> other;
@@ -113,7 +114,7 @@ public class Table implements Iterable<Table> {
                         collect(Collectors.toSet());
             }else
                 other = new HashSet<>();
-            adjacencyMap.put(ball,other);
+//            adjacencyMap.put(ball,other);
             ball.sumForces(new HashSet<>(other), SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
         }
 
@@ -121,8 +122,8 @@ public class Table implements Iterable<Table> {
             ball.correctPrediction();
         }
 
-        for (final CommonBall ball : balls)
-            ball.updateAcceleration( new HashSet<>(adjacencyMap.get(ball)), SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
+//        for (final CommonBall ball : balls)
+//            ball.updateAcceleration( new HashSet<>(adjacencyMap.get(ball)), SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
 
         reinsertBalls();
         this.simulationTime += this.deltaTime;
@@ -139,7 +140,7 @@ public class Table implements Iterable<Table> {
         this.outBallsId = new HashSet<>();
         Random random = new Random();
         for (CommonBall ball : this.balls) {
-            if( ball.getPosition().getY() <= 0) {
+            if( ball.getPosition().getY() <= -(SILO_HEIGHT/10)) {
                 do {
                     double xPos = BALL_UPPER_RADIUS + (SILO_WIDTH - 2 * BALL_UPPER_RADIUS) * random.nextDouble();
                     double yPos = REINSERT_LOWER_BOUND + (REINSERT_UPPER_BOUND - REINSERT_LOWER_BOUND) * random.nextDouble();
