@@ -11,7 +11,7 @@ import static simulation.UnitConstants.*;
 
 public class Table implements Iterable<Table> {
     protected static int N = 200;
-    protected double finalTime = 100;
+    protected double finalTime = 1000;
     protected double deltaTime = Math.pow(10, -3);
 
     protected int iteration = 0;

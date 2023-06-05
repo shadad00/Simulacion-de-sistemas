@@ -81,7 +81,7 @@ public class OvitoWriter {
         writer.write(String.format("%s\n", totalParticles));
         writer.write(String.format("#%s (%s) <%s>\n", frame++, time, "none"));
 
-        writeBalls(balls);
+        writeBalls(balls, offset);
         writeFixed(offset);
 
         writer.flush();
@@ -91,17 +91,20 @@ public class OvitoWriter {
         writer.close();
     }
 
-    private void writeBalls(Set<CommonBall> balls) throws IOException {
+    private void writeBalls(Set<CommonBall> balls, double offset) throws IOException {
+
+
         for (final CommonBall ball : balls) {
+            int index = ball.getPosition().getY() + ball.getRadius() < offset ? 15 : 5;
             final String line = String.format(
                     "%s %s %s %s %s %s %s %s\n",
                     ball.getPosition().getX(),
                     ball.getPosition().getY(),
                     ball.getVelocity().getX(),
                     ball.getVelocity().getY(),
-                    BALL_COLORS[5][0] / 255.,
-                    BALL_COLORS[5][1] / 255.,
-                    BALL_COLORS[5][2] / 255.,
+                    BALL_COLORS[index][0] / 255.,
+                    BALL_COLORS[index][1] / 255.,
+                    BALL_COLORS[index][2] / 255.,
                     ball.getRadius()
             );
 
@@ -114,9 +117,9 @@ public class OvitoWriter {
             final String line = String.format(
                     "%s %s %s %s %s %s %s %s\n",
                     ball.getPosition().getX(),
-                    ball.getPosition().getY() + offset,
+                    (-SILO_HEIGHT / 10),
                     ball.getVelocity().getX(),
-                    ball.getVelocity().getY() + offset,
+                    (-SILO_HEIGHT / 10),
                     125 / 255.,
                     125 / 255.,
                     125 / 255.,
