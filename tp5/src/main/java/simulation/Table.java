@@ -81,7 +81,9 @@ public class Table implements Iterable<Table> {
 
             @Override
             public Table next() {
-                System.out.println(iteration);
+                if (iteration % 1000 == 0)
+                    System.out.println(iteration);
+
                 incrementIteration();
                 return getNextTable();
             }
