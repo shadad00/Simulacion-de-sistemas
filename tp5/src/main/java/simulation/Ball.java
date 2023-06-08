@@ -30,7 +30,7 @@ public abstract class Ball {
         double diffX = this.getPosition().getX() - ball.getPosition().getX();
         double diffY = this.getPosition().getY() - ball.getPosition().getY();
 
-        return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) - this.getRadius() - ball.getRadius();
+        return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) - (this.getRadius() + ball.getRadius());
     }
 
     abstract public boolean isPocket();

@@ -41,7 +41,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
                       final Double mass, final Double radius) {
         super(position, Pair.ZERO, Pair.ZERO, Pair.ZERO, mass, radius);
         this.ballNumber = ballNumber;
-        lastAcceleration = Pair.of(0,mass * G);
+        lastAcceleration = Pair.of(0,G);
     }
 
     public CommonBall(int ballId, Pair position, Pair velocity,
@@ -53,7 +53,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         setForce(force);
         this.mass = ballMass;
         this.radius = ballRadius;
-        lastAcceleration = Pair.of(0,mass * G);
+        lastAcceleration = Pair.of(0,G);
     }
 
     public void setDt(double dt){
@@ -83,17 +83,9 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         vxc = velocity.getX() + ((1/3. * predictedAcceleration.getX()) + (5/6. * acceleration.getX()) - (1/6. * lastAcceleration.getX())) * dt;
         vyc = velocity.getY() + ((1/3. * predictedAcceleration.getY()) + (5/6. * acceleration.getY()) - (1/6. * lastAcceleration.getY())) * dt;
         setVelocity(Pair.of(vxc, vyc));
+        acceleration = lastAcceleration;
         lastAcceleration = predictedAcceleration;
     }
-
-
-//    public void updateAcceleration(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
-//                                   final double leftGap, final double rightGap, final double offset){
-//        lastAcceleration = acceleration;
-//        //to update velocities we should use the corrected velocity.
-//        sumForces(otherBalls, tableWidth, tableHeight, leftGap, rightGap, offset, CommonBall::getVelocity);
-//        acceleration = Pair.of(this.force.getX() / mass, this.force.getY() / mass);
-//    }
 
 
     public void sumForces(final Set<CommonBall> otherBalls, final double tableWidth, final double tableHeight,
@@ -159,43 +151,6 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         Pair relativeVelocity = velocityFunction.apply(this).substract(velocityFunction.apply(otherBall));
         return computeForce(dseta, ex, ey, relativeVelocity);
     }
-
-//    public Pair forceBetweenRightWall(double wallX,  Function<CommonBall, Pair> velocityFunction) {
-//        new CommonBall(-1,Pair.of(wallX, position.getY()), mass, radius);
-//        if (position.getX() + getRadius() <= wallX)
-//            return Pair.ZERO;
-//
-//        double dseta = Math.abs(wallX - (position.getX() + getRadius()));
-//        return computeForce(dseta,  1,0, velocityFunction.apply(this));
-//    }
-//
-//    public Pair forceBetweenLeftWall(Function<CommonBall, Pair> velocityFunction) {
-//        new CommonBall(-1, Pair.of(0, position.getY()), mass, radius);
-//        if (position.getX() - getRadius() >= 0)
-//            return Pair.ZERO;
-//
-//        double dseta = Math.abs(position.getX() - getRadius());
-//        return computeForce(dseta, -1,0, velocityFunction.apply(this));
-//    }
-//
-//    public Pair forceBetweenTopWall(double wallY, Function<CommonBall, Pair> velocityFunction) {
-//        if (position.getY() + getRadius() <= wallY)
-//            return Pair.ZERO;
-//
-//        double dseta = Math.abs(position.getY() + getRadius() - wallY);
-//        return computeForce(dseta, 0,1, velocityFunction.apply(this));
-//    }
-//
-//    public Pair forceBetweenBottomWall(double offset, double leftGap, double rightGap,  Function<CommonBall, Pair> velocityFunction) {
-//        // if the particle is in the gap, there is no wall.
-//        if (position.getY() - getRadius() >= offset ||
-//                (position.getX() - getRadius() >= leftGap && position.getX() + getRadius() <= rightGap)
-//                 )
-//            return Pair.ZERO;
-//
-//        double dseta = Math.abs(position.getY() - getRadius() - offset);
-//        return computeForce(dseta, 0, 1, velocityFunction.apply(this));
-//    }
 
     private Pair computeForce(double dseta, double ex, double ey, Pair relativeVelocity){
         Pair tang = Pair.of(-ey, ex);

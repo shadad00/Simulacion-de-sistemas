@@ -148,7 +148,7 @@ public class Table implements Iterable<Table> {
                     double yPos = REINSERT_LOWER_BOUND + (REINSERT_UPPER_BOUND - REINSERT_LOWER_BOUND) * random.nextDouble();
                     
                     ball.setPosition(Pair.of(xPos, yPos));
-                } while (!checkNoBallOverlap(ball));
+                } while (checkNoBallOverlap(ball));
 
                 ball.setVelocity(Pair.ZERO);
                 ball.setAcceleration(Pair.ZERO);
@@ -184,7 +184,7 @@ public class Table implements Iterable<Table> {
 
     private boolean checkNoBallOverlap(Ball pivotBall) {
         for (CommonBall otherBall : balls)
-            if (pivotBall.distanceTo(otherBall) < 0)
+            if (!pivotBall.equals(otherBall) && pivotBall.distanceTo(otherBall) < 0)
                 return true;
         return false;
     }
