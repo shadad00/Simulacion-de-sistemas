@@ -83,8 +83,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         vxc = velocity.getX() + ((1/3. * predictedAcceleration.getX()) + (5/6. * acceleration.getX()) - (1/6. * lastAcceleration.getX())) * dt;
         vyc = velocity.getY() + ((1/3. * predictedAcceleration.getY()) + (5/6. * acceleration.getY()) - (1/6. * lastAcceleration.getY())) * dt;
         setVelocity(Pair.of(vxc, vyc));
-        acceleration = lastAcceleration;
-        lastAcceleration = predictedAcceleration;
+        lastAcceleration = acceleration;
+        acceleration = predictedAcceleration;
     }
 
 
@@ -206,5 +206,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
 
     public Pair getPredictedVelocity() {
         return predictedVelocity;
+    }
+
+    public void setLastAcceleration(){this.lastAcceleration = Pair.of(0, -G);
     }
 }

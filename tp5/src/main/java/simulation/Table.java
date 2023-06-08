@@ -152,6 +152,7 @@ public class Table implements Iterable<Table> {
 
                 ball.setVelocity(Pair.ZERO);
                 ball.setAcceleration(Pair.ZERO);
+                ball.setLastAcceleration();
 
                 outBallsId.add(ball.getBallNumber());
             }
