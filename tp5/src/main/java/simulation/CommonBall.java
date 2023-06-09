@@ -34,14 +34,16 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         this.mass = other.mass;
         this.radius = other.radius;
         this.ballNumber = other.ballNumber;
-        lastAcceleration = Pair.of(0,mass * G);
+        acceleration = Pair.of(0, G);
+        lastAcceleration = Pair.of(0, G);
     }
     
     public CommonBall(final int ballNumber, Pair position,
                       final Double mass, final Double radius) {
         super(position, Pair.ZERO, Pair.ZERO, Pair.ZERO, mass, radius);
         this.ballNumber = ballNumber;
-        lastAcceleration = Pair.of(0,G);
+        acceleration = Pair.of(0,G);
+        lastAcceleration = Pair.of(0, G);
     }
 
     public CommonBall(int ballId, Pair position, Pair velocity,
@@ -53,7 +55,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         setForce(force);
         this.mass = ballMass;
         this.radius = ballRadius;
-        lastAcceleration = Pair.of(0,G);
+        this.acceleration = Pair.of(0,G);
+        lastAcceleration = Pair.of(0, G);
     }
 
     public void setDt(double dt){
@@ -141,7 +144,7 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         double sumRadius = getRadius() + otherBall.getRadius();
 
         // Si no estan en colision, la fuerza entre ellos es nula -> <0, 0>
-        if (dist > sumRadius)
+        if (dist >= sumRadius)
             return Pair.ZERO;
 
         double dseta = sumRadius - dist;
@@ -208,6 +211,8 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
         return predictedVelocity;
     }
 
-    public void setLastAcceleration(){this.lastAcceleration = Pair.of(0, -G);
+    public void clearAccelerations(){
+        this.lastAcceleration = Pair.of(0, G);
+        this.acceleration = Pair.of(0, G);
     }
 }

@@ -11,7 +11,7 @@ import static simulation.UnitConstants.*;
 
 public class Table implements Iterable<Table> {
     protected static int N = 200;
-    protected double finalTime = 1000;
+    protected double finalTime = 100;
     protected double deltaTime = Math.pow(10, -3);
 
     protected int iteration = 0;
@@ -98,7 +98,6 @@ public class Table implements Iterable<Table> {
 
         moveWalls();
 
-        // Primero predecimos todos los r
         for (final CommonBall ball : balls)
             ball.updateWithPrediction();
 
@@ -106,7 +105,6 @@ public class Table implements Iterable<Table> {
         this.cim.placeBalls(this.balls);
         this.cim.computeDistanceBetweenBalls();
 
-//        Map<CommonBall, Set<CommonBall> > adjacencyMap = new HashMap<>();
         for (final CommonBall ball : balls) {
             Set<BallAndDistance> otherDistance = this.cim.getNeighbors(ball);
             Set<CommonBall> other;
@@ -116,16 +114,12 @@ public class Table implements Iterable<Table> {
                         collect(Collectors.toSet());
             }else
                 other = new HashSet<>();
-//            adjacencyMap.put(ball,other);
             ball.sumForces(new HashSet<>(other), SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
         }
 
         for (final CommonBall ball : balls) {
             ball.correctPrediction();
         }
-
-//        for (final CommonBall ball : balls)
-//            ball.updateAcceleration( new HashSet<>(adjacencyMap.get(ball)), SILO_WIDTH, SILO_HEIGHT, leftGap, rightGap, offset);
 
         reinsertBalls();
         this.simulationTime += this.deltaTime;
@@ -151,8 +145,7 @@ public class Table implements Iterable<Table> {
                 } while (checkNoBallOverlap(ball));
 
                 ball.setVelocity(Pair.ZERO);
-                ball.setAcceleration(Pair.ZERO);
-                ball.setLastAcceleration();
+                ball.clearAccelerations(); // restart.
 
                 outBallsId.add(ball.getBallNumber());
             }
@@ -184,6 +177,13 @@ public class Table implements Iterable<Table> {
     }
 
     private boolean checkNoBallOverlap(Ball pivotBall) {
+        if(pivotBall.position.getX() - pivotBall.getRadius() <= 0 ||
+                pivotBall.position.getX() + pivotBall.getRadius() >= SILO_WIDTH ||
+                pivotBall.position.getY() - pivotBall.getRadius() <= offset  ||
+                pivotBall.position.getY() + pivotBall.getRadius() >= SILO_HEIGHT + offset
+        )
+            return true;
+
         for (CommonBall otherBall : balls)
             if (!pivotBall.equals(otherBall) && pivotBall.distanceTo(otherBall) < 0)
                 return true;
@@ -191,7 +191,7 @@ public class Table implements Iterable<Table> {
     }
 
     private void moveWalls() {
-        offset = SILO_VIBRATION_AMPLITUDE * Math.sin(frequency * simulationTime);
+        offset = SILO_VIBRATION_AMPLITUDE * Math.sin(2 * Math.PI * frequency * simulationTime);
     }
 
 
