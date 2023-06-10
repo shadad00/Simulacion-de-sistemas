@@ -5,7 +5,7 @@ import java.io.IOException;
 public class ExtraExercise {
 
     private static final int FREQUENCY = 0;
-    private static final double[] GAPS = {0.06};
+    private static final double[] GAPS = {0.03};
 
     private static final int SIMULATION_PER_FREQUENCY = 1;
 

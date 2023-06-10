@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public class SecondExercise {
 
-    private static final int OPTIMAL_FREQUENCY = 10;
-    private static final double[] GAPS = {0.06};
+    private static final int OPTIMAL_FREQUENCY = 5;
+    private static final double[] GAPS = {0.03};
 
     private static final int SIMULATION_PER_FREQUENCY = 1;
 
