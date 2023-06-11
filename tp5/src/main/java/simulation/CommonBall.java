@@ -118,11 +118,9 @@ public class CommonBall extends Ball implements Comparable<CommonBall> {
                             Pair.of(position.getX(), offset - maxRadius), mass, maxRadius)
             );
         } else { //the ball is in the gap. I place a ball in the corner.
-            new CommonBall(-4, Pair.of(leftGap, offset), mass, 0.0);
-            new CommonBall(-5, Pair.of(rightGap, offset), mass, 0.0);
+            otherBalls.add(new CommonBall(-4, Pair.of(leftGap, offset), mass, 0.0));
+            otherBalls.add(new CommonBall(-5, Pair.of(rightGap, offset), mass, 0.0));
         }
-
-
 
         for (CommonBall otherBall : otherBalls) {
             if (this.equals(otherBall))

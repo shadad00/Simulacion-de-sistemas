@@ -11,7 +11,7 @@ import static simulation.UnitConstants.*;
 
 public class Table implements Iterable<Table> {
     protected static int N = 200;
-    protected double finalTime = 100;
+    protected double finalTime = 500;
     protected double deltaTime = Math.pow(10, -3);
 
     protected int iteration = 0;
@@ -175,7 +175,6 @@ public class Table implements Iterable<Table> {
         }
 
     }
-
     private boolean checkNoBallOverlap(Ball pivotBall) {
         if(pivotBall.position.getX() - pivotBall.getRadius() <= 0 ||
                 pivotBall.position.getX() + pivotBall.getRadius() >= SILO_WIDTH ||

@@ -2,7 +2,7 @@ package simulation;
 
 public class UnitConstants {
 //    public static final int[] FREQUENCIES = {5,10,15,20,30,50};
-    public static final int[] FREQUENCIES = {50};
+    public static final int[] FREQUENCIES = {30,50};
 
     /* Dimensions */
     public static final double BALL_MASS = 0.001; // kg
