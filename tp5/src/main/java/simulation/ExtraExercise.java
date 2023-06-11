@@ -5,7 +5,7 @@ import java.io.IOException;
 public class ExtraExercise {
 
     private static final int FREQUENCY = 0;
-    private static final double[] GAPS = {0.04, 0.05, 0.06};
+    private static final double[] GAPS = {0.04};
 
     private static final int SIMULATION_PER_FREQUENCY = 1;
 
@@ -17,7 +17,7 @@ public class ExtraExercise {
         for (double gap : GAPS) {
             for (int i = 0; i < SIMULATION_PER_FREQUENCY; i++) {
                 Table currentTable = new Table(gap, FREQUENCY);
-                run(currentTable,10, gap, i);
+                run(currentTable,100, gap, i);
             }
         }
     }
